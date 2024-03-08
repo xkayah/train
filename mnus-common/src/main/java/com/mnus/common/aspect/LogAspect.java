@@ -1,4 +1,4 @@
-package com.mnus.train12306.aspect;
+package com.mnus.common.aspect;
 
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;

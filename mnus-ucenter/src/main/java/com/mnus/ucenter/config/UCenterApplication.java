@@ -1,4 +1,4 @@
-package com.mnus.train12306.config;
+package com.mnus.ucenter.config;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

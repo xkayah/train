@@ -1,4 +1,4 @@
-package com.mnus.train12306.controller;
+package com.mnus.ucenter.controller;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
