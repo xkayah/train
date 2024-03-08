@@ -1,6 +1,6 @@
 package com.mnus.ucenter.services;
 
-import com.mnus.ucenter.mapper.UcenterMapper;
+import com.mnus.ucenter.mapper.UserMapper;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 
@@ -12,9 +12,9 @@ import org.springframework.stereotype.Service;
 public class UcenterService {
 
     @Resource
-    private UcenterMapper ucenterMapper;
+    private UserMapper userMapper;
 
-    public int count(){
-        return ucenterMapper.count();
+    public Long count() {
+        return userMapper.countByExample(null);
     }
 }

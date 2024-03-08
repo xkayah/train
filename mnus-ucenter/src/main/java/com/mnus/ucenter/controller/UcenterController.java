@@ -18,7 +18,7 @@ public class UcenterController {
     private UcenterService ucenterService;
 
     @GetMapping("/count")
-    public Integer count() {
+    public Long count() {
         return ucenterService.count();
     }
 }

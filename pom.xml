@@ -21,6 +21,7 @@
         <module>mnus-ucenter</module>
         <module>mnus-common</module>
         <module>mnus-gateway</module>
+        <module>mnus-generator</module>
     </modules>
 
     <properties>
