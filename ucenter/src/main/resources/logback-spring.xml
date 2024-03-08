@@ -1,40 +1,82 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
-    <!-- 修改一下路径-->
-    <property name="PATH" value="./log/ucenter">PATH</property>
+    <!-- 读取容器的基本信息 -->
+    <property name="log.charset" value="utf-8" />
+    <springProperty scope="context" name="app.active" source="spring.profiles.active" />
+    <springProperty scope="context" name="app.name" source="spring.application.name"/>
+    <property name="log.path" value="${app.name}-${app.active}" />
+    <property name="log.pattern"
+              value="%white(${app.name}) %red(%d{yyyy-MM-dd HH:mm:ss}) %highlight(%-5level) %boldMagenta(%logger{36}) [%X{traceId}] - %cyan(%msg%n)" />
 
-    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-        <encoder>
-            <!-- LOG_ID 是日志流水号，方便运维 -->
-<!--            <Pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %highlight(%-5level) %blue(%-50logger{50}:%-4line) %thread %green(%-18X{LOG_ID}) %msg%n</Pattern>-->
-            <Pattern>%d{mm:ss.SSS} %highlight(%-5level) %blue(%-30logger{30}:%-4line) %thread %green(%-18X{LOG_ID}) %msg%n</Pattern>
+    <!-- 控制台日志：输出全部日志到控制台 -->
+    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>${log.pattern}</pattern>
+            <charset>${log.charset}</charset>
         </encoder>
     </appender>
-
-    <appender name="TRACE_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${PATH}/trace.log</file>
-        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <FileNamePattern>${PATH}/trace.%d{yyyy-MM-dd}.%i.log</FileNamePattern>
-            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
-                <maxFileSize>10MB</maxFileSize>
-            </timeBasedFileNamingAndTriggeringPolicy>
+    
+    <!-- 滚动记录文件，先将日志记录到指定文件，复合条件后日志将记录到其他文件 -->
+    <appender name="info_file"
+              class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>/data/logs/${log.path}/info/train12306-info.log</file>
+        <rollingPolicy
+                class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>/data/logs/${log.path}/info/train12306-${app.active}-info-%d{yyyy-MM-dd}.%i.log
+            </fileNamePattern>
+            <!-- 单个日志文件最多50MB, 14天的日志周期，最大不能超过250MB -->
+            <maxFileSize>10MB</maxFileSize>
+            <maxHistory>7</maxHistory>
+            <totalSizeCap>10MB</totalSizeCap>
         </rollingPolicy>
-        <layout>
-            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level %-50logger{50}:%-4line %green(%-18X{LOG_ID}) %msg%n</pattern>
-        </layout>
+        <encoder>
+            <pattern>%m%n</pattern>
+            <charset>${log.charset}</charset>
+        </encoder>
+        <!-- 默认true日志追加到文件结尾，false清空现存文件 -->
+        <append>true</append>
     </appender>
 
-    <appender name="ERROR_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${PATH}/error.log</file>
-        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <FileNamePattern>${PATH}/error.%d{yyyy-MM-dd}.%i.log</FileNamePattern>
-            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
-                <maxFileSize>10MB</maxFileSize>
-            </timeBasedFileNamingAndTriggeringPolicy>
+    <!-- 滚动记录文件，先将日志记录到指定文件，复合条件后日志将记录到其他文件 -->
+    <appender name="debug_info"
+              class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>/data/logs/${log.path}/debug/train12306-debug.log</file>
+        <rollingPolicy
+                class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>/data/logs/${log.path}/debug/train12306-${app.active}-debug-%d{yyyy-MM-dd}.%i.log
+            </fileNamePattern>
+            <!-- 单个日志文件最多50MB, 14天的日志周期，最大不能超过250MB -->
+            <maxFileSize>10MB</maxFileSize>
+            <maxHistory>7</maxHistory>
+            <totalSizeCap>50MB</totalSizeCap>
         </rollingPolicy>
-        <layout>
-            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level %-50logger{50}:%-4line %green(%-18X{LOG_ID}) %msg%n</pattern>
-        </layout>
+        <encoder>
+            <pattern>%m%n</pattern>
+            <charset>${log.charset}</charset>
+        </encoder>
+        <!-- 默认true日志追加到文件结尾，false清空现存文件 -->
+        <append>true</append>
+    </appender>
+
+    <!-- 滚动记录文件，先将日志记录到指定文件，复合条件后日志将记录到其他文件 -->
+    <appender name="error_file"
+              class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>/data/logs/${log.path}/error/train12306-error.log</file>
+        <rollingPolicy
+                class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>/data/logs/${log.path}/error/train12306-${app.active}-error-%d{yyyy-MM-dd}.%i.log
+            </fileNamePattern>
+            <!-- 单个日志文件最多50MB, 14天的日志周期，最大不能超过250MB -->
+            <maxFileSize>10MB</maxFileSize>
+            <maxHistory>7</maxHistory>
+            <totalSizeCap>50MB</totalSizeCap>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%m%n</pattern>
+            <charset>${log.charset}</charset>
+        </encoder>
+        <!-- 默认true日志追加到文件结尾，false清空现存文件 -->
+        <append>true</append>
         <filter class="ch.qos.logback.classic.filter.LevelFilter">
             <level>ERROR</level>
             <onMatch>ACCEPT</onMatch>
@@ -42,15 +84,56 @@
         </filter>
     </appender>
 
-    <root level="ERROR">
-        <appender-ref ref="ERROR_FILE" />
+    <!-- 滚动记录文件，先将日志记录到指定文件，复合条件后日志将记录到其他文件 -->
+    <appender name="warn_file"
+              class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>/data/logs/${log.path}/warn/train12306-warn.log</file>
+        <rollingPolicy
+                class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>/data/logs/${log.path}/warn/train12306-${app.active}-warn-%d{yyyy-MM-dd}.%i.log
+            </fileNamePattern>
+            <!-- 单个日志文件最多50MB, 14天的日志周期，最大不能超过250MB -->
+            <maxFileSize>10MB</maxFileSize>
+            <maxHistory>7</maxHistory>
+            <totalSizeCap>50MB</totalSizeCap>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%m%n</pattern>
+            <charset>${log.charset}</charset>
+        </encoder>
+        <!-- 默认true日志追加到文件结尾，false清空现存文件 -->
+        <append>true</append>
+    </appender>
+
+    <!-- 滚动记录文件，先将日志记录到指定文件，复合条件后日志将记录到其他文件 -->
+    <appender name="trace_file"
+              class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>/data/logs/${log.path}/trace/train12306-trace.log</file>
+        <rollingPolicy
+                class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>/data/logs/${log.path}/trace/train12306-${app.active}-trace-%d{yyyy-MM-dd}.%i.log
+            </fileNamePattern>
+            <!-- 单个日志文件最多50MB, 14天的日志周期，最大不能超过250MB -->
+            <maxFileSize>10MB</maxFileSize>
+            <maxHistory>7</maxHistory>
+            <totalSizeCap>50MB</totalSizeCap>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%m%n</pattern>
+            <charset>${log.charset}</charset>
+        </encoder>
+        <!-- 默认true日志追加到文件结尾，false清空现存文件 -->
+        <append>true</append>
+    </appender>
+
+    <!--普通日志输出到控制台 -->
+    <root level="info">
+        <appender-ref ref="console" />
+        <appender-ref ref="error_file" />
+        <appender-ref ref="trace_file" />
+<!--        <appender-ref ref="info_file" />-->
+<!--        <appender-ref ref="debug_info" />-->
+<!--        <appender-ref ref="warn_file" />-->
     </root>
 
-    <root level="TRACE">
-        <appender-ref ref="TRACE_FILE" />
-    </root>
-
-    <root level="INFO">
-        <appender-ref ref="STDOUT" />
-    </root>
 </configuration>
