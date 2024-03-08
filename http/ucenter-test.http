@@ -14,4 +14,14 @@ Accept: application/json
 GET http://localhost:10100/ucenter/user/count
 Accept: application/json
 
+### test registry
+POST http://localhost:8001/ucenter/user/registry
+Content-Type: application/x-www-form-urlencoded
+
+mobile=1399875
+
 ###
+POST http://localhost:10100/ucenter/user/registry
+Content-Type: application/x-www-form-urlencoded
+
+mobile=1399875

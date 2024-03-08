@@ -3,6 +3,7 @@ package com.mnus.ucenter.controller;
 import com.mnus.ucenter.services.UcenterService;
 import jakarta.annotation.Resource;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -21,4 +22,10 @@ public class UcenterController {
     public Long count() {
         return ucenterService.count();
     }
+
+    @PostMapping("/registry")
+    public Long registry(String mobile) {
+        return ucenterService.registry(mobile);
+    }
+
 }
