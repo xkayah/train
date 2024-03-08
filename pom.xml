@@ -20,6 +20,7 @@
     <modules>
         <module>mnus-ucenter</module>
         <module>mnus-common</module>
+        <module>mnus-gateway</module>
     </modules>
 
     <properties>

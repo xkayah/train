@@ -1,4 +1,4 @@
-package com.mnus.ucenter.config;
+package com.mnus.gateway.config;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,11 +14,12 @@ import org.springframework.util.StringUtils;
  */
 @SpringBootApplication
 @ComponentScan("com.mnus")
-public class UCenterApplication {
-    private static final Logger LOG = LoggerFactory.getLogger(UCenterApplication.class);
+public class GatewayApplication {
+    private static final Logger LOG = LoggerFactory.getLogger(GatewayApplication.class);
+
     public static void main(String[] args) {
 
-        Environment env = SpringApplication.run(UCenterApplication.class).getEnvironment();
+        Environment env = SpringApplication.run(GatewayApplication.class).getEnvironment();
         String path = env.getProperty("server.servlet.context-path");
         if (!StringUtils.hasLength(path)) {
             path = "";

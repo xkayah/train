@@ -2,3 +2,8 @@
 GET http://localhost:8001/ucenter/hello
 Accept: application/json
 
+### gateway test
+GET http://localhost:10100/ucenter/hello
+Accept: application/json
+
+###
