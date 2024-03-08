@@ -1,5 +1,6 @@
 package com.mnus.ucenter.config;
 
+import org.mybatis.spring.annotation.MapperScan;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
@@ -14,6 +15,7 @@ import org.springframework.util.StringUtils;
  */
 @SpringBootApplication
 @ComponentScan("com.mnus")
+@MapperScan("com.mnus.*.mapper")
 public class UCenterApplication {
     private static final Logger LOG = LoggerFactory.getLogger(UCenterApplication.class);
     public static void main(String[] args) {

@@ -28,6 +28,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <mysql-connetor.version>8.2.0</mysql-connetor.version>
+        <mybatis.version>3.0.0</mybatis.version>
         <spring-cloud.version>2022.0.0</spring-cloud.version>
         <mnus-common.version>0.0.1-SNAPSHOT</mnus-common.version>
     </properties>
@@ -38,6 +39,7 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-dependencies</artifactId>
             </dependency>
+
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-dependencies</artifactId>
@@ -45,22 +47,32 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+
+            <dependency>
+                <groupId>org.mybatis.spring.boot</groupId>
+                <artifactId>mybatis-spring-boot-starter</artifactId>
+                <version>${mybatis.version}</version>
+            </dependency>
+
             <dependency>
                 <groupId>com.mysql</groupId>
                 <artifactId>mysql-connector-j</artifactId>
                 <version>${mysql-connetor.version}</version>
                 <scope>runtime</scope>
             </dependency>
+
             <dependency>
                 <groupId>com.alibaba</groupId>
                 <artifactId>fastjson</artifactId>
                 <version>1.2.70</version>
             </dependency>
+
             <dependency>
                 <groupId>cn.hutool</groupId>
                 <artifactId>hutool-all</artifactId>
                 <version>5.8.20</version>
             </dependency>
+
             <dependency>
                 <groupId>com.mnus</groupId>
                 <artifactId>mnus-common</artifactId>

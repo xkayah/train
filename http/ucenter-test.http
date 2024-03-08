@@ -1,9 +1,17 @@
-### hello test
+### test hello
 GET http://localhost:8001/ucenter/hello
 Accept: application/json
 
-### gateway test
+### test gateway
 GET http://localhost:10100/ucenter/hello
+Accept: application/json
+
+### test count
+GET http://localhost:8001/ucenter/user/count
+Accept: application/json
+
+###
+GET http://localhost:10100/ucenter/user/count
 Accept: application/json
 
 ###
