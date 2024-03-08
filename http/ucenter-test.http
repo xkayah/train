@@ -1,0 +1,4 @@
+### hello test
+GET http://localhost:8001/ucenter/hello
+Accept: application/json
+
