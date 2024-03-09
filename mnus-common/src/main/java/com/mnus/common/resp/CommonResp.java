@@ -1,92 +1,128 @@
 package com.mnus.common.resp;
 
+import com.mnus.common.exception.ResponseCode;
+import com.mnus.common.constance.MDCKey;
+import com.mnus.common.exception.ErrorCode;
+import org.slf4j.MDC;
+
+import java.io.Serializable;
+
 /**
+ * 统一响应
+ *
  * @author: <a href="https://github.com/xkayah">xkayah</a>
  * @date: 2024/3/9 9:36:37
  */
-public class CommonResp<T> {
+public class CommonResp<T> implements Serializable {
+
     /**
-     * 成功标识
+     * 状态码
      */
-    private Boolean success;
+    private Integer code;
     /**
-     * 错误码
+     * 返回信息
      */
-    private Integer errCode;
-    /**
-     * 错误信息
-     */
-    private String errMsg;
+    private String msg;
     /**
      * 返回对象
      */
-    private T content;
+    private T data;
+    /**
+     * 链路追踪 ID
+     */
+    private String traceId;
 
-    public static <T> CommonResp<T> ok() {
-        CommonResp<T> result = new CommonResp<T>();
-        result.setContent(null);
-        result.setSuccess(Boolean.TRUE);
-        return result;
+    /**
+     * 判断是否响应成功
+     *
+     * @return ture 成功，false 失败
+     */
+    public boolean succeed() {
+        return ResponseCode.SUCCESS.equals(this.code);
     }
 
-    public static <T> CommonResp<T> ok(T data) {
-        CommonResp<T> result = new CommonResp<T>();
-        result.setContent(data);
-        result.setSuccess(Boolean.TRUE);
-        return result;
+    public static <T> CommonResp<T> success() {
+        return success(null, null);
     }
 
-    public static <T> CommonResp<T> fail(Integer code, String msg) {
-        CommonResp<T> result = new CommonResp<T>();
-        result.setSuccess(Boolean.FALSE);
-        result.setErrCode(code);
-        result.setErrMsg(msg);
-        return result;
+    public static <T> CommonResp<T> success(T data) {
+        return success(null, data);
     }
 
-    public boolean isSuccess() {
-        return this.success;
+    public static <T> CommonResp<T> successWithMsg(String msg) {
+        return success(msg, null);
     }
 
-    public CommonResp(Boolean success, Integer errCode, String errMsg, T data) {
-        this.success = success;
-        this.errCode = errCode;
-        this.errMsg = errMsg;
-        this.content = data;
+    public static <T> CommonResp<T> success(String msg, T data) {
+        CommonResp<T> resp = new CommonResp<>();
+        resp.setCode(ResponseCode.SUCCESS);
+        resp.setMsg(msg);
+        resp.setData(data);
+        return resp;
+    }
+
+    public static <T> CommonResp<T> failed(ErrorCode errorCode) {
+        return failed(errorCode.getCode(), errorCode.getMsg());
+    }
+
+    public static <T> CommonResp<T> failed(Integer code, String msg) {
+        return failed(code, msg, null);
+    }
+
+    public static <T> CommonResp<T> failed(Integer code, String msg, T data) {
+        CommonResp<T> resp = new CommonResp<>();
+        resp.setCode(code);
+        resp.setMsg(msg);
+        resp.setData(data);
+        return resp;
+    }
+
+
+    public CommonResp(Integer code, String msg, T data) {
+        this.code = code;
+        this.msg = msg;
+        this.data = data;
+    }
+
+    public CommonResp(Integer code, String msg) {
+        this.code = code;
+        this.msg = msg;
     }
 
     public CommonResp() {
+        this.traceId = MDC.get(MDCKey.TID);
     }
 
-    public Boolean getSuccess() {
-        return success;
+
+    public String getTraceId() {
+        return traceId;
     }
 
-    public void setSuccess(Boolean success) {
-        this.success = success;
+    public void setTraceId(String traceId) {
+        this.traceId = traceId;
     }
 
-    public Integer getErrCode() {
-        return errCode;
+    public Integer getCode() {
+        return code;
     }
 
-    public void setErrCode(Integer errCode) {
-        this.errCode = errCode;
+    public void setCode(Integer code) {
+        this.code = code;
     }
 
-    public String getErrMsg() {
-        return errMsg;
+    public String getMsg() {
+        return msg;
     }
 
-    public void setErrMsg(String errMsg) {
-        this.errMsg = errMsg;
+    public void setMsg(String msg) {
+        this.msg = msg;
     }
 
-    public T getContent() {
-        return content;
+    public T getData() {
+        return data;
     }
 
-    public void setContent(T content) {
-        this.content = content;
+    public void setData(T data) {
+        this.data = data;
     }
 }

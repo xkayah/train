@@ -1,5 +1,6 @@
 package com.mnus.common.aspect;
 
+import com.mnus.common.constance.MDCKey;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -22,8 +23,6 @@ import java.util.UUID;
 @Aspect
 @Component
 public class LogAspect {
-
-    public static final String TRACE_ID = "traceId";
     private static final Logger LOG = LoggerFactory.getLogger(LogAspect.class);
 
     public LogAspect() {
@@ -39,8 +38,8 @@ public class LogAspect {
 
     @Around(value = "logPointCut()")
     public Object doAround(JoinPoint joinpoint) throws Throwable {
-        if (!StringUtils.hasText(MDC.get(TRACE_ID))) {
-            MDC.put(TRACE_ID, UUID.randomUUID().toString());
+        if (!StringUtils.hasText(MDC.get(MDCKey.TID))) {
+            MDC.put(MDCKey.TID, UUID.randomUUID().toString());
         }
         return combineLogInfo(joinpoint);
     }

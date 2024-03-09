@@ -22,12 +22,12 @@ public class UcenterController {
 
     @GetMapping("/count")
     public CommonResp<Long> count() {
-        return CommonResp.ok(ucenterService.count());
+        return CommonResp.success(ucenterService.count());
     }
 
     @PostMapping("/registry")
     public CommonResp<Long> registry(UserRegistryReq req) {
-        return CommonResp.ok(ucenterService.registry(req));
+        return CommonResp.success(ucenterService.registry(req));
     }
 
 }

@@ -1,5 +1,6 @@
 package com.mnus.common.exception.handler;
 
+import com.mnus.common.enums.BaseErrorCodeEnum;
 import com.mnus.common.exception.BizException;
 import com.mnus.common.resp.CommonResp;
 import org.slf4j.Logger;
@@ -23,7 +24,8 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Throwable.class)
     public CommonResp<?> runtimeExceptionHandler(Throwable e) {
         LOG.error("引发的异常的堆栈信息：", e);
-        return CommonResp.fail(500, "系统错误");
+        return CommonResp.failed(
+                BaseErrorCodeEnum.INTERNAL_SERVER_ERROR.getCode(), BaseErrorCodeEnum.INTERNAL_SERVER_ERROR.getMsg());
     }
 
     /**
@@ -32,7 +34,8 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(BizException.class)
     public CommonResp<?> bizExceptionHandler(BizException e) {
         LOG.error("引发的异常的堆栈信息：", e);
-        return CommonResp.fail(500, e.getMessage());
+        return CommonResp.failed(
+                e.getResponseBody().getCode(), e.getResponseBody().getMsg());
     }
 
 }
