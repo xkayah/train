@@ -12,8 +12,8 @@ public enum BaseErrorCodeEnum implements ErrorCode {
     /**
      * undefined error
      */
-    UNDEFINED(0, "操作成功!"),
-    ERROR(1, "操作失败!"),
+    UNDEFINED(-1, "操作成功!"),
+    ERROR(-2, "操作失败!"),
     UNAUTHORIZED(401, "无权访问!"),
     REQUEST_TIME_OUT(408, "系统繁忙!请稍后再试!"),
     INTERNAL_SERVER_ERROR(500, "系统内部异常!"),
