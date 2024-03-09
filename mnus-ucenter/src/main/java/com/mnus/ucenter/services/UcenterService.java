@@ -1,5 +1,6 @@
 package com.mnus.ucenter.services;
 
+import com.mnus.common.exception.BizException;
 import com.mnus.ucenter.domain.User;
 import com.mnus.ucenter.domain.UserExample;
 import com.mnus.ucenter.mapper.UserMapper;
@@ -34,7 +35,7 @@ public class UcenterService {
         // 登录注册做成同一个接口时，可以将数据库实体类的id返回出去做校验
         if (!CollectionUtils.isEmpty(list)) {
             // return list.get(0).getId();
-            throw new RuntimeException("手机号已注册");
+            throw new BizException("手机号已注册");
         }
 
         long id = System.currentTimeMillis();
