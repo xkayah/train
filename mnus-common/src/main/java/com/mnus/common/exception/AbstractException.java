@@ -23,10 +23,6 @@ public abstract class AbstractException extends RuntimeException {
         this(errorCode.getCode(), errorCode.getMsg(), null, cause);
     }
 
-    public AbstractException(ErrorCode errorCode) {
-        this(errorCode.getCode(), errorCode.getMsg(), null, null);
-    }
-
     private AbstractException(Integer code, String msg, String info, Throwable cause) {
         super(msg, cause);
         if (info == null) {
@@ -43,6 +39,7 @@ public abstract class AbstractException extends RuntimeException {
     // public synchronized Throwable fillInStackTrace() {
     //     return this;
     // }
+
     public CommonResp getResponseBody() {
         return responseBody;
     }

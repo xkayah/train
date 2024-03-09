@@ -18,8 +18,4 @@ public class BizException extends AbstractException {
     public BizException(ErrorCode errorCode, String info, Throwable cause) {
         super(errorCode, info, cause);
     }
-
-    public BizException(ErrorCode errorCode) {
-        super(errorCode);
-    }
 }
