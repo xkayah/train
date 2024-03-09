@@ -1,5 +1,8 @@
 package com.mnus.ucenter.services;
 
+import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.util.RandomUtil;
+import com.mnus.common.constance.Constance;
 import com.mnus.common.constance.MDCKey;
 import com.mnus.common.enums.BaseErrorCodeEnum;
 import com.mnus.common.exception.BizException;
@@ -37,40 +40,47 @@ public class UcenterService {
         return userMapper.countByExample(null);
     }
 
-    public Long sendCode(UserSendCodeReq req) {
+    public void sendCode(UserSendCodeReq req) {
         String mobile = req.getMobile();
-        // 发送短信，查短信表，黑号发现
-        String code = genAndCacheCode(mobile);
-        LOG.info("[code]:{}", code);
-
-        User userDB = selectOneUser(mobile);
-
-        long uid = -1L;
-        // notnull，说明是已经注册的用户
-        if (!ObjectUtils.isEmpty(userDB)) {
-            uid = userDB.getId();
+        // 查短信表，判断频率，黑号发现
+        if (false) {
+            throw new BizException(BaseErrorCodeEnum.SYSTEM_MOBILE_CODE_SEND_FREQUENT);
         }
-        // null，插入用户实体
-        uid = IdGenUtil.nextId();
-        User user = new User();
-        user.setId(IdGenUtil.nextId());
-        user.setMobile(mobile);
-        userMapper.insert(user);
-
-        MDC.put(MDCKey.UID, String.valueOf(uid));
-        return uid;
+        // 发送短信
+        String code = genAndCacheCode(mobile);
+        LOG.info("[mobile:{}]-[code:{}]", mobile, code);
     }
 
     public UserLoginResp login(LoginOrRegistryReq req) {
         String mobile = req.getMobile();
         String code = req.getCode();
 
+        User userDB = selectOneUser(mobile);
+        User user = null;
+        long uid = 0;
+        // notnull，说明是已经注册的用户
+        if (!ObjectUtils.isEmpty(userDB)) {
+            user = userDB;
+            uid = userDB.getId();
+        } else {
+            uid = IdGenUtil.nextId();
+            // null，插入实体
+            String uname = Constance.NAME_PREFIX + RandomUtil.randomString(6);
+            user = new User();
+            user.setUname(uname);
+            user.setId(uid);
+            user.setMobile(mobile);
+            userMapper.insert(user);
+        }
+
+        MDC.put(MDCKey.UID, String.valueOf(uid));
+        // 判断code
         String codeCC = LRUCache.get(mobile + ":code");
         if (!code.equals(codeCC)) {
             throw new BizException(BaseErrorCodeEnum.SYSTEM_USER_EMAIL_OR_CODE_ERROR);
         }
 
-        return new UserLoginResp(mobile, MDC.get(MDCKey.UID));
+        return BeanUtil.toBean(user, UserLoginResp.class);
     }
 
     private User selectOneUser(String mobile) {

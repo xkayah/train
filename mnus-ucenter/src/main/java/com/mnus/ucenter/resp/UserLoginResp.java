@@ -5,12 +5,12 @@ package com.mnus.ucenter.resp;
  * @date: 2024/3/9 9:20:31
  */
 public class UserLoginResp {
-    private String mobile;
+    private String uname;
 
     private String id;
 
-    public UserLoginResp(String mobile, String code) {
-        this.mobile = mobile;
+    public UserLoginResp(String uname, String code) {
+        this.uname = uname;
         this.id = code;
     }
 
@@ -25,18 +25,18 @@ public class UserLoginResp {
         this.id = id;
     }
 
-    public String getMobile() {
-        return mobile;
+    public String getUname() {
+        return uname;
     }
 
-    public void setMobile(String mobile) {
-        this.mobile = mobile;
+    public void setUname(String uname) {
+        this.uname = uname;
     }
 
     @Override
     public String toString() {
         final StringBuffer sb = new StringBuffer("UserLoginResp{");
-        sb.append("mobile='").append(mobile).append('\'');
+        sb.append("uname='").append(uname).append('\'');
         sb.append(", id='").append(id).append('\'');
         sb.append('}');
         return sb.toString();

@@ -34,8 +34,9 @@ public class UcenterController {
     }
 
     @PostMapping("/send-code")
-    public CommonResp<Long> sendCode(@Valid UserSendCodeReq req) {
-        return CommonResp.success(ucenterService.sendCode(req));
+    public CommonResp<Object> sendCode(@Valid UserSendCodeReq req) {
+        ucenterService.sendCode(req);
+        return CommonResp.success();
     }
 
 }

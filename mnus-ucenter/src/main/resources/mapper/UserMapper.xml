@@ -4,6 +4,8 @@
   <resultMap id="BaseResultMap" type="com.mnus.ucenter.domain.User">
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="mobile" jdbcType="VARCHAR" property="mobile" />
+    <result column="uname" jdbcType="VARCHAR" property="uname" />
+    <result column="password" jdbcType="VARCHAR" property="password" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>
@@ -64,7 +66,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, mobile
+    id, mobile, uname, `password`
   </sql>
   <select id="selectByExample" parameterType="com.mnus.ucenter.domain.UserExample" resultMap="BaseResultMap">
     select
@@ -97,8 +99,10 @@
     </if>
   </delete>
   <insert id="insert" parameterType="com.mnus.ucenter.domain.User">
-    insert into user (id, mobile)
-    values (#{id,jdbcType=BIGINT}, #{mobile,jdbcType=VARCHAR})
+    insert into user (id, mobile, uname, 
+      `password`)
+    values (#{id,jdbcType=BIGINT}, #{mobile,jdbcType=VARCHAR}, #{uname,jdbcType=VARCHAR}, 
+      #{password,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.mnus.ucenter.domain.User">
     insert into user
@@ -109,6 +113,12 @@
       <if test="mobile != null">
         mobile,
       </if>
+      <if test="uname != null">
+        uname,
+      </if>
+      <if test="password != null">
+        `password`,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -116,6 +126,12 @@
       </if>
       <if test="mobile != null">
         #{mobile,jdbcType=VARCHAR},
+      </if>
+      <if test="uname != null">
+        #{uname,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null">
+        #{password,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -134,6 +150,12 @@
       <if test="record.mobile != null">
         mobile = #{record.mobile,jdbcType=VARCHAR},
       </if>
+      <if test="record.uname != null">
+        uname = #{record.uname,jdbcType=VARCHAR},
+      </if>
+      <if test="record.password != null">
+        `password` = #{record.password,jdbcType=VARCHAR},
+      </if>
     </set>
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
@@ -142,7 +164,9 @@
   <update id="updateByExample" parameterType="map">
     update user
     set id = #{record.id,jdbcType=BIGINT},
-      mobile = #{record.mobile,jdbcType=VARCHAR}
+      mobile = #{record.mobile,jdbcType=VARCHAR},
+      uname = #{record.uname,jdbcType=VARCHAR},
+      `password` = #{record.password,jdbcType=VARCHAR}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -153,12 +177,20 @@
       <if test="mobile != null">
         mobile = #{mobile,jdbcType=VARCHAR},
       </if>
+      <if test="uname != null">
+        uname = #{uname,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null">
+        `password` = #{password,jdbcType=VARCHAR},
+      </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.mnus.ucenter.domain.User">
     update user
-    set mobile = #{mobile,jdbcType=VARCHAR}
+    set mobile = #{mobile,jdbcType=VARCHAR},
+      uname = #{uname,jdbcType=VARCHAR},
+      `password` = #{password,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

@@ -22,7 +22,7 @@ public enum BaseErrorCodeEnum implements ErrorCode {
      * system 模块异常码
      */
     SYSTEM_USERNAME_ALREADY_EXISTS(20000, "账号已存在!"),
-    SYSTEM_CODE_ALREADY_EXISTS(20001, "Code already exists!"),
+    SYSTEM_MOBILE_CODE_SEND_FREQUENT(20001, "获取验证码过于频繁，请稍后再试!"),
     SYSTEM_USER_IS_NOT_EXISTS(20002, "用户不存在!"),
     SYSTEM_USER_ALREADY_REGISTER(20003, "账号已注册!"),
     SYSTEM_USER_REGISTER_LOGIN_INFO_EXPIRED(20004, "验证码已过期!"),

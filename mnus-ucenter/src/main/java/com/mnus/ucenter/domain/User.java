@@ -5,6 +5,10 @@ public class User {
 
     private String mobile;
 
+    private String uname;
+
+    private String password;
+
     public Long getId() {
         return id;
     }
@@ -21,6 +25,22 @@ public class User {
         this.mobile = mobile;
     }
 
+    public String getUname() {
+        return uname;
+    }
+
+    public void setUname(String uname) {
+        this.uname = uname;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -29,6 +49,8 @@ public class User {
         sb.append("Hash = ").append(hashCode());
         sb.append(", id=").append(id);
         sb.append(", mobile=").append(mobile);
+        sb.append(", uname=").append(uname);
+        sb.append(", password=").append(password);
         sb.append("]");
         return sb.toString();
     }
