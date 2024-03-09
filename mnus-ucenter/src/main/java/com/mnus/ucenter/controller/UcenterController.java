@@ -4,6 +4,7 @@ import com.mnus.common.resp.CommonResp;
 import com.mnus.ucenter.req.UserRegistryReq;
 import com.mnus.ucenter.services.UcenterService;
 import jakarta.annotation.Resource;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,7 +27,7 @@ public class UcenterController {
     }
 
     @PostMapping("/registry")
-    public CommonResp<Long> registry(UserRegistryReq req) {
+    public CommonResp<Long> registry(@Valid UserRegistryReq req) {
         return CommonResp.success(ucenterService.registry(req));
     }
 

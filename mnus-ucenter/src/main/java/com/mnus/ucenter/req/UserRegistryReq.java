@@ -1,5 +1,7 @@
 package com.mnus.ucenter.req;
 
+import jakarta.validation.constraints.NotEmpty;
+
 /**
  * @author: <a href="https://github.com/xkayah">xkayah</a>
  * @date: 2024/3/9 9:20:31
@@ -7,6 +9,7 @@ package com.mnus.ucenter.req;
 public class UserRegistryReq {
     private Long id;
 
+    @NotEmpty(message = "[手机号]不能为空")
     private String mobile;
 
     public UserRegistryReq(Long id, String mobile) {
