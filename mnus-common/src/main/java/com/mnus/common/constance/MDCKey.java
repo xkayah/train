@@ -8,4 +8,6 @@ package com.mnus.common.constance;
  */
 public interface MDCKey {
     String TID = "traceId";
+
+    String UID = "uid";
 }

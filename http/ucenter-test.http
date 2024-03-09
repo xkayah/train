@@ -25,3 +25,15 @@ POST http://localhost:10100/ucenter/user/registry
 Content-Type: application/x-www-form-urlencoded
 
 mobile=
+
+### test send code
+POST http://localhost:10100/ucenter/user/send-code
+Content-Type: application/x-www-form-urlencoded
+
+mobile=13979747386
+
+###
+POST http://localhost:10100/ucenter/user/login
+Content-Type: application/x-www-form-urlencoded
+
+mobile=13979747386&code=195460

@@ -1,7 +1,9 @@
 package com.mnus.ucenter.controller;
 
 import com.mnus.common.resp.CommonResp;
-import com.mnus.ucenter.req.UserRegistryReq;
+import com.mnus.ucenter.req.LoginOrRegistryReq;
+import com.mnus.ucenter.req.UserSendCodeReq;
+import com.mnus.ucenter.resp.UserLoginResp;
 import com.mnus.ucenter.services.UcenterService;
 import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
@@ -26,9 +28,14 @@ public class UcenterController {
         return CommonResp.success(ucenterService.count());
     }
 
-    @PostMapping("/registry")
-    public CommonResp<Long> registry(@Valid UserRegistryReq req) {
-        return CommonResp.success(ucenterService.registry(req));
+    @PostMapping("/login")
+    public CommonResp<UserLoginResp> login(@Valid LoginOrRegistryReq req) {
+        return CommonResp.success(ucenterService.login(req));
+    }
+
+    @PostMapping("/send-code")
+    public CommonResp<Long> sendCode(@Valid UserSendCodeReq req) {
+        return CommonResp.success(ucenterService.sendCode(req));
     }
 
 }
