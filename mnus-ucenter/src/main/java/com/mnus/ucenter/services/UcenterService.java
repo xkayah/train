@@ -1,6 +1,7 @@
 package com.mnus.ucenter.services;
 
 import com.mnus.common.exception.BizException;
+import com.mnus.common.utils.IdGenUtil;
 import com.mnus.ucenter.domain.User;
 import com.mnus.ucenter.domain.UserExample;
 import com.mnus.ucenter.mapper.UserMapper;
@@ -38,9 +39,9 @@ public class UcenterService {
             throw new BizException("手机号已注册");
         }
 
-        long id = System.currentTimeMillis();
+        long id = IdGenUtil.nextId();
         User user = new User();
-        user.setId(id);
+        user.setId(IdGenUtil.nextId());
         user.setMobile(mobile);
         userMapper.insert(user);
 
