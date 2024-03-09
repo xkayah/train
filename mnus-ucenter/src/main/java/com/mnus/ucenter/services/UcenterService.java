@@ -3,6 +3,7 @@ package com.mnus.ucenter.services;
 import com.mnus.ucenter.domain.User;
 import com.mnus.ucenter.domain.UserExample;
 import com.mnus.ucenter.mapper.UserMapper;
+import com.mnus.ucenter.req.UserRegistryReq;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -23,7 +24,9 @@ public class UcenterService {
         return userMapper.countByExample(null);
     }
 
-    public Long registry(String mobile) {
+    public Long registry(UserRegistryReq req) {
+        String mobile = req.getMobile();
+
         UserExample userExample = new UserExample();
         userExample.createCriteria().andMobileEqualTo(mobile);
         List<User> list = userMapper.selectByExample(userExample);
