@@ -51,30 +51,46 @@
 <script>
 import {defineComponent, reactive} from 'vue';
 import axios from "axios";
+import {notification} from "ant-design-vue";
+import {useRouter} from "vue-router";
 
 export default defineComponent({
     name: "the-login",
     setup() {
+        const router = useRouter();
+
         const loginForm = reactive({
             mobile: '',
             code: '',
         });
+        const sendCode = () => {
+            axios.post("http://localhost:10100/ucenter/user/send-code", {
+                mobile: loginForm.mobile
+            }).then(resp => {
+                let data = resp.data;
+                if (data.code === 200) {
+                    notification.success({description: 'Send code success!'});
+                } else {
+                    notification.error({description: data.msg});
+                }
+            })
+        };
         const signIn = () => {
             axios.post("http://localhost:10100/ucenter/user/sign-in", {
                 mobile: loginForm.mobile,
                 code: loginForm.code
             }).then(resp => {
-                console.log(resp)
-            })
-        };
-        const sendCode = () => {
-            axios.post("http://localhost:10100/ucenter/user/send-code", {
-                mobile: loginForm.mobile
-            }).then(resp => {
-                console.log(resp)
+                let data = resp.data;
+                if (data.code === 200) {
+                    notification.success({description: 'Login success!'});
+                    router.push("/");
+                } else {
+                    notification.error({description: data.msg});
+                }
             })
         };
         return {
+            router,
             loginForm,
             sendCode,
             signIn,
