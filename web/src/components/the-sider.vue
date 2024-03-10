@@ -41,13 +41,16 @@
 
 <script>
 import {defineComponent} from 'vue';
+import store from "@/store";
 
 export default defineComponent({
     name: "the-sider",
-    components: {
-    },
+    components: {},
     setup() {
-        return {};
+        let user = store.state.user;
+        return {
+            user,
+        };
     },
 });
 </script>

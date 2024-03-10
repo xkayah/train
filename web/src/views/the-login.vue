@@ -53,6 +53,7 @@ import {defineComponent, reactive} from 'vue';
 import axios from "axios";
 import {notification} from "ant-design-vue";
 import {useRouter} from "vue-router";
+import store from "@/store";
 
 export default defineComponent({
     name: "the-login",
@@ -83,6 +84,7 @@ export default defineComponent({
                 if (resp.code === 200) {
                     notification.success({description: 'Login success!'});
                     router.push("/");
+                    store.commit("setUser", resp.data)
                 } else {
                     notification.error({description: resp.msg});
                 }
