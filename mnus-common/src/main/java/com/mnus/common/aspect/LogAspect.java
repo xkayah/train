@@ -1,16 +1,28 @@
 package com.mnus.common.aspect;
 
+import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.support.spring.PropertyPreFilters;
 import com.mnus.common.constance.MDCKey;
+import com.mnus.common.enums.BaseErrorCodeEnum;
+import com.mnus.common.exception.BizException;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.Signature;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.UUID;
 
@@ -26,33 +38,67 @@ public class LogAspect {
     private static final Logger LOG = LoggerFactory.getLogger(LogAspect.class);
 
     public LogAspect() {
-        LOG.info("logAspect start...");
+        LOG.info("LogAspect start...");
     }
+
+    public static final String[] EXCLUDE_WORDS = {"mobile", "phone", "email"};
 
     /**
      * 定义一个切点，com.mnus.. 表示所有项目共同，可以加上项目名
      */
     @Pointcut("execution(public * com.mnus..*Controller.*(..))")
-    public void logPointCut() {
+    public void controllerPointcut() {
     }
 
-    @Around(value = "logPointCut()")
-    public Object doAround(JoinPoint joinpoint) throws Throwable {
+    @Before("controllerPointcut()")
+    public void doBefore(JoinPoint joinPoint) {
         if (!StringUtils.hasText(MDC.get(MDCKey.TID))) {
             MDC.put(MDCKey.TID, UUID.randomUUID().toString());
         }
-        return combineLogInfo(joinpoint);
+        ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        if (attributes == null) {
+            throw new BizException(BaseErrorCodeEnum.INTERNAL_SERVER_ERROR);
+        }
+        HttpServletRequest request = attributes.getRequest();
+        Signature signature = joinPoint.getSignature();
+
+        Object[] joinPointArgs = joinPoint.getArgs();
+        // 排除特殊类型的参数，如文件类型
+        Object[] args = new Object[joinPointArgs.length];
+        for (int i = 0; i < joinPointArgs.length; i++) {
+            if (joinPointArgs[i] instanceof ServletRequest
+                    || joinPointArgs[i] instanceof ServletResponse
+                    || joinPointArgs[i] instanceof MultipartFile) {
+                continue;
+            }
+            args[i] = joinPointArgs[i];
+        }
+        // 排除字段，敏感字段或太长的字段不显示：身份证、手机号、邮箱、密码等
+        String[] excludeProperties = {};
+        PropertyPreFilters filters = new PropertyPreFilters();
+        PropertyPreFilters.MySimplePropertyPreFilter excludeFilter = filters.addFilter(EXCLUDE_WORDS);
+        excludeFilter.addExcludes(excludeProperties);
+        // 打印请求信息
+        LOG.info("uri:{} {} @{}.{}, input:{} Native_IP:{},==>begin",
+                request.getMethod(), request.getRequestURL().toString(),
+                signature.getDeclaringTypeName(), signature.getName(),
+                JSONObject.toJSONString(args, excludeFilter),
+                request.getRemoteAddr());
     }
 
-    private Object combineLogInfo(JoinPoint joinPoint) throws Throwable {
-        Object[] param = joinPoint.getArgs();
-        LOG.info("uri:{},input:{},==>begin", joinPoint.getSignature(), param);
+    @Around("controllerPointcut()")
+    public Object doAround(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
         long start = System.currentTimeMillis();
-        // todo 数据脱敏。注意，敏感字段或字段太长需排除，特别是金融业类的业务需要数据脱敏
-        Object result = ((ProceedingJoinPoint) joinPoint).proceed();
+        Object result = proceedingJoinPoint.proceed();
+        // 排除字段，敏感字段或太长的字段不显示：身份证、手机号、邮箱、密码等
+        String[] excludeProperties = {};
+        PropertyPreFilters filters = new PropertyPreFilters();
+        PropertyPreFilters.MySimplePropertyPreFilter excludeFilter = filters.addFilter(EXCLUDE_WORDS);
+        excludeFilter.addExcludes(excludeProperties);
         long end = System.currentTimeMillis();
-        LOG.info("uri:{},output:{},proc_time:{}ms,<==end", joinPoint.getSignature().toString(),
-                result, end - start);
+        LOG.info("result:{},process_time:{}ms<==end",
+                JSONObject.toJSONString(result, excludeFilter),
+                end - start);
         return result;
     }
 }
