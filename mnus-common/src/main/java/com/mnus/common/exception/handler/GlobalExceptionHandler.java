@@ -37,7 +37,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(BizException.class)
     public CommonResp<?> bizExceptionHandler(BizException e) {
-        LOG.error("引发的异常的堆栈信息：", e);
+        LOG.error("业务异常：{}", e.toString());
         return CommonResp.failed(
                 e.getResponseBody().getCode(), e.getResponseBody().getMsg());
     }
@@ -48,7 +48,8 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(BindException.class)
     public CommonResp<?> bindExceptionHandler(BindException e) {
         String message = e.getBindingResult().getAllErrors().get(0).getDefaultMessage();
-        LOG.error("引发的异常的堆栈信息：", e);
+        LOG.error("校验异常：{}", message);
         return CommonResp.failed(ResponseCode.BAD_REQUEST, message);
     }
+
 }

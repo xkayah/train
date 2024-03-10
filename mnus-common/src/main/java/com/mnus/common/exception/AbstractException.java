@@ -36,13 +36,13 @@ public abstract class AbstractException extends RuntimeException {
         }
     }
 
-    /**
-     * 考虑性能问题，可以只打印顶层堆栈
-     */
-    // @Override
-    // public synchronized Throwable fillInStackTrace() {
-    //     return this;
-    // }
+
+    // 考虑性能问题，只打印顶层堆栈
+    @Override
+    public synchronized Throwable fillInStackTrace() {
+        return this;
+    }
+
     public CommonResp getResponseBody() {
         return responseBody;
     }
