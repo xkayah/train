@@ -5,12 +5,30 @@ import store from './store'
 import Antd from "ant-design-vue";
 import 'ant-design-vue/dist/antd.css'
 import * as Icons from '@ant-design/icons-vue';
-
+import Axios from "axios";
 
 const app = createApp(App);
 app.use(Antd).use(store).use(router).mount('#app')
 
 const icons = Icons;
-for (const i in icons){
-    app.component(i,icons[i])
+for (const i in icons) {
+    app.component(i, icons[i])
 }
+
+/**
+ * axios 配置
+ */
+Axios.interceptors.request.use(config => {
+    console.log("input params:", config);
+    return config;
+}, error => {
+    return Promise.reject(error);
+});
+
+Axios.interceptors.response.use(resp => {
+    console.log("out res:", resp);
+    return resp;
+}, error => {
+    console.log("resp err:", error);
+    return Promise.reject(error);
+});
