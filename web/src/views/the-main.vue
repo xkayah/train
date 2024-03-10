@@ -1,8 +1,8 @@
 <template>
     <a-layout style="min-height: 100vh" id="components-layout-demo-side">
-        <the-sider></the-sider>
+        <the-sider/>
         <a-layout>
-            <a-layout-header style="background: #fff; padding: 0"/>
+            <the-header/>
             <a-layout-content style="margin: 0 16px">
                 <a-breadcrumb style="margin: 16px 0">
                     <a-breadcrumb-item>User</a-breadcrumb-item>
@@ -12,18 +12,20 @@
                     Bill is a cat.
                 </div>
             </a-layout-content>
-            <a-layout-footer style="text-align: center">
-                Ant Design ©2018 Created by Ant UED
-            </a-layout-footer>
+            <the-footer/>
         </a-layout>
     </a-layout>
 </template>
 <script>
 import {defineComponent, ref} from 'vue';
 import TheSider from "@/components/the-sider.vue";
+import TheHeader from "@/components/the-header.vue";
+import TheFooter from "@/components/the-footer.vue";
 
 export default defineComponent({
     components: {
+        TheFooter,
+        TheHeader,
         TheSider,
     },
     data() {
