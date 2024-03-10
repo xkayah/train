@@ -67,11 +67,10 @@ export default defineComponent({
             axios.post("http://localhost:10100/ucenter/user/send-code", {
                 mobile: loginForm.mobile
             }).then(resp => {
-                let data = resp.data;
-                if (data.code === 200) {
+                if (resp.code === 200) {
                     notification.success({description: 'Send code success!'});
                 } else {
-                    notification.error({description: data.msg});
+                    notification.error({description: resp.msg});
                 }
             })
         };
@@ -80,12 +79,12 @@ export default defineComponent({
                 mobile: loginForm.mobile,
                 code: loginForm.code
             }).then(resp => {
-                let data = resp.data;
-                if (data.code === 200) {
+                console.log(resp)
+                if (resp.code === 200) {
                     notification.success({description: 'Login success!'});
                     router.push("/");
                 } else {
-                    notification.error({description: data.msg});
+                    notification.error({description: resp.msg});
                 }
             })
         };

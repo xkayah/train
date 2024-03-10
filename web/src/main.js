@@ -19,15 +19,15 @@ for (const i in icons) {
  * axios 配置
  */
 Axios.interceptors.request.use(config => {
-    console.log("input params:", config);
+    console.log("INPUT req:", config);
     return config;
 }, error => {
     return Promise.reject(error);
 });
 
 Axios.interceptors.response.use(resp => {
-    console.log("out res:", resp);
-    return resp;
+    console.log("OUT resp:", resp.data);
+    return resp.data;
 }, error => {
     console.log("resp err:", error);
     return Promise.reject(error);
