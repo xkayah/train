@@ -32,3 +32,6 @@ Axios.interceptors.response.use(resp => {
     console.log("resp err:", error);
     return Promise.reject(error);
 });
+
+console.log("env:", process.env.NODE_ENV)
+console.log("serve:", process.env.VUE_APP_SERVER)
