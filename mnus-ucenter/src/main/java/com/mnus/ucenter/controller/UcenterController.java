@@ -7,10 +7,7 @@ import com.mnus.ucenter.resp.UserLoginResp;
 import com.mnus.ucenter.services.UcenterService;
 import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @author: <a href="https://github.com/xkayah">xkayah</a>
@@ -28,13 +25,13 @@ public class UcenterController {
         return CommonResp.success(ucenterService.count());
     }
 
-    @PostMapping("/login")
-    public CommonResp<UserLoginResp> login(@Valid LoginOrRegistryReq req) {
+    @PostMapping("/sign-in")
+    public CommonResp<UserLoginResp> signIn(@Valid @RequestBody LoginOrRegistryReq req) {
         return CommonResp.success(ucenterService.login(req));
     }
 
     @PostMapping("/send-code")
-    public CommonResp<Object> sendCode(@Valid UserSendCodeReq req) {
+    public CommonResp<Object> sendCode(@Valid @RequestBody UserSendCodeReq req) {
         ucenterService.sendCode(req);
         return CommonResp.success();
     }
