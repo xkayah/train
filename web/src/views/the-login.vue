@@ -32,16 +32,16 @@
                         name="code"
                         :rules="[{ required: true, message: '请输入验证码!' }]"
                 >
-                    <a-input v-model="loginForm.code">
+                    <a-input v-model:value="loginForm.code">
                         <template #addonAfter>
-                            <a click="sendCode">send code</a>
+                            <a @click="sendCode">send code</a>
                         </template>
                     </a-input>
 
                 </a-form-item>
 
                 <a-form-item :wrapper-col="{ offset: 8, span: 8 }">
-                    <a-button type="primary" html-type="submit">Sign in</a-button>
+                    <a-button type="primary" html-type="submit" @click="signIn()">Sign in</a-button>
                 </a-form-item>
             </a-form>
         </a-col>
@@ -50,6 +50,7 @@
 
 <script>
 import {defineComponent, reactive} from 'vue';
+import axios from "axios";
 
 export default defineComponent({
     name: "the-login",
@@ -58,20 +59,25 @@ export default defineComponent({
             mobile: '',
             code: '',
         });
-        const onFinish = values => {
-            console.log('Success:', values);
+        const signIn = () => {
+            axios.post("http://localhost:10100/ucenter/user/sign-in", {
+                mobile: loginForm.mobile,
+                code: loginForm.code
+            }).then(resp => {
+                console.log(resp)
+            })
         };
-        const onFinishFailed = errorInfo => {
-            console.log('Failed:', errorInfo);
-        };
-        const sendCode = values => {
-            console.log('Success:', values);
+        const sendCode = () => {
+            axios.post("http://localhost:10100/ucenter/user/send-code", {
+                mobile: loginForm.mobile
+            }).then(resp => {
+                console.log(resp)
+            })
         };
         return {
             loginForm,
-            onFinish,
-            onFinishFailed,
             sendCode,
+            signIn,
         };
     },
 });
@@ -89,7 +95,7 @@ export default defineComponent({
     text-align: left;
 }
 
-.logo-body{
+.logo-body {
 
 }
 
