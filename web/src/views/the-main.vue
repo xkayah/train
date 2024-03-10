@@ -4,13 +4,10 @@
         <a-layout>
             <the-header/>
             <a-layout-content style="margin: 0 16px">
-                <a-breadcrumb style="margin: 16px 0">
-                    <a-breadcrumb-item>User</a-breadcrumb-item>
-                    <a-breadcrumb-item>Bill</a-breadcrumb-item>
-                </a-breadcrumb>
                 <div :style="{ padding: '24px', background: '#fff', minHeight: '360px' }">
                     Bill is a cat.
                 </div>
+                <h2>所有用户总数：{{ count }}</h2>
             </a-layout-content>
             <the-footer/>
         </a-layout>
@@ -21,6 +18,8 @@ import {defineComponent, ref} from 'vue';
 import TheSider from "@/components/the-sider.vue";
 import TheHeader from "@/components/the-header.vue";
 import TheFooter from "@/components/the-footer.vue";
+import axios from "axios";
+import {notification} from "ant-design-vue";
 
 export default defineComponent({
     components: {
@@ -28,10 +27,21 @@ export default defineComponent({
         TheHeader,
         TheSider,
     },
-    data() {
+    setup() {
+        const count = ref(0);
+        axios.get("/ucenter/user/count")
+            .then(resp => {
+                console.log("count:", resp)
+                if (resp.code === 200) {
+                    count.value = resp.data;
+                } else {
+                    notification.error({description: resp.msg})
+                }
+            })
         return {
             collapsed: ref(false),
             selectedKeys: ref(['1']),
+            count,
         };
     },
 });

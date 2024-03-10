@@ -10,7 +10,7 @@
         <div class="header-user-info">
             <div>
                 {{ user.uname }}
-                <router-link to="/login">Sign out</router-link>
+                <router-link to="/login" @click="signOut">Sign out</router-link>
             </div>
         </div>
     </a-layout-header>
@@ -23,9 +23,14 @@ import store from "@/store";
 export default defineComponent({
     name: "the-header",
     setup() {
+        const signOut = () => {
+            store.commit("setUser", {});
+        }
+
         let user = store.state.user;
         return {
             user,
+            signOut,
         };
     },
 });

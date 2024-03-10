@@ -5,7 +5,7 @@ import store from './store'
 import Antd from "ant-design-vue";
 import 'ant-design-vue/dist/antd.css'
 import * as Icons from '@ant-design/icons-vue';
-import Axios from "axios";
+import axios from "axios";
 
 const app = createApp(App);
 app.use(Antd).use(store).use(router).mount('#app')
@@ -18,22 +18,36 @@ for (const i in icons) {
 /**
  * axios 配置
  */
-Axios.interceptors.request.use(config => {
-    console.log("INPUT req:", config);
+
+const TOKEN_PREFIX = "Bearer ";
+
+axios.interceptors.request.use(config => {
+    console.log("==>INPUT req:", config);
+    const _token = store.state.user.token;
+    if (_token) {
+        config.headers.Authorization = TOKEN_PREFIX + _token;
+    }
     return config;
 }, error => {
     return Promise.reject(error);
 });
 
-Axios.interceptors.response.use(resp => {
-    console.log("OUT resp:", resp.data);
+axios.interceptors.response.use(resp => {
+    console.log("<==OUT resp:", resp.data);
     return resp.data;
 }, error => {
     console.log("resp err:", error);
+    const resp = error.response;
+    const status = resp.status;
+    if (status === 401) {
+        console.log("router push");
+        store.commit("setUser", {});
+        router.push('/login');
+    }
     return Promise.reject(error);
 });
 
-Axios.defaults.baseURL = process.env.VUE_APP_SERVER
+axios.defaults.baseURL = process.env.VUE_APP_SERVER
 
 console.log("env:", process.env.NODE_ENV)
 console.log("serve:", process.env.VUE_APP_SERVER)
