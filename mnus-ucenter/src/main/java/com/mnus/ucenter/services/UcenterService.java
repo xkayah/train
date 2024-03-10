@@ -2,6 +2,7 @@ package com.mnus.ucenter.services;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.RandomUtil;
+import cn.hutool.jwt.JWTUtil;
 import com.mnus.common.constance.Constance;
 import com.mnus.common.constance.MDCKey;
 import com.mnus.common.enums.BaseErrorCodeEnum;
@@ -23,6 +24,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -79,8 +81,12 @@ public class UcenterService {
         if (!code.equals(codeCC)) {
             throw new BizException(BaseErrorCodeEnum.SYSTEM_USER_EMAIL_OR_CODE_ERROR);
         }
-
-        return BeanUtil.toBean(user, UserLoginResp.class);
+        // 生成token
+        UserLoginResp userLoginResp = BeanUtil.toBean(user, UserLoginResp.class);
+        Map<String, Object> map = BeanUtil.beanToMap(userLoginResp);
+        String token = JWTUtil.createToken(map, Constance.SALT);
+        userLoginResp.setToken(token);
+        return userLoginResp;
     }
 
     private User selectOneUser(String mobile) {

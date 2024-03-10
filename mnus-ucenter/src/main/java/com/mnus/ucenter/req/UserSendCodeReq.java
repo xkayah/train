@@ -12,14 +12,12 @@ public class UserSendCodeReq {
     @Pattern(regexp = "^1[3-9]\\d{9}$", message = "[手机号]格式不正确")
     private String mobile;
 
-
     public UserSendCodeReq(String mobile) {
         this.mobile = mobile;
     }
 
     public UserSendCodeReq() {
     }
-
 
     public String getMobile() {
         return mobile;

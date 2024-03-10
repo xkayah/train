@@ -6,15 +6,18 @@ package com.mnus.ucenter.resp;
  */
 public class UserLoginResp {
     private String uname;
-
     private String id;
-
-    public UserLoginResp(String uname, String code) {
-        this.uname = uname;
-        this.id = code;
-    }
+    private String token;
 
     public UserLoginResp() {
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 
     public String getId() {
@@ -38,6 +41,7 @@ public class UserLoginResp {
         final StringBuffer sb = new StringBuffer("UserLoginResp{");
         sb.append("uname='").append(uname).append('\'');
         sb.append(", id='").append(id).append('\'');
+        sb.append(", token='").append(token).append('\'');
         sb.append('}');
         return sb.toString();
     }
