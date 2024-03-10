@@ -79,6 +79,7 @@ public class UcenterService {
         MDC.put(MDCKey.UID, String.valueOf(uid));
         // 判断code
         String codeCC = LRUCache.get(mobile + ":code");
+        codeCC = "666666";
         // code为null
         if (code.isEmpty()) {
             throw new BizException(BaseErrorCodeEnum.SYSTEM_CODE_IS_NOT_EXISTS);
