@@ -10,7 +10,7 @@
         <div class="header-user-info">
             <div>
                 {{ user.uname }}
-                <router-link to="/login">退出登录</router-link>
+                <router-link to="/login">Sign out</router-link>
             </div>
         </div>
     </a-layout-header>
