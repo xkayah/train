@@ -18,7 +18,6 @@ public class GatewayApplication {
     private static final Logger LOG = LoggerFactory.getLogger(GatewayApplication.class);
 
     public static void main(String[] args) {
-
         Environment env = SpringApplication.run(GatewayApplication.class).getEnvironment();
         String path = env.getProperty("server.servlet.context-path");
         if (!StringUtils.hasLength(path)) {

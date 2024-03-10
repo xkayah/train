@@ -1,4 +1,4 @@
-package com.mnus.ucenter.utils;
+package com.mnus.gateway.utils;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.date.DateField;
@@ -45,7 +45,7 @@ public class JwtUtil {
         GlobalBouncyCastleProvider.setUseBouncyCastle(false);
         JWT jwt = JWTUtil.parseToken(token).setKey(salt.getBytes());
         boolean validate = jwt.validate(0);
-        LOG.info("JWT：{} ,校验结果：{}", token.substring(10), validate);
+        LOG.info("JWT：{} ,校验结果：{}", token.substring(0, 10), validate);
         return validate;
     }
 
