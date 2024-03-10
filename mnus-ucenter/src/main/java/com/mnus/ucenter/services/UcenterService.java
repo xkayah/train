@@ -2,12 +2,12 @@ package com.mnus.ucenter.services;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.RandomUtil;
-import cn.hutool.jwt.JWTUtil;
 import com.mnus.common.constance.Constance;
 import com.mnus.common.constance.MDCKey;
 import com.mnus.common.enums.BaseErrorCodeEnum;
 import com.mnus.common.exception.BizException;
 import com.mnus.common.utils.IdGenUtil;
+import com.mnus.ucenter.utils.JwtUtil;
 import com.mnus.common.utils.LRUCache;
 import com.mnus.ucenter.domain.User;
 import com.mnus.ucenter.domain.UserExample;
@@ -24,7 +24,6 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -37,6 +36,8 @@ public class UcenterService {
 
     @Resource
     private UserMapper userMapper;
+    @Resource
+    private JwtUtil jwtUtil;
 
     public Long count() {
         return userMapper.countByExample(null);
@@ -46,7 +47,7 @@ public class UcenterService {
         String mobile = req.getMobile();
         // 查短信表，判断频率，黑号发现
         if (false) {
-            throw new BizException(BaseErrorCodeEnum.SYSTEM_MOBILE_CODE_SEND_FREQUENT);
+            throw new BizException(BaseErrorCodeEnum.SYSTEM_CODE_GET_FREQUENT);
         }
         // 发送短信
         String code = genAndCacheCode(mobile);
@@ -78,13 +79,17 @@ public class UcenterService {
         MDC.put(MDCKey.UID, String.valueOf(uid));
         // 判断code
         String codeCC = LRUCache.get(mobile + ":code");
+        // code为null
+        if (code.isEmpty()) {
+            throw new BizException(BaseErrorCodeEnum.SYSTEM_CODE_IS_NOT_EXISTS);
+        }
+        // code不正确
         if (!code.equals(codeCC)) {
             throw new BizException(BaseErrorCodeEnum.SYSTEM_USER_EMAIL_OR_CODE_ERROR);
         }
-        // 生成token
         UserLoginResp userLoginResp = BeanUtil.toBean(user, UserLoginResp.class);
-        Map<String, Object> map = BeanUtil.beanToMap(userLoginResp);
-        String token = JWTUtil.createToken(map, Constance.SALT);
+        // 生成token
+        String token = jwtUtil.genToken(userLoginResp);
         userLoginResp.setToken(token);
         return userLoginResp;
     }

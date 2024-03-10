@@ -21,8 +21,9 @@ public enum BaseErrorCodeEnum implements ErrorCode {
     /**
      * system 模块异常码
      */
-    SYSTEM_USERNAME_ALREADY_EXISTS(20000, "账号已存在!"),
-    SYSTEM_MOBILE_CODE_SEND_FREQUENT(20001, "获取验证码过于频繁，请稍后再试!"),
+    SYSTEM_UNAME_ALREADY_EXISTS(20000, "账号已存在!"),
+    SYSTEM_CODE_GET_FREQUENT(20001, "获取验证码过于频繁，请稍后再试!"),
+    SYSTEM_CODE_IS_NOT_EXISTS(20002,"请先获取验证码!"),
     SYSTEM_USER_IS_NOT_EXISTS(20002, "用户不存在!"),
     SYSTEM_USER_ALREADY_REGISTER(20003, "账号已注册!"),
     SYSTEM_USER_REGISTER_LOGIN_INFO_EXPIRED(20004, "验证码已过期!"),
@@ -31,7 +32,7 @@ public enum BaseErrorCodeEnum implements ErrorCode {
     SYSTEM_USER_EMAIL_CODE_CANNOT_EXCEED_TIMES(20007, "邮件发送不能超过三次!"),
     SYSTEM_USER_EMAIL_OR_CODE_ERROR(20008, "邮箱地址或验证码错误，请重新输入!"),
     SYSTEM_USER_IS_LOCKED(20009, "用户已锁定!"),
-    SYSTEM_USER_USERNAME_OR_PASSWORD_ERROR(20010, "账号或密码不正确!"),
+    SYSTEM_USER_USERNAME_OR_PASSWORD_ERROR(20010, "账号或密码不正确，请重新输入!"),
     SYSTEM_USER_USERNAME_IS_LOCKED(20011, "账号已锁定，6小时后解锁!"),
     SYSTEM_USER_CANNOT_UPDATE_ADMIN(20012, "仅超级管理员可操作!"),
     SYSTEM_USER_TOKEN_INFO_IS_NULL(20013, "登录信息不存在!"),
