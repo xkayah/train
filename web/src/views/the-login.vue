@@ -1,13 +1,13 @@
 <template>
     <a-row class="login">
-        <a-divider class="">
-            <car-outlined two-tone-color="#eb2f96" width="50px" />
+        <a-divider class="logo-body">
+            <car-outlined two-tone-color="#eb2f96" width="50px"/>
             <br/>
             <h1 style="text-align: center">
                 Sign in to Mnus12306
             </h1>
         </a-divider>
-        <a-col :span="8" :offset="8" class="login-main">
+        <a-col :span="8" :offset="8" class="login-form-body">
             <a-form
                     :model="loginForm"
                     name="basic"
@@ -18,7 +18,7 @@
                         name="mobile"
                         :rules="[{ required: true, message: '请输入手机号!' }]"
                 >
-                    <a-input v-model:value="loginForm.mobile" >
+                    <a-input v-model:value="loginForm.mobile">
                         <template #suffix>
                             <a-tooltip title="Extra information">
                                 <info-circle-outlined style="color: rgba(0, 0, 0, 0.45)"/>
@@ -77,7 +77,7 @@ export default defineComponent({
 });
 </script>
 <style>
-.login-main {
+.login-form-body {
     margin-top: 10px;
     padding: 30px 30px 20px;
     border: 2px solid rgb(216, 222, 228);
@@ -85,8 +85,12 @@ export default defineComponent({
     background-color: rgb(246, 248, 250);
 }
 
-.login-main h3 {
+.login-form-body h3 {
     text-align: left;
+}
+
+.logo-body{
+
 }
 
 </style>

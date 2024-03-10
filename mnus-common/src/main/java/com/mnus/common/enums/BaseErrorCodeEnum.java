@@ -29,7 +29,7 @@ public enum BaseErrorCodeEnum implements ErrorCode {
     SYSTEM_USER_MOBILE_ALREADY_EXISTS(20005, "该手机已被注册!"),
     SYSTEM_USER_MOBILE_PASSWORD_ERROR(20006, "邮件密码错误!"),
     SYSTEM_USER_EMAIL_CODE_CANNOT_EXCEED_TIMES(20007, "邮件发送不能超过三次!"),
-    SYSTEM_USER_EMAIL_OR_CODE_ERROR(20008, "邮箱地址或验证码错误、请重新输入!"),
+    SYSTEM_USER_EMAIL_OR_CODE_ERROR(20008, "邮箱地址或验证码错误，请重新输入!"),
     SYSTEM_USER_IS_LOCKED(20009, "用户已锁定!"),
     SYSTEM_USER_USERNAME_OR_PASSWORD_ERROR(20010, "账号或密码不正确!"),
     SYSTEM_USER_USERNAME_IS_LOCKED(20011, "账号已锁定，6小时后解锁!"),
