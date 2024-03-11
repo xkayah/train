@@ -31,8 +31,8 @@ import java.util.concurrent.ThreadLocalRandom;
  * @date: 2024/3/8 16:58:29
  */
 @Service
-public class UcenterService {
-    private static final Logger LOG = LoggerFactory.getLogger(UcenterService.class);
+public class UserService {
+    private static final Logger LOG = LoggerFactory.getLogger(UserService.class);
 
     @Resource
     private UserMapper userMapper;
