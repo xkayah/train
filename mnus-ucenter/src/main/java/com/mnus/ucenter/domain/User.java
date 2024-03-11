@@ -1,5 +1,7 @@
 package com.mnus.ucenter.domain;
 
+import java.util.Date;
+
 public class User {
     private Long id;
 
@@ -8,6 +10,10 @@ public class User {
     private String uname;
 
     private String password;
+
+    private Date gmtCreate;
+
+    private Date gmtModifed;
 
     public Long getId() {
         return id;
@@ -41,6 +47,22 @@ public class User {
         this.password = password;
     }
 
+    public Date getGmtCreate() {
+        return gmtCreate;
+    }
+
+    public void setGmtCreate(Date gmtCreate) {
+        this.gmtCreate = gmtCreate;
+    }
+
+    public Date getGmtModifed() {
+        return gmtModifed;
+    }
+
+    public void setGmtModifed(Date gmtModifed) {
+        this.gmtModifed = gmtModifed;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -51,6 +73,8 @@ public class User {
         sb.append(", mobile=").append(mobile);
         sb.append(", uname=").append(uname);
         sb.append(", password=").append(password);
+        sb.append(", gmtCreate=").append(gmtCreate);
+        sb.append(", gmtModifed=").append(gmtModifed);
         sb.append("]");
         return sb.toString();
     }

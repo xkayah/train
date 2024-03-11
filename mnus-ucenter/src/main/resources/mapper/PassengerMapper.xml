@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.mnus.ucenter.mapper.UserMapper">
-  <resultMap id="BaseResultMap" type="com.mnus.ucenter.domain.User">
+<mapper namespace="com.mnus.ucenter.mapper.PassengerMapper">
+  <resultMap id="BaseResultMap" type="com.mnus.ucenter.domain.Passenger">
     <id column="id" jdbcType="BIGINT" property="id" />
-    <result column="mobile" jdbcType="VARCHAR" property="mobile" />
-    <result column="uname" jdbcType="VARCHAR" property="uname" />
-    <result column="password" jdbcType="VARCHAR" property="password" />
+    <result column="user_id" jdbcType="BIGINT" property="userId" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="id_card" jdbcType="VARCHAR" property="idCard" />
+    <result column="type" jdbcType="CHAR" property="type" />
     <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate" />
-    <result column="gmt_modifed" jdbcType="TIMESTAMP" property="gmtModifed" />
+    <result column="gmt_modified" jdbcType="TIMESTAMP" property="gmtModified" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>
@@ -68,15 +69,15 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, mobile, uname, `password`, gmt_create, gmt_modifed
+    id, user_id, `name`, id_card, `type`, gmt_create, gmt_modified
   </sql>
-  <select id="selectByExample" parameterType="com.mnus.ucenter.domain.UserExample" resultMap="BaseResultMap">
+  <select id="selectByExample" parameterType="com.mnus.ucenter.domain.PassengerExample" resultMap="BaseResultMap">
     select
     <if test="distinct">
       distinct
     </if>
     <include refid="Base_Column_List" />
-    from user
+    from passenger
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
@@ -87,96 +88,105 @@
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from user
+    from passenger
     where id = #{id,jdbcType=BIGINT}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-    delete from user
+    delete from passenger
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <delete id="deleteByExample" parameterType="com.mnus.ucenter.domain.UserExample">
-    delete from user
+  <delete id="deleteByExample" parameterType="com.mnus.ucenter.domain.PassengerExample">
+    delete from passenger
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="com.mnus.ucenter.domain.User">
-    insert into user (id, mobile, uname, 
-      `password`, gmt_create, gmt_modifed
-      )
-    values (#{id,jdbcType=BIGINT}, #{mobile,jdbcType=VARCHAR}, #{uname,jdbcType=VARCHAR}, 
-      #{password,jdbcType=VARCHAR}, #{gmtCreate,jdbcType=TIMESTAMP}, #{gmtModifed,jdbcType=TIMESTAMP}
-      )
+  <insert id="insert" parameterType="com.mnus.ucenter.domain.Passenger">
+    insert into passenger (id, user_id, `name`, 
+      id_card, `type`, gmt_create, 
+      gmt_modified)
+    values (#{id,jdbcType=BIGINT}, #{userId,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, 
+      #{idCard,jdbcType=VARCHAR}, #{type,jdbcType=CHAR}, #{gmtCreate,jdbcType=TIMESTAMP}, 
+      #{gmtModified,jdbcType=TIMESTAMP})
   </insert>
-  <insert id="insertSelective" parameterType="com.mnus.ucenter.domain.User">
-    insert into user
+  <insert id="insertSelective" parameterType="com.mnus.ucenter.domain.Passenger">
+    insert into passenger
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,
       </if>
-      <if test="mobile != null">
-        mobile,
+      <if test="userId != null">
+        user_id,
       </if>
-      <if test="uname != null">
-        uname,
+      <if test="name != null">
+        `name`,
       </if>
-      <if test="password != null">
-        `password`,
+      <if test="idCard != null">
+        id_card,
+      </if>
+      <if test="type != null">
+        `type`,
       </if>
       <if test="gmtCreate != null">
         gmt_create,
       </if>
-      <if test="gmtModifed != null">
-        gmt_modifed,
+      <if test="gmtModified != null">
+        gmt_modified,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
         #{id,jdbcType=BIGINT},
       </if>
-      <if test="mobile != null">
-        #{mobile,jdbcType=VARCHAR},
+      <if test="userId != null">
+        #{userId,jdbcType=BIGINT},
       </if>
-      <if test="uname != null">
-        #{uname,jdbcType=VARCHAR},
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
       </if>
-      <if test="password != null">
-        #{password,jdbcType=VARCHAR},
+      <if test="idCard != null">
+        #{idCard,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null">
+        #{type,jdbcType=CHAR},
       </if>
       <if test="gmtCreate != null">
         #{gmtCreate,jdbcType=TIMESTAMP},
       </if>
-      <if test="gmtModifed != null">
-        #{gmtModifed,jdbcType=TIMESTAMP},
+      <if test="gmtModified != null">
+        #{gmtModified,jdbcType=TIMESTAMP},
       </if>
     </trim>
   </insert>
-  <select id="countByExample" parameterType="com.mnus.ucenter.domain.UserExample" resultType="java.lang.Long">
-    select count(*) from user
+  <select id="countByExample" parameterType="com.mnus.ucenter.domain.PassengerExample" resultType="java.lang.Long">
+    select count(*) from passenger
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </select>
   <update id="updateByExampleSelective" parameterType="map">
-    update user
+    update passenger
     <set>
       <if test="record.id != null">
         id = #{record.id,jdbcType=BIGINT},
       </if>
-      <if test="record.mobile != null">
-        mobile = #{record.mobile,jdbcType=VARCHAR},
+      <if test="record.userId != null">
+        user_id = #{record.userId,jdbcType=BIGINT},
       </if>
-      <if test="record.uname != null">
-        uname = #{record.uname,jdbcType=VARCHAR},
+      <if test="record.name != null">
+        `name` = #{record.name,jdbcType=VARCHAR},
       </if>
-      <if test="record.password != null">
-        `password` = #{record.password,jdbcType=VARCHAR},
+      <if test="record.idCard != null">
+        id_card = #{record.idCard,jdbcType=VARCHAR},
+      </if>
+      <if test="record.type != null">
+        `type` = #{record.type,jdbcType=CHAR},
       </if>
       <if test="record.gmtCreate != null">
         gmt_create = #{record.gmtCreate,jdbcType=TIMESTAMP},
       </if>
-      <if test="record.gmtModifed != null">
-        gmt_modifed = #{record.gmtModifed,jdbcType=TIMESTAMP},
+      <if test="record.gmtModified != null">
+        gmt_modified = #{record.gmtModified,jdbcType=TIMESTAMP},
       </if>
     </set>
     <if test="_parameter != null">
@@ -184,45 +194,50 @@
     </if>
   </update>
   <update id="updateByExample" parameterType="map">
-    update user
+    update passenger
     set id = #{record.id,jdbcType=BIGINT},
-      mobile = #{record.mobile,jdbcType=VARCHAR},
-      uname = #{record.uname,jdbcType=VARCHAR},
-      `password` = #{record.password,jdbcType=VARCHAR},
+      user_id = #{record.userId,jdbcType=BIGINT},
+      `name` = #{record.name,jdbcType=VARCHAR},
+      id_card = #{record.idCard,jdbcType=VARCHAR},
+      `type` = #{record.type,jdbcType=CHAR},
       gmt_create = #{record.gmtCreate,jdbcType=TIMESTAMP},
-      gmt_modifed = #{record.gmtModifed,jdbcType=TIMESTAMP}
+      gmt_modified = #{record.gmtModified,jdbcType=TIMESTAMP}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
-  <update id="updateByPrimaryKeySelective" parameterType="com.mnus.ucenter.domain.User">
-    update user
+  <update id="updateByPrimaryKeySelective" parameterType="com.mnus.ucenter.domain.Passenger">
+    update passenger
     <set>
-      <if test="mobile != null">
-        mobile = #{mobile,jdbcType=VARCHAR},
+      <if test="userId != null">
+        user_id = #{userId,jdbcType=BIGINT},
       </if>
-      <if test="uname != null">
-        uname = #{uname,jdbcType=VARCHAR},
+      <if test="name != null">
+        `name` = #{name,jdbcType=VARCHAR},
       </if>
-      <if test="password != null">
-        `password` = #{password,jdbcType=VARCHAR},
+      <if test="idCard != null">
+        id_card = #{idCard,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null">
+        `type` = #{type,jdbcType=CHAR},
       </if>
       <if test="gmtCreate != null">
         gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
       </if>
-      <if test="gmtModifed != null">
-        gmt_modifed = #{gmtModifed,jdbcType=TIMESTAMP},
+      <if test="gmtModified != null">
+        gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
       </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.mnus.ucenter.domain.User">
-    update user
-    set mobile = #{mobile,jdbcType=VARCHAR},
-      uname = #{uname,jdbcType=VARCHAR},
-      `password` = #{password,jdbcType=VARCHAR},
+  <update id="updateByPrimaryKey" parameterType="com.mnus.ucenter.domain.Passenger">
+    update passenger
+    set user_id = #{userId,jdbcType=BIGINT},
+      `name` = #{name,jdbcType=VARCHAR},
+      id_card = #{idCard,jdbcType=VARCHAR},
+      `type` = #{type,jdbcType=CHAR},
       gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
-      gmt_modifed = #{gmtModifed,jdbcType=TIMESTAMP}
+      gmt_modified = #{gmtModified,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>
