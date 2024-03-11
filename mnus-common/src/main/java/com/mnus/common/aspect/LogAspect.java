@@ -5,16 +5,14 @@ import com.alibaba.fastjson.support.spring.PropertyPreFilters;
 import com.mnus.common.constance.MDCKey;
 import com.mnus.common.enums.BaseErrorCodeEnum;
 import com.mnus.common.exception.BizException;
+import com.mnus.common.utils.IpUtil;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.Signature;
-import org.aspectj.lang.annotation.Around;
-import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Before;
-import org.aspectj.lang.annotation.Pointcut;
+import org.aspectj.lang.annotation.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
@@ -41,7 +39,7 @@ public class LogAspect {
         LOG.info("LogAspect start...");
     }
 
-    public static final String[] EXCLUDE_WORDS = {"mobile", "phone", "email","id_card","idCard"};
+    public static final String[] EXCLUDE_WORDS = {"mobile", "phone", "email", "id_card", "idCard"};
 
     /**
      * 定义一个切点，com.mnus.. 表示所有项目共同，可以加上项目名
@@ -61,9 +59,13 @@ public class LogAspect {
         }
         HttpServletRequest request = attributes.getRequest();
         Signature signature = joinPoint.getSignature();
-
+        String userIp = IpUtil.getClientIp(request);
+        String serverIp = IpUtil.getServerIp();
+        String method = request.getMethod();
+        String declaredMethod = signature.getDeclaringTypeName() + "." + signature.getName();
+        String url = request.getRequestURL().toString();
+        // 排除特殊类型的参数，如文件类型、req、resp
         Object[] joinPointArgs = joinPoint.getArgs();
-        // 排除特殊类型的参数，如文件类型
         Object[] args = new Object[joinPointArgs.length];
         for (int i = 0; i < joinPointArgs.length; i++) {
             if (joinPointArgs[i] instanceof ServletRequest
@@ -78,12 +80,14 @@ public class LogAspect {
         PropertyPreFilters filters = new PropertyPreFilters();
         PropertyPreFilters.MySimplePropertyPreFilter excludeFilter = filters.addFilter(EXCLUDE_WORDS);
         excludeFilter.addExcludes(excludeProperties);
+        String inputArgs = JSONObject.toJSONString(args, excludeFilter);
         // 打印请求信息
-        LOG.info("uri:{} {} @{}.{}, input:{} Native_IP:{},==>begin",
-                request.getMethod(), request.getRequestURL().toString(),
-                signature.getDeclaringTypeName(), signature.getName(),
-                JSONObject.toJSONString(args, excludeFilter),
-                request.getRemoteAddr());
+        LOG.info("[{}]→[{}]uri:{} {} [@{}],input:{} ==>begin",
+                userIp,
+                serverIp,
+                method, url,
+                declaredMethod,
+                inputArgs);
     }
 
     @Around("controllerPointcut()")
@@ -96,9 +100,11 @@ public class LogAspect {
         PropertyPreFilters.MySimplePropertyPreFilter excludeFilter = filters.addFilter(EXCLUDE_WORDS);
         excludeFilter.addExcludes(excludeProperties);
         long end = System.currentTimeMillis();
-        LOG.info("result:{},process_time:{}ms<==end",
+        LOG.info("result:{},process_time:{}ms <==end",
                 JSONObject.toJSONString(result, excludeFilter),
                 end - start);
+        // 移除 tid
+        MDC.remove(MDCKey.TID);
         return result;
     }
 }

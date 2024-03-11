@@ -71,7 +71,7 @@ Authorization: {{token}}
 {
   "userId": "18485322910",
   "name": "lisi",
-  "type": "21",
+  "type": "2",
   "idCard": ""
 }
 

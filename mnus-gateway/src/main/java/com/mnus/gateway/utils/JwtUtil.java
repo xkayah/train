@@ -51,7 +51,7 @@ public class JwtUtil {
             throw new JSONException("token format error!");
         }
         boolean validate = jwt.validate(0);
-        LOG.info("JWT：{} ,validated：{}...", token.substring(0, 10), validate);
+        LOG.info("JWT：{}... ,validated：{}...", token.substring(0, 10), validate);
         return validate;
     }
 

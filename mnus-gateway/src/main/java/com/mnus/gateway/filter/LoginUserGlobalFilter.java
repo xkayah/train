@@ -36,27 +36,20 @@ public class LoginUserGlobalFilter implements GlobalFilter, Ordered {
     private static final Logger LOG = LoggerFactory.getLogger(LoginUserGlobalFilter.class);
     public static final String AUTH_HEADER = "Authorization";
     public static final String AUTH_SCHEMA = "Bearer ";
-    public static final String MDCKEY_TID = "traceId ";
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
-        if (!StringUtils.hasText(MDC.get(MDCKEY_TID))) {
-            MDC.put(MDCKEY_TID, UUID.randomUUID().toString());
-        }
         ServerHttpRequest request = exchange.getRequest();
         ServerHttpResponse response = exchange.getResponse();
         HttpHeaders headers = request.getHeaders();
-        String srcUri = Objects.requireNonNull(request.getRemoteAddress()).toString();
-        String destUri = Objects.requireNonNull(request.getLocalAddress()).toString();
-        String path = request.getPath().value();
-        String srcIp = IpUtil.getUserIpAddr(request);
-        LOG.info("uri:{},input:{},==>begin", srcUri.substring(1), request.getQueryParams());
-        // LOG.info("uri:{},output:{},proc_time:{}ms,<==end", joinPoint.getSignature().toString(),
-        //         result, end - start);
+        String path = request.getPath().pathWithinApplication().value();
+
         // 排除拦截的路径。测试地址，管理员地址，登录、验证码地址
         if (isPublic(path)) {
             LOG.info("{} do without auth", path);
             return chain.filter(exchange);
+        } else {
+            LOG.info("{} do auth", path);
         }
         // 获取签名
         String token = getToken(headers);

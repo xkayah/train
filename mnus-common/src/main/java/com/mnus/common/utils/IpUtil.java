@@ -1,4 +1,4 @@
-package com.mnus.gateway.utils;
+package com.mnus.common.utils;
 
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
