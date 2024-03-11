@@ -41,7 +41,7 @@ public class LogAspect {
         LOG.info("LogAspect start...");
     }
 
-    public static final String[] EXCLUDE_WORDS = {"mobile", "phone", "email"};
+    public static final String[] EXCLUDE_WORDS = {"mobile", "phone", "email","id_card","idCard"};
 
     /**
      * 定义一个切点，com.mnus.. 表示所有项目共同，可以加上项目名
