@@ -36,7 +36,6 @@ public class LoginUserGlobalFilter implements GlobalFilter, Ordered {
     private static final Logger LOG = LoggerFactory.getLogger(LoginUserGlobalFilter.class);
     public static final String AUTH_HEADER = "Authorization";
     public static final String AUTH_SCHEMA = "Bearer ";
-
     public static final String MDCKEY_TID = "traceId ";
 
     @Override
@@ -61,13 +60,8 @@ public class LoginUserGlobalFilter implements GlobalFilter, Ordered {
         }
         // 获取签名
         String token = getToken(headers);
-        if (token == null) {
-            response.setStatusCode(HttpStatusCode.valueOf(HttpStatus.HTTP_NOT_AUTHORITATIVE));
-            return response.setComplete();
-        }
-        // 验签，签名是否合法
-        if (!jwtUtil.validate(token)) {
-            response.setStatusCode(HttpStatusCode.valueOf(HttpStatus.HTTP_FORBIDDEN));
+        if (token == null || !jwtUtil.validate(token)) {
+            response.setStatusCode(HttpStatusCode.valueOf(HttpStatus.HTTP_UNAUTHORIZED));
             return response.setComplete();
         }
         return chain.filter(exchange);

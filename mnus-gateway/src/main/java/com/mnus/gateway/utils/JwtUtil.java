@@ -8,6 +8,7 @@ import cn.hutool.json.JSONObject;
 import cn.hutool.jwt.JWT;
 import cn.hutool.jwt.JWTPayload;
 import cn.hutool.jwt.JWTUtil;
+import com.alibaba.fastjson.JSONException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -43,7 +44,12 @@ public class JwtUtil {
 
     public boolean validate(String token) {
         GlobalBouncyCastleProvider.setUseBouncyCastle(false);
-        JWT jwt = JWTUtil.parseToken(token).setKey(salt.getBytes());
+        JWT jwt = null;
+        try {
+            jwt = JWTUtil.parseToken(token).setKey(salt.getBytes());
+        } catch (Exception e) {
+            throw new JSONException("token format error!");
+        }
         boolean validate = jwt.validate(0);
         LOG.info("JWT：{} ,validated：{}...", token.substring(0, 10), validate);
         return validate;
