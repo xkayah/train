@@ -37,14 +37,13 @@ axios.interceptors.response.use(resp => {
     return resp.data;
 }, error => {
     console.log("resp err:", error);
-    const resp = error.response;
-    const status = resp.status;
-    if (status === 401) {
-        console.log("router push");
+    if (error.response.status === 401) {
+        console.log("status", error.response.status);
         store.commit("setUser", {});
-        router.push('/login');
+        router.push('/login?rtUrl=' + (encodeURIComponent(router.currentRoute.value.fullPath) || ""));
     }
     return Promise.reject(error);
+
 });
 
 axios.defaults.baseURL = process.env.VUE_APP_SERVER

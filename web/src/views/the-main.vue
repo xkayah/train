@@ -31,7 +31,6 @@ export default defineComponent({
         const count = ref(0);
         axios.get("/ucenter/user/count")
             .then(resp => {
-                console.log("count:", resp)
                 if (resp.code === 200) {
                     count.value = resp.data;
                 } else {
@@ -39,8 +38,6 @@ export default defineComponent({
                 }
             })
         return {
-            collapsed: ref(false),
-            selectedKeys: ref(['1']),
             count,
         };
     },

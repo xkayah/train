@@ -80,7 +80,6 @@ export default defineComponent({
                 mobile: loginForm.mobile,
                 code: loginForm.code
             }).then(resp => {
-                console.log(resp)
                 if (resp.code === 200) {
                     notification.success({description: 'Login success!'});
                     router.push("/");
