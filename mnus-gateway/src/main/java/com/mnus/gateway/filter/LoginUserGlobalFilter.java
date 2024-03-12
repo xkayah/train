@@ -1,12 +1,10 @@
 package com.mnus.gateway.filter;
 
 import cn.hutool.http.HttpStatus;
-import com.mnus.gateway.utils.IpUtil;
 import com.mnus.gateway.utils.JwtUtil;
 import jakarta.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.MDC;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.Ordered;
@@ -15,13 +13,10 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
-import java.util.Objects;
 import java.util.Optional;
-import java.util.UUID;
 
 /**
  * 登录过滤器
@@ -44,14 +39,14 @@ public class LoginUserGlobalFilter implements GlobalFilter, Ordered {
         HttpHeaders headers = request.getHeaders();
         String path = request.getPath().pathWithinApplication().value();
 
-        // 排除拦截的路径。测试地址，管理员地址，登录、验证码地址
+        // 排除拦截的路径；测试地址，管理员地址，登录、验证码地址
         if (isPublic(path)) {
             LOG.info("{} do without auth", path);
             return chain.filter(exchange);
         } else {
             LOG.info("{} do auth", path);
         }
-        // 获取签名
+        // 验签
         String token = getToken(headers);
         if (token == null || !jwtUtil.validate(token)) {
             response.setStatusCode(HttpStatusCode.valueOf(HttpStatus.HTTP_UNAUTHORIZED));

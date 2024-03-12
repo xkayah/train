@@ -88,7 +88,7 @@ public class ReqLogFilter implements GlobalFilter, Ordered {
 
     @Override
     public int getOrder() {
-        return Order.REQUEST_PRECEDENCE;
+        return Order.REQUEST_LOG;
     }
 
     /**

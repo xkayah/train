@@ -28,8 +28,6 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author: <a href="https://github.com/xkayah">xkayah</a>
@@ -98,7 +96,7 @@ public class RespLogFilter implements GlobalFilter, Ordered {
 
     @Override
     public int getOrder() {
-        return Order.RESPONSE_PRECEDENCE;
+        return Order.RESPONSE_LOG;
     }
 
     /**

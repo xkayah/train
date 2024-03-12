@@ -50,9 +50,6 @@ public class LogAspect {
 
     @Before("controllerPointcut()")
     public void doBefore(JoinPoint joinPoint) {
-        if (!StringUtils.hasText(MDC.get(MDCKey.TID))) {
-            MDC.put(MDCKey.TID, UUID.randomUUID().toString());
-        }
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         if (attributes == null) {
             throw new BizException(BaseErrorCodeEnum.INTERNAL_SERVER_ERROR);
@@ -62,6 +59,7 @@ public class LogAspect {
         String userIp = IpUtil.getClientIp(request);
         String serverIp = IpUtil.getServerIp();
         String method = request.getMethod();
+        // 方法声明路径
         String declaredMethod = signature.getDeclaringTypeName() + "." + signature.getName();
         String url = request.getRequestURL().toString();
         // 排除特殊类型的参数，如文件类型、req、resp
@@ -94,17 +92,17 @@ public class LogAspect {
     public Object doAround(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
         long start = System.currentTimeMillis();
         Object result = proceedingJoinPoint.proceed();
+        long end = System.currentTimeMillis();
         // 排除字段，敏感字段或太长的字段不显示：身份证、手机号、邮箱、密码等
         String[] excludeProperties = {};
         PropertyPreFilters filters = new PropertyPreFilters();
         PropertyPreFilters.MySimplePropertyPreFilter excludeFilter = filters.addFilter(EXCLUDE_WORDS);
         excludeFilter.addExcludes(excludeProperties);
-        long end = System.currentTimeMillis();
+        String respStr = JSONObject.toJSONString(result, excludeFilter);
+        // 打印响应信息
         LOG.info("result:{},process_time:{}ms <==end",
-                JSONObject.toJSONString(result, excludeFilter),
+                respStr,
                 end - start);
-        // 移除 tid
-        MDC.remove(MDCKey.TID);
         return result;
     }
 }

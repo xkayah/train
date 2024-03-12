@@ -7,7 +7,7 @@ import com.mnus.common.constance.MDCKey;
 import com.mnus.common.enums.BaseErrorCodeEnum;
 import com.mnus.common.exception.BizException;
 import com.mnus.common.utils.IdGenUtil;
-import com.mnus.ucenter.utils.JwtUtil;
+import com.mnus.common.utils.JwtUtil;
 import com.mnus.common.utils.LRUCache;
 import com.mnus.ucenter.domain.User;
 import com.mnus.ucenter.domain.UserExample;

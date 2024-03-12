@@ -10,12 +10,12 @@ package com.mnus.gateway.constance;
 public interface Order {
 
     /**
-     * 请求日志过滤器的 order，其他过滤器的 order 一定要比它大
+     * 请求日志过滤器 order
      */
-    int REQUEST_PRECEDENCE = 0x80000000 + 1;
+    int REQUEST_LOG = 0x80000000 + 1;
 
     /**
-     * 响应日志过滤器的 order，其他过滤器的 order 一定要比它大
+     * 响应日志过滤器 order，
      */
-    int RESPONSE_PRECEDENCE = 0x80000000;
+    int RESPONSE_LOG = 0x80000000;
 }
