@@ -16,10 +16,17 @@ public class ServerGenerator {
     public static final String TO_PATH = "mnus-generator\\pom.xml";
     public static final String MODULE_NAME = "mnus-generator\\pom.xml";
     public static final String YY = "mnus-generator\\pom.xml";
-    public static final String XX = "mnus-generator\\pom.xml";
+    public static final String XXX = "mnus-generator\\";
 
     public static void main(String[] args) throws Exception {
         String generatorCfgPath = getGeneratorCfgPath();
+        Document document = new SAXReader().read(XXX + generatorCfgPath);
+        Node tableNode = document.selectSingleNode("//table");
+        System.out.println(tableNode);
+        Node tableNameNode = tableNode.selectSingleNode("@tableName");
+        Node domainObjectNameNode = tableNode.selectSingleNode("@domainObjectName");
+        System.out.println(tableNameNode.getText() + " ## " + domainObjectNameNode.getText());
+
     }
 
     private static String getGeneratorCfgPath() throws DocumentException {
