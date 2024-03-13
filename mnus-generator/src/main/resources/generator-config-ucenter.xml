@@ -42,8 +42,8 @@
                              targetPackage="com.mnus.ucenter.mapper"
                              type="XMLMAPPER"/>
 
-        <table tableName="user" domainObjectName="User"/>
-<!--        <table tableName="passenger" domainObjectName="Passenger"/>-->
+<!--        <table tableName="user" domainObjectName="User"/>-->
+        <table tableName="passenger" domainObjectName="Passenger"/>
 <!--        <table tableName="ticket" domainObjectName="Ticket"/>-->
     </context>
 </generatorConfiguration>
