@@ -1,6 +1,8 @@
 package com.mnus.ucenter.resp;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 
 import java.util.Date;
 
@@ -9,8 +11,10 @@ import java.util.Date;
  * @date: 2024/3/11 12:15:08
  */
 public class PassengerQueryResp {
+    @JsonSerialize(using = ToStringSerializer.class)
     private Long id;
 
+    @JsonSerialize(using = ToStringSerializer.class)
     private Long userId;
 
     private String name;
@@ -19,10 +23,10 @@ public class PassengerQueryResp {
 
     private String type;
 
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm",timezone = "GMT+8")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm", timezone = "GMT+8")
     private Date gmtCreate;
 
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm",timezone = "GMT+8")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm", timezone = "GMT+8")
     private Date gmtModified;
 
     public Long getId() {
