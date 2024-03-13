@@ -1,0 +1,30 @@
+###
+POST http://localhost:10100/ucenter/user/sign-in
+Content-Type: application/json
+
+{
+  "mobile": "13979747386",
+  "code": "666666"
+}
+
+> {%
+    s = JSON.stringify(response.body.data.token);
+    // 去掉头尾引号
+    client.global.set("token", "Bearer " + s.substring(1, s.length-1))
+%}
+
+### test passenger save
+POST http://localhost:10100/ucenter/passenger/save
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "name": "施傲和",
+  "idCard": "420101197106184218",
+  "type": "1"
+}
+
+### test query-list
+GET http://localhost:10100/ucenter/passenger/query-list
+Accept: application/json
+Authorization: {{token}}

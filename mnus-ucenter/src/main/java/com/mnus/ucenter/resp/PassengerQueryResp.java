@@ -1,4 +1,4 @@
-package com.mnus.ucenter.req;
+package com.mnus.ucenter.resp;
 
 import java.util.Date;
 
@@ -6,7 +6,7 @@ import java.util.Date;
  * @author: <a href="https://github.com/xkayah">xkayah</a>
  * @date: 2024/3/11 12:15:08
  */
-public class PassengerSaveReq {
+public class PassengerQueryResp {
     private Long id;
 
     private Long userId;
@@ -16,6 +16,10 @@ public class PassengerSaveReq {
     private String idCard;
 
     private String type;
+
+    private Date gmtCreate;
+
+    private Date gmtModified;
 
     public Long getId() {
         return id;
@@ -57,15 +61,36 @@ public class PassengerSaveReq {
         this.type = type;
     }
 
+    public Date getGmtCreate() {
+        return gmtCreate;
+    }
+
+    public void setGmtCreate(Date gmtCreate) {
+        this.gmtCreate = gmtCreate;
+    }
+
+    public Date getGmtModified() {
+        return gmtModified;
+    }
+
+    public void setGmtModified(Date gmtModified) {
+        this.gmtModified = gmtModified;
+    }
+
     @Override
     public String toString() {
-        final StringBuffer sb = new StringBuffer("PassengerSaveReq{");
-        sb.append("id=").append(id);
+        StringBuilder sb = new StringBuilder();
+        sb.append(getClass().getSimpleName());
+        sb.append(" [");
+        sb.append("Hash = ").append(hashCode());
+        sb.append(", id=").append(id);
         sb.append(", userId=").append(userId);
-        sb.append(", name='").append(name).append('\'');
-        sb.append(", idCard='").append(idCard).append('\'');
-        sb.append(", type='").append(type).append('\'');
-        sb.append('}');
+        sb.append(", name=").append(name);
+        sb.append(", idCard=").append(idCard);
+        sb.append(", type=").append(type);
+        sb.append(", gmtCreate=").append(gmtCreate);
+        sb.append(", gmtModified=").append(gmtModified);
+        sb.append("]");
         return sb.toString();
     }
 }
