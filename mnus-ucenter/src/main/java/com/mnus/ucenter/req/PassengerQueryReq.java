@@ -1,12 +1,14 @@
 package com.mnus.ucenter.req;
 
+import com.mnus.common.req.PageReq;
+
 import java.util.Date;
 
 /**
  * @author: <a href="https://github.com/xkayah">xkayah</a>
  * @date: 2024/3/11 12:15:08
  */
-public class PassengerQueryReq {
+public class PassengerQueryReq extends PageReq {
     private Long userId;
 
     public Long getUserId() {

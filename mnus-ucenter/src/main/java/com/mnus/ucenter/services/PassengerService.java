@@ -3,6 +3,8 @@ package com.mnus.ucenter.services;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.date.DateTime;
 import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
+import com.mnus.common.resp.PageResp;
 import com.mnus.common.utils.IdGenUtil;
 import com.mnus.ucenter.domain.Passenger;
 import com.mnus.ucenter.domain.PassengerExample;
@@ -11,6 +13,8 @@ import com.mnus.ucenter.req.PassengerQueryReq;
 import com.mnus.ucenter.req.PassengerSaveReq;
 import com.mnus.ucenter.resp.PassengerQueryResp;
 import jakarta.annotation.Resource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,6 +26,7 @@ import java.util.Objects;
  */
 @Service
 public class PassengerService {
+    private static final Logger LOG = LoggerFactory.getLogger(PassengerService.class);
     @Resource
     private PassengerMapper passengerMapper;
 
@@ -40,15 +45,28 @@ public class PassengerService {
         }
     }
 
-    public List<PassengerQueryResp> queryList(PassengerQueryReq req) {
+    public PageResp<PassengerQueryResp> queryList(PassengerQueryReq req) {
         Long uid = req.getUserId();
         PassengerExample passengerExample = new PassengerExample();
         if (Objects.nonNull(uid)) {
             passengerExample.createCriteria().andUserIdEqualTo(uid);
         }
-        PageHelper.startPage(2, 2);
+        // 分页请求
+        PageHelper.startPage(req.getPageNo(), req.getPageSize());
         List<Passenger> passengerList = passengerMapper.selectByExample(passengerExample);
-        return BeanUtil.copyToList(passengerList, PassengerQueryResp.class);
+        // 获取分页
+        PageInfo<Passenger> pageInfo = new PageInfo<>(passengerList);
+        long total = pageInfo.getTotal();
+        int pages = pageInfo.getPages();
+        // 封装分页
+        List<PassengerQueryResp> list = BeanUtil.copyToList(pageInfo.getList(), PassengerQueryResp.class);
+        PageResp<PassengerQueryResp> pageResp = new PageResp<>();
+        pageResp.setTotal(total);
+        pageResp.setList(list);
+        pageResp.setPages(pages);
+        LOG.info("[query] pageNo:{},pageSize:{},total:{},pages:{}",
+                req.getPageNo(), req.getPageSize(), total, pages);
+        return pageResp;
     }
 
 }

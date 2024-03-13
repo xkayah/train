@@ -25,6 +25,6 @@ Authorization: {{token}}
 }
 
 ### test query-list
-GET http://localhost:10100/ucenter/passenger/query-list
+GET http://localhost:10100/ucenter/passenger/query-list?pageNo=2&pageSize=20
 Accept: application/json
 Authorization: {{token}}
