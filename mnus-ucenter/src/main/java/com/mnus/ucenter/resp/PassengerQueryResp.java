@@ -1,5 +1,7 @@
 package com.mnus.ucenter.resp;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import java.util.Date;
 
 /**
@@ -17,8 +19,10 @@ public class PassengerQueryResp {
 
     private String type;
 
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm",timezone = "GMT+8")
     private Date gmtCreate;
 
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm",timezone = "GMT+8")
     private Date gmtModified;
 
     public Long getId() {
@@ -79,18 +83,15 @@ public class PassengerQueryResp {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(getClass().getSimpleName());
-        sb.append(" [");
-        sb.append("Hash = ").append(hashCode());
-        sb.append(", id=").append(id);
+        final StringBuffer sb = new StringBuffer("PassengerQueryResp{");
+        sb.append("id=").append(id);
         sb.append(", userId=").append(userId);
-        sb.append(", name=").append(name);
-        sb.append(", idCard=").append(idCard);
-        sb.append(", type=").append(type);
+        sb.append(", name='").append(name).append('\'');
+        sb.append(", idCard='").append(idCard).append('\'');
+        sb.append(", type='").append(type).append('\'');
         sb.append(", gmtCreate=").append(gmtCreate);
         sb.append(", gmtModified=").append(gmtModified);
-        sb.append("]");
+        sb.append('}');
         return sb.toString();
     }
 }
