@@ -26,7 +26,14 @@ public class CollectorInterceptor implements HandlerInterceptor, Ordered {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         ReqInfo info = new ReqInfo();
-        info.setUid(Optional.ofNullable(request.getAttribute(TokenInterceptor.REQUEST_ATTRIBUTE_UID)).map(Object::toString).map(Long::parseLong).orElse(null));
+        // info.setUid(
+        //         Optional.ofNullable(request.getAttribute(TokenInterceptor.REQUEST_ATTRIBUTE_UID)).
+        //                 map(Object::toString).
+        //                 map(Long::parseLong).
+        //                 orElse(null));
+        Object attr = request.getAttribute(TokenInterceptor.REQUEST_ATTRIBUTE_UID);
+        long uid = Long.parseLong(String.valueOf(attr));
+        info.setUid(uid);
         info.setIp(IpUtil.getClientIp(request));
         ReqHolder.set(info);
         return true;
