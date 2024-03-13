@@ -1,4 +1,4 @@
-package com.mnus.ucenter.service;
+package com.mnus.${module}.service;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.date.DateTime;
@@ -10,12 +10,12 @@ import com.mnus.common.exception.BizException;
 import com.mnus.common.req.EntityDeleteReq;
 import com.mnus.common.resp.PageResp;
 import com.mnus.common.utils.IdGenUtil;
-import com.mnus.ucenter.domain.${Domain};
-import com.mnus.ucenter.domain.${Domain}Example;
-import com.mnus.ucenter.mapper.${Domain}Mapper;
-import com.mnus.ucenter.req.${Domain}QueryReq;
-import com.mnus.ucenter.req.${Domain}SaveReq;
-import com.mnus.ucenter.resp.${Domain}QueryResp;
+import com.mnus.${module}.domain.${Domain};
+import com.mnus.${module}.domain.${Domain}Example;
+import com.mnus.${module}.mapper.${Domain}Mapper;
+import com.mnus.${module}.req.${Domain}QueryReq;
+import com.mnus.${module}.req.${Domain}SaveReq;
+import com.mnus.${module}.resp.${Domain}QueryResp;
 import jakarta.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

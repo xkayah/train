@@ -7,8 +7,6 @@ import org.dom4j.Node;
 import org.dom4j.io.SAXReader;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -20,11 +18,14 @@ public class ServerGenerator {
     public static final String GENERATOR_BASE_PATH = "mnus-generator\\";
     public static final String MODULE_PREFIX = "mnus_";
     public static final String POM_PATH = "mnus-generator\\pom.xml";
-    public static final String SERVICE_PATH = "mnus-${module}/src/main/java/com/mnus/${module}/service/${Domain}Service.java";
-    public static final String CONTROLLER_PATH = "mnus-${module}/src/main/java/com/mnus/${module}/controller";
-    public static final String REQ_PATH = "mnus-${module}/src/main/java/com/mnus/${module}/req";
-    public static final String RESP_PATH = "mnus-${module}/src/main/java/com/mnus/${module}/resp";
-    public static final String VUE_PATH = "mnus-generator\\pom.xml";
+    public static final String FTL_TMP = "${target}.ftl";
+    public static final String FILE_PATH_TMP = "mnus-${module}/src/main/java/com/mnus/${module}/${pkg}/";
+    public static final String FILE_NAME_TMP = "${Domain}${Pkg}.java";
+    public static final String $_target = "${target}";
+    public static final String $_module = "${module}";
+    public static final String $_pkg = "${pkg}";
+    public static final String $_Pkg = "${Pkg}";
+    public static final String $_Domain = "${Domain}";
 
     public static void main(String[] args) throws Exception {
         String generatorCfgPath = getGeneratorCfgPath();
@@ -45,13 +46,20 @@ public class ServerGenerator {
         String domain = Domain.substring(0, 1).toLowerCase() + Domain.substring(1);
         String do_main = tableName.replace("_", "-");
 
+        // 模块名
+        String module = getModuleName(generatorCfgPath);
+
         // 组装参数
         HashMap<String, Object> map = new HashMap<>();
         map.put("Domain", Domain);
         map.put("domain", domain);
         map.put("do_main", do_main);
+        map.put("module", module);
 
-        gen("service", Domain, map);
+        // 执行
+        // gen("service", Domain, map);
+        gen("controller", Domain, map);
+
 
     }
 
@@ -59,7 +67,7 @@ public class ServerGenerator {
         String module = getModuleName(getGeneratorCfgPath());
         String path = genToPath(module, target, Domain);
         System.out.println(String.format("[module]:%s,[path]:%s", module, path));
-        FreeMarkerUtil.initConfig("service.ftl");
+        FreeMarkerUtil.initConfig(FTL_TMP.replace(ServerGenerator.$_target, target));
         FreeMarkerUtil.gen(path, map);
 
     }
@@ -85,15 +93,13 @@ public class ServerGenerator {
      * @return
      */
     private static String genToPath(String module, String pkg, String Domain) {
-        String filePathTmp = "mnus-${module}/src/main/java/com/mnus/${module}/${pkg}/";
-        String fileNameTmp = "${Domain}${Pkg}.java";
-        String filePath = filePathTmp.
-                replace("${module}", module).
-                replace("${pkg}", pkg);
+        String filePath = FILE_PATH_TMP.
+                replace($_module, module).
+                replace($_pkg, pkg);
         new File(filePath).mkdirs();
-        String fileName = fileNameTmp.
-                replace("${Pkg}", pkg.substring(0, 1).toUpperCase() + pkg.substring(1)).
-                replace("${Domain}", Domain);
+        String fileName = FILE_NAME_TMP.
+                replace($_Pkg, pkg.substring(0, 1).toUpperCase() + pkg.substring(1)).
+                replace($_Domain, Domain);
         return filePath + fileName;
     }
 
