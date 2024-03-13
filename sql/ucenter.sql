@@ -2,8 +2,8 @@ drop table if exists `user`;
 create table `user` (
   `id` bigint not null comment 'id',
   `mobile` varchar(11) comment '手机号',
-  `uname` varchar(20) comment '用户名',
-  `password` varchar(20) comment '密码',
+  `uname` varchar(32) comment '用户名',
+  `password` varchar(32) comment '密码',
   `gmt_create` datetime(3) comment '新增时间',
   `gmt_modified` datetime(3) comment '修改时间',
   primary key (`id`),

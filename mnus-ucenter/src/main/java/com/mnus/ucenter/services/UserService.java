@@ -1,6 +1,7 @@
 package com.mnus.ucenter.services;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.date.DateTime;
 import cn.hutool.core.util.RandomUtil;
 import com.mnus.common.constance.Constance;
 import com.mnus.common.constance.MDCKey;
@@ -67,12 +68,15 @@ public class UserService {
             uid = userDB.getId();
         } else {
             uid = IdGenUtil.nextId();
+            DateTime now = DateTime.now();
             // null，插入实体
             String uname = Constance.NAME_PREFIX + RandomUtil.randomString(6);
             user = new User();
             user.setUname(uname);
             user.setId(uid);
             user.setMobile(mobile);
+            user.setGmtCreate(now);
+            user.setGmtModifed(now);
             userMapper.insert(user);
         }
 
