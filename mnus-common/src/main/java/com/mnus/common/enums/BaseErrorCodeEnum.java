@@ -41,6 +41,7 @@ public enum BaseErrorCodeEnum implements ErrorCode {
     SYSTEM_ROLE_CANNOT_DELETE(20016, "系统默认角色不可删除!"),
     SYSTEM_ROLE_NOT_EXISTS(20017, "用户绑定角色异常，请联系管理员!"),
     DATASET_ADMIN_PERMISSION_ERROR(1310, "无此权限,请联系管理员"),
+    SYSTEM_USER_CANNOT_UPDATE_OTHER_USER(20019, "只能修改自己的数据!"),
 
     ;
 

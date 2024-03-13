@@ -4,6 +4,9 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.date.DateTime;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.mnus.common.context.ReqHolder;
+import com.mnus.common.enums.BaseErrorCodeEnum;
+import com.mnus.common.exception.BizException;
 import com.mnus.common.resp.PageResp;
 import com.mnus.common.utils.IdGenUtil;
 import com.mnus.ucenter.domain.Passenger;
@@ -31,17 +34,21 @@ public class PassengerService {
     private PassengerMapper passengerMapper;
 
     public void save(PassengerSaveReq req) {
+        DateTime now = DateTime.now();
         Passenger passenger = BeanUtil.copyProperties(req, Passenger.class);
         // notnull,insert
-        if (Objects.nonNull(passenger.getUserId())) {
-            DateTime now = DateTime.now();
+        if (Objects.isNull(passenger.getId())) {
             passenger.setId(IdGenUtil.nextId());
             passenger.setGmtCreate(now);
             passenger.setGmtModified(now);
             passengerMapper.insert(passenger);
         } else {
             // null,update
-            passengerMapper.updateByPrimaryKey(passenger);
+            if (!Objects.equals(ReqHolder.getUid(), req.getUserId())) {
+                throw new BizException(BaseErrorCodeEnum.SYSTEM_USER_CANNOT_UPDATE_OTHER_USER);
+            }
+            passenger.setGmtModified(now);
+            passengerMapper.updateByPrimaryKeySelective(passenger);
         }
     }
 

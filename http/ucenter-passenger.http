@@ -24,6 +24,18 @@ Authorization: {{token}}
   "type": "1"
 }
 
+###
+POST http://localhost:10100/ucenter/passenger/save
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "id": "1767813641832370176",
+  "name": "施傲和",
+  "idCard": "420101197106184218",
+  "type": "2"
+}
+
 ### test query-list
 GET http://localhost:10100/ucenter/passenger/query-list?pageNo=2&pageSize=20
 Accept: application/json
