@@ -4,7 +4,7 @@ import com.mnus.common.resp.CommonResp;
 import com.mnus.ucenter.req.LoginOrRegistryReq;
 import com.mnus.ucenter.req.UserSendCodeReq;
 import com.mnus.ucenter.resp.UserLoginResp;
-import com.mnus.ucenter.services.UserService;
+import com.mnus.ucenter.service.UserService;
 import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;

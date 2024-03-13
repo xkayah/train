@@ -1,6 +1,5 @@
 package com.mnus.ucenter.controller;
 
-import cn.hutool.core.text.split.SplitIter;
 import com.mnus.common.context.ReqHolder;
 import com.mnus.common.req.EntityDeleteReq;
 import com.mnus.common.resp.CommonResp;
@@ -8,12 +7,10 @@ import com.mnus.common.resp.PageResp;
 import com.mnus.ucenter.req.PassengerQueryReq;
 import com.mnus.ucenter.req.PassengerSaveReq;
 import com.mnus.ucenter.resp.PassengerQueryResp;
-import com.mnus.ucenter.services.PassengerService;
+import com.mnus.ucenter.service.PassengerService;
 import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 /**
  * @author: <a href="https://github.com/xkayah">xkayah</a>

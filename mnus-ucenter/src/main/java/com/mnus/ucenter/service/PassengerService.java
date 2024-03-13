@@ -1,4 +1,4 @@
-package com.mnus.ucenter.services;
+package com.mnus.ucenter.service;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.date.DateTime;
