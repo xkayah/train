@@ -2,6 +2,7 @@ package com.mnus.ucenter.controller;
 
 import cn.hutool.core.text.split.SplitIter;
 import com.mnus.common.context.ReqHolder;
+import com.mnus.common.req.EntityDeleteReq;
 import com.mnus.common.resp.CommonResp;
 import com.mnus.common.resp.PageResp;
 import com.mnus.ucenter.req.PassengerQueryReq;
@@ -29,6 +30,12 @@ public class PassengerController {
         // 为了使service通用，将这个uid设置放到controller
         req.setUserId(ReqHolder.getUid());
         passengerService.save(req);
+        return CommonResp.success();
+    }
+
+    @DeleteMapping("/delete")
+    public CommonResp<Object> delete(@Valid EntityDeleteReq req) {
+        passengerService.delete(req);
         return CommonResp.success();
     }
 

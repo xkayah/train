@@ -13,7 +13,7 @@ Content-Type: application/json
     client.global.set("token", "Bearer " + s.substring(1, s.length-1))
 %}
 
-### test passenger save
+### passenger insert
 POST http://localhost:10100/ucenter/passenger/save
 Content-Type: application/json
 Authorization: {{token}}
@@ -24,7 +24,7 @@ Authorization: {{token}}
   "type": "1"
 }
 
-###
+### passenger update
 POST http://localhost:10100/ucenter/passenger/save
 Content-Type: application/json
 Authorization: {{token}}
@@ -36,7 +36,12 @@ Authorization: {{token}}
   "type": "2"
 }
 
-### test query-list
+### query-list
 GET http://localhost:10100/ucenter/passenger/query-list?pageNo=2&pageSize=20
+Accept: application/json
+Authorization: {{token}}
+
+### delete
+DELETE http://localhost:10100/ucenter/passenger/delete?id=1767811890160996352
 Accept: application/json
 Authorization: {{token}}

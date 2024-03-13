@@ -7,6 +7,7 @@ import com.github.pagehelper.PageInfo;
 import com.mnus.common.context.ReqHolder;
 import com.mnus.common.enums.BaseErrorCodeEnum;
 import com.mnus.common.exception.BizException;
+import com.mnus.common.req.EntityDeleteReq;
 import com.mnus.common.resp.PageResp;
 import com.mnus.common.utils.IdGenUtil;
 import com.mnus.ucenter.domain.Passenger;
@@ -50,6 +51,15 @@ public class PassengerService {
             passenger.setGmtModified(now);
             passengerMapper.updateByPrimaryKeySelective(passenger);
         }
+    }
+
+    public void delete(EntityDeleteReq req) {
+        // todo 只查询出uid
+        Passenger passenger = passengerMapper.selectByPrimaryKey(req.getId());
+        if (!Objects.equals(ReqHolder.getUid(), passenger.getUserId())) {
+            throw new BizException(BaseErrorCodeEnum.SYSTEM_USER_CANNOT_UPDATE_OTHER_USER);
+        }
+        passengerMapper.deleteByPrimaryKey(req.getId());
     }
 
     public PageResp<PassengerQueryResp> queryList(PassengerQueryReq req) {

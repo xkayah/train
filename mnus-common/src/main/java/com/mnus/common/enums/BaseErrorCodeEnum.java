@@ -23,7 +23,7 @@ public enum BaseErrorCodeEnum implements ErrorCode {
      */
     SYSTEM_UNAME_ALREADY_EXISTS(20000, "账号已存在!"),
     SYSTEM_CODE_GET_FREQUENT(20001, "获取验证码过于频繁，请稍后再试!"),
-    SYSTEM_CODE_IS_NOT_EXISTS(20002,"请先获取验证码!"),
+    SYSTEM_CODE_IS_NOT_EXISTS(20002, "请先获取验证码!"),
     SYSTEM_USER_IS_NOT_EXISTS(20002, "用户不存在!"),
     SYSTEM_USER_ALREADY_REGISTER(20003, "账号已注册!"),
     SYSTEM_USER_REGISTER_LOGIN_INFO_EXPIRED(20004, "验证码已过期!"),
@@ -41,7 +41,7 @@ public enum BaseErrorCodeEnum implements ErrorCode {
     SYSTEM_ROLE_CANNOT_DELETE(20016, "系统默认角色不可删除!"),
     SYSTEM_ROLE_NOT_EXISTS(20017, "用户绑定角色异常，请联系管理员!"),
     DATASET_ADMIN_PERMISSION_ERROR(1310, "无此权限,请联系管理员"),
-    SYSTEM_USER_CANNOT_UPDATE_OTHER_USER(20019, "只能修改自己的数据!"),
+    SYSTEM_USER_CANNOT_UPDATE_OTHER_USER(20019, "只能修改用户自己的数据!"),
 
     ;
 
