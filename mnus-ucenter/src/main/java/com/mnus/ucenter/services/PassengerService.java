@@ -2,6 +2,7 @@ package com.mnus.ucenter.services;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.date.DateTime;
+import com.github.pagehelper.PageHelper;
 import com.mnus.common.utils.IdGenUtil;
 import com.mnus.ucenter.domain.Passenger;
 import com.mnus.ucenter.domain.PassengerExample;
@@ -26,7 +27,7 @@ public class PassengerService {
 
     public void save(PassengerSaveReq req) {
         Passenger passenger = BeanUtil.copyProperties(req, Passenger.class);
-        // insert
+        // notnull,insert
         if (Objects.nonNull(passenger.getUserId())) {
             DateTime now = DateTime.now();
             passenger.setId(IdGenUtil.nextId());
@@ -34,7 +35,7 @@ public class PassengerService {
             passenger.setGmtModified(now);
             passengerMapper.insert(passenger);
         } else {
-            // update
+            // null,update
             passengerMapper.updateByPrimaryKey(passenger);
         }
     }
@@ -45,6 +46,7 @@ public class PassengerService {
         if (Objects.nonNull(uid)) {
             passengerExample.createCriteria().andUserIdEqualTo(uid);
         }
+        PageHelper.startPage(2, 2);
         List<Passenger> passengerList = passengerMapper.selectByExample(passengerExample);
         return BeanUtil.copyToList(passengerList, PassengerQueryResp.class);
     }
