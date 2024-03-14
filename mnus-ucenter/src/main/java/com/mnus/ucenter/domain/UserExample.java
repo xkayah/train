@@ -435,63 +435,63 @@ public class UserExample {
             return (Criteria) this;
         }
 
-        public Criteria andGmtModifedIsNull() {
-            addCriterion("gmt_modifed is null");
+        public Criteria andGmtModifiedIsNull() {
+            addCriterion("gmt_modified is null");
             return (Criteria) this;
         }
 
-        public Criteria andGmtModifedIsNotNull() {
-            addCriterion("gmt_modifed is not null");
+        public Criteria andGmtModifiedIsNotNull() {
+            addCriterion("gmt_modified is not null");
             return (Criteria) this;
         }
 
-        public Criteria andGmtModifedEqualTo(Date value) {
-            addCriterion("gmt_modifed =", value, "gmtModifed");
+        public Criteria andGmtModifiedEqualTo(Date value) {
+            addCriterion("gmt_modified =", value, "gmtModified");
             return (Criteria) this;
         }
 
-        public Criteria andGmtModifedNotEqualTo(Date value) {
-            addCriterion("gmt_modifed <>", value, "gmtModifed");
+        public Criteria andGmtModifiedNotEqualTo(Date value) {
+            addCriterion("gmt_modified <>", value, "gmtModified");
             return (Criteria) this;
         }
 
-        public Criteria andGmtModifedGreaterThan(Date value) {
-            addCriterion("gmt_modifed >", value, "gmtModifed");
+        public Criteria andGmtModifiedGreaterThan(Date value) {
+            addCriterion("gmt_modified >", value, "gmtModified");
             return (Criteria) this;
         }
 
-        public Criteria andGmtModifedGreaterThanOrEqualTo(Date value) {
-            addCriterion("gmt_modifed >=", value, "gmtModifed");
+        public Criteria andGmtModifiedGreaterThanOrEqualTo(Date value) {
+            addCriterion("gmt_modified >=", value, "gmtModified");
             return (Criteria) this;
         }
 
-        public Criteria andGmtModifedLessThan(Date value) {
-            addCriterion("gmt_modifed <", value, "gmtModifed");
+        public Criteria andGmtModifiedLessThan(Date value) {
+            addCriterion("gmt_modified <", value, "gmtModified");
             return (Criteria) this;
         }
 
-        public Criteria andGmtModifedLessThanOrEqualTo(Date value) {
-            addCriterion("gmt_modifed <=", value, "gmtModifed");
+        public Criteria andGmtModifiedLessThanOrEqualTo(Date value) {
+            addCriterion("gmt_modified <=", value, "gmtModified");
             return (Criteria) this;
         }
 
-        public Criteria andGmtModifedIn(List<Date> values) {
-            addCriterion("gmt_modifed in", values, "gmtModifed");
+        public Criteria andGmtModifiedIn(List<Date> values) {
+            addCriterion("gmt_modified in", values, "gmtModified");
             return (Criteria) this;
         }
 
-        public Criteria andGmtModifedNotIn(List<Date> values) {
-            addCriterion("gmt_modifed not in", values, "gmtModifed");
+        public Criteria andGmtModifiedNotIn(List<Date> values) {
+            addCriterion("gmt_modified not in", values, "gmtModified");
             return (Criteria) this;
         }
 
-        public Criteria andGmtModifedBetween(Date value1, Date value2) {
-            addCriterion("gmt_modifed between", value1, value2, "gmtModifed");
+        public Criteria andGmtModifiedBetween(Date value1, Date value2) {
+            addCriterion("gmt_modified between", value1, value2, "gmtModified");
             return (Criteria) this;
         }
 
-        public Criteria andGmtModifedNotBetween(Date value1, Date value2) {
-            addCriterion("gmt_modifed not between", value1, value2, "gmtModifed");
+        public Criteria andGmtModifiedNotBetween(Date value1, Date value2) {
+            addCriterion("gmt_modified not between", value1, value2, "gmtModified");
             return (Criteria) this;
         }
     }

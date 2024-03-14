@@ -62,7 +62,7 @@
                 <configuration>
 <!--                    <configurationFile>src/main/resources/generator-config-ucenter.xml</configurationFile>-->
                     <configurationFile>src/main/resources/generator-config-business.xml</configurationFile>
-                    <!--<configurationFile>src/main/resources/generator-config-batch.xml</configurationFile>-->
+<!--                    <configurationFile>src/main/resources/generator-config-batch.xml</configurationFile>-->
                     <overwrite>true</overwrite>
                     <verbose>true</verbose>
                 </configuration>

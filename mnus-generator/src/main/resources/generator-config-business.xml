@@ -24,21 +24,21 @@
         <!-- 配置数据源，需要根据自己的项目修改 -->
         <jdbcConnection driverClass="com.mysql.cj.jdbc.Driver"
                         connectionURL="jdbc:mysql://localhost:3306/db_train12306_business?serverTimezone=Asia/Shanghai"
-                        userId="train"
+                        userId="train_business"
                         password="train12306">
         </jdbcConnection>
 
         <!-- domain类的位置 targetProject是相对pom.xml的路径-->
-        <javaModelGenerator targetProject="../mnus-ucenter/src/main/java"
-                            targetPackage="com.mnus.ucenter.domain"/>
+        <javaModelGenerator targetProject="../mnus-business/src/main/java"
+                            targetPackage="com.mnus.business.domain"/>
 
         <!-- mapper xml的位置 targetProject是相对pom.xml的路径 -->
-        <sqlMapGenerator targetProject="../mnus-ucenter/src/main/resources"
+        <sqlMapGenerator targetProject="../mnus-business/src/main/resources"
                          targetPackage="mapper"/>
 
         <!-- mapper类的位置 targetProject是相对pom.xml的路径 -->
-        <javaClientGenerator targetProject="../mnus-ucenter/src/main/java"
-                             targetPackage="com.mnus.ucenter.mapper"
+        <javaClientGenerator targetProject="../mnus-business/src/main/java"
+                             targetPackage="com.mnus.business.mapper"
                              type="XMLMAPPER"/>
 
         <table tableName="user" domainObjectName="User"/>

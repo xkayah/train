@@ -13,7 +13,7 @@ public class User {
 
     private Date gmtCreate;
 
-    private Date gmtModifed;
+    private Date gmtModified;
 
     public Long getId() {
         return id;
@@ -55,12 +55,12 @@ public class User {
         this.gmtCreate = gmtCreate;
     }
 
-    public Date getGmtModifed() {
-        return gmtModifed;
+    public Date getGmtModified() {
+        return gmtModified;
     }
 
-    public void setGmtModifed(Date gmtModifed) {
-        this.gmtModifed = gmtModifed;
+    public void setGmtModified(Date gmtModified) {
+        this.gmtModified = gmtModified;
     }
 
     @Override
@@ -74,7 +74,7 @@ public class User {
         sb.append(", uname=").append(uname);
         sb.append(", password=").append(password);
         sb.append(", gmtCreate=").append(gmtCreate);
-        sb.append(", gmtModifed=").append(gmtModifed);
+        sb.append(", gmtModified=").append(gmtModified);
         sb.append("]");
         return sb.toString();
     }
