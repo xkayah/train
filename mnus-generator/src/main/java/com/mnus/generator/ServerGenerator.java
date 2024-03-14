@@ -85,7 +85,8 @@ public class ServerGenerator {
         // gen("service", Domain, map);
         // gen("controller", Domain, map);
         // gen("saveReq", Domain, map);
-        gen("queryReq", Domain, map);
+        // gen("queryReq", Domain, map);
+        gen("queryResp", Domain, map);
 
 
     }
