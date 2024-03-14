@@ -1,13 +1,13 @@
-package com.mnus.${module}.controller;
+package ${group}.${module}.controller;
 
-import com.mnus.common.context.ReqHolder;
-import com.mnus.common.req.EntityDeleteReq;
-import com.mnus.common.resp.CommonResp;
-import com.mnus.common.resp.PageResp;
-import com.mnus.${module}.req.${Domain}QueryReq;
-import com.mnus.${module}.req.${Domain}SaveReq;
-import com.mnus.${module}.resp.${Domain}QueryResp;
-import com.mnus.${module}.service.${Domain}Service;
+import ${group}.common.context.ReqHolder;
+import ${group}.common.req.EntityDeleteReq;
+import ${group}.common.resp.CommonResp;
+import ${group}.common.resp.PageResp;
+import ${group}.${module}.req.${Domain}QueryReq;
+import ${group}.${module}.req.${Domain}SaveReq;
+import ${group}.${module}.resp.${Domain}QueryResp;
+import ${group}.${module}.service.${Domain}Service;
 import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;

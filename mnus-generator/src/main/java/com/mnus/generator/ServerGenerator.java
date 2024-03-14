@@ -1,6 +1,8 @@
 package com.mnus.generator;
 
+import cn.hutool.json.JSONUtil;
 import com.mnus.generator.utils.DBUtil;
+import com.mnus.generator.utils.FieldDB;
 import com.mnus.generator.utils.FreeMarkerUtil;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
@@ -8,8 +10,7 @@ import org.dom4j.Node;
 import org.dom4j.io.SAXReader;
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author: <a href="https://github.com/xkayah">xkayah</a>
@@ -17,7 +18,7 @@ import java.util.Map;
  */
 public class ServerGenerator {
     public static final String GENERATOR_BASE_PATH = "mnus-generator\\";
-    public static final String MODULE_PREFIX = "mnus_";
+    public static final String GROUP = "com.mnus";
     public static final String POM_PATH = "mnus-generator\\pom.xml";
     public static final String FTL_TMP = "${target}.ftl";
     public static final String FILE_PATH_TMP = "mnus-${module}/src/main/java/com/mnus/${module}/${pkg}/";
@@ -27,6 +28,10 @@ public class ServerGenerator {
     public static final String $_pkg = "${pkg}";
     public static final String $_Pkg = "${Pkg}";
     public static final String $_Domain = "${Domain}";
+    public static final String REQ_PKG = "req";
+    public static final String RESP_PKG = "resp";
+    public static final String REQ_SUFFIX = "Req";
+    public static final String RESP_SUFFIX = "Resp";
 
     public static void main(String[] args) throws Exception {
         String generatorCfgPath = getGeneratorCfgPath();
@@ -50,7 +55,6 @@ public class ServerGenerator {
         DBUtil.password = password;
         System.out.println(String.format("url:%s,user:%s,pwd:%s",
                 connectionURL, userId, password));
-        System.out.println(DBUtil.getColumnByTableName("passenger"));
 
         // tableName="table_name" domainObjectName="TableName"
         // Domain = TableName
@@ -63,16 +67,24 @@ public class ServerGenerator {
         // 模块名
         String module = getModuleName(generatorCfgPath);
 
+        // 获取表中的字段信息
+        List<FieldDB> fieldDBList = DBUtil.getColumnByTableName(tableName);
+        Set<String> javaTypes = getJavaTypes(fieldDBList);
+
         // 组装参数
         HashMap<String, Object> map = new HashMap<>();
+        map.put("group", GROUP);
         map.put("Domain", Domain);
         map.put("domain", domain);
         map.put("do_main", do_main);
         map.put("module", module);
+        map.put("typeSet", javaTypes);
+        map.put("fieldList", fieldDBList);
 
         // 执行
         // gen("service", Domain, map);
         // gen("controller", Domain, map);
+        gen("saveReq", Domain, map);
 
 
     }
@@ -80,10 +92,10 @@ public class ServerGenerator {
     public static void gen(String target, String Domain, Map<String, Object> map) throws Exception {
         String module = getModuleName(getGeneratorCfgPath());
         String path = genToPath(module, target, Domain);
-        System.out.println(String.format("[module]:%s,[path]:%s", module, path));
-        FreeMarkerUtil.initConfig(FTL_TMP.replace(ServerGenerator.$_target, target));
+        System.out.println(String.format("[module]:%s,[path]:%s\n[params]:%s",
+                module, path, JSONUtil.toJsonPrettyStr(map)));
+        FreeMarkerUtil.initConfig(FTL_TMP.replace($_target, target));
         FreeMarkerUtil.gen(path, map);
-
     }
 
     /**
@@ -107,13 +119,20 @@ public class ServerGenerator {
      * @return
      */
     private static String genToPath(String module, String pkg, String Domain) {
+        // pkg -> Pkg
+        String fileName = FILE_NAME_TMP.
+                replace($_Pkg, pkg.substring(0, 1).toUpperCase() + pkg.substring(1)).
+                replace($_Domain, Domain);
+        // special case: saveReq -> req
+        if (pkg.contains(REQ_SUFFIX)) {
+            pkg = REQ_PKG;
+        } else if (pkg.contains(RESP_SUFFIX)) {
+            pkg = RESP_PKG;
+        }
         String filePath = FILE_PATH_TMP.
                 replace($_module, module).
                 replace($_pkg, pkg);
         new File(filePath).mkdirs();
-        String fileName = FILE_NAME_TMP.
-                replace($_Pkg, pkg.substring(0, 1).toUpperCase() + pkg.substring(1)).
-                replace($_Domain, Domain);
         return filePath + fileName;
     }
 
@@ -131,5 +150,19 @@ public class ServerGenerator {
         Document document = saxReader.read(POM_PATH);
         Node node = document.selectSingleNode("//pom:configurationFile");
         return node.getText();
+    }
+
+    /**
+     * 获取所有Java类型
+     *
+     * @param list 字段信息列表
+     * @return
+     */
+    private static Set<String> getJavaTypes(List<FieldDB> list) {
+        HashSet<String> set = new HashSet<>();
+        for (FieldDB fieldDB : list) {
+            set.add(fieldDB.getJavaType());
+        }
+        return set;
     }
 }

@@ -1,9 +1,7 @@
 package com.mnus.ucenter.req;
 
-import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Pattern;
-
-import java.util.Date;
 
 /**
  * @author: <a href="https://github.com/xkayah">xkayah</a>
@@ -14,11 +12,14 @@ public class PassengerSaveReq {
 
     private Long userId;
 
+    @NotEmpty(message = "[姓名]不能为空")
     private String name;
 
+    @NotEmpty(message = "[手机号]不能为空")
     @Pattern(regexp = "^[1-9]\\d{5}(18|19|20)\\d{2}((0[1-9])|(1[0-2]))(([0-2][1-9])|10|20|30|31)\\d{3}[0-9Xx]$")
     private String idCard;
 
+    @NotEmpty(message = "[旅客类型]不能为空")
     private String type;
 
     public Long getId() {
