@@ -1,0 +1,51 @@
+### test
+GET http://localhost:8101/business/hello
+Content-Type: application/json
+
+###
+POST http://localhost:10100/ucenter/user/sign-in
+Content-Type: application/json
+
+{
+  "mobile": "13979747386",
+  "code": "666666"
+}
+
+> {%
+    s = JSON.stringify(response.body.data.token);
+    // 去掉头尾引号
+    client.global.set("token", "Bearer " + s.substring(1, s.length-1))
+%}
+
+### passenger insert
+POST http://localhost:10100/ucenter/passenger/save
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "name": "施傲和",
+  "idCard": "420101197106184218",
+  "type": "1"
+}
+
+### passenger update
+POST http://localhost:10100/ucenter/passenger/save
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "id": "1767813641832370176",
+  "name": "施傲和",
+  "idCard": "420101197106184218",
+  "type": "2"
+}
+
+### query-list
+GET http://localhost:10100/ucenter/passenger/query-list?pageNo=2&pageSize=20
+Accept: application/json
+Authorization: {{token}}
+
+### delete
+DELETE http://localhost:10100/ucenter/passenger/delete?id=1767811890160996352
+Accept: application/json
+Authorization: {{token}}

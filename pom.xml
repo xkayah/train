@@ -22,6 +22,7 @@
         <module>mnus-common</module>
         <module>mnus-gateway</module>
         <module>mnus-generator</module>
+        <module>mnus-business</module>
     </modules>
 
     <properties>
