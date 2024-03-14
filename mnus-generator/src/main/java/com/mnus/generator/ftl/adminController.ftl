@@ -1,4 +1,4 @@
-package ${group}.${module}.controller;
+package ${group}.${module}.controller.admin;
 
 import ${group}.common.context.ReqHolder;
 import ${group}.common.req.EntityDeleteReq;
@@ -16,8 +16,8 @@ import org.springframework.web.bind.annotation.*;
  * @author: <a href="https://github.com/xkayah">xkayah</a>
  */
 @RestController
-@RequestMapping("/${do_main}")
-public class ${Domain}Controller {
+@RequestMapping("/admin/${do_main}")
+public class ${Domain}AdminController {
     @Resource
     private ${Domain}Service ${domain}Service;
 

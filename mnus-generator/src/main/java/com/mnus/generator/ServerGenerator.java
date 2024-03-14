@@ -1,6 +1,6 @@
 package com.mnus.generator;
 
-import cn.hutool.json.JSONUtil;
+import cn.hutool.core.util.StrUtil;
 import com.mnus.generator.utils.DBUtil;
 import com.mnus.generator.utils.FieldDB;
 import com.mnus.generator.utils.FreeMarkerUtil;
@@ -33,6 +33,7 @@ public class ServerGenerator {
     public static final String RESP_PKG = "resp";
     public static final String REQ_SUFFIX = "Req";
     public static final String RESP_SUFFIX = "Resp";
+    public static final String ADMIN_PREFIX = "admin";
 
     public static void main(String[] args) throws Exception {
         String generatorCfgPath = getGeneratorCfgPath();
@@ -84,12 +85,10 @@ public class ServerGenerator {
 
         // 执行
         gen("service", Domain, map);
-        gen("controller", Domain, map);
+        gen("adminController", Domain, map);
         gen("saveReq", Domain, map);
         gen("queryReq", Domain, map);
         gen("queryResp", Domain, map);
-
-
     }
 
     public static void gen(String target, String Domain, Map<String, Object> map) throws Exception {
@@ -133,12 +132,11 @@ public class ServerGenerator {
             pkg = RESP_PKG;
         }
         String filePath = FILE_PATH_TMP.
-                replace($_module_prefix, GROUP.split(".")[1]).
+                replace($_module_prefix, GROUP.split("\\.")[1]).
                 replace($_module, module).
-                replace($_pkg, pkg);
-        if (pkg.equals("adminController")) {
-            filePath = filePath + "admin/";
-        }
+                replace($_pkg, pkg.startsWith(ADMIN_PREFIX) ?
+                        StrUtil.toUnderlineCase(pkg).split("_")[1] + "/" + StrUtil.toUnderlineCase(pkg).split("_")[0] :
+                        pkg);
         new File(filePath).mkdirs();
         return filePath + fileName;
     }
