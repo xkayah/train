@@ -1,4 +1,4 @@
-package com.mnus.ucenter.resp;
+package com.mnus.${module}.resp;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;

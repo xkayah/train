@@ -21,8 +21,9 @@ public class ServerGenerator {
     public static final String GROUP = "com.mnus";
     public static final String POM_PATH = "mnus-generator\\pom.xml";
     public static final String FTL_TMP = "${target}.ftl";
-    public static final String FILE_PATH_TMP = "mnus-${module}/src/main/java/com/mnus/${module}/${pkg}/";
+    public static final String FILE_PATH_TMP = "${module-prefix}-${module}/src/main/java/com/mnus/${module}/${pkg}/";
     public static final String FILE_NAME_TMP = "${Domain}${Pkg}.java";
+    public static final String $_module_prefix = "${module-prefix}";
     public static final String $_target = "${target}";
     public static final String $_module = "${module}";
     public static final String $_pkg = "${pkg}";
@@ -82,10 +83,10 @@ public class ServerGenerator {
         map.put("fieldList", fieldDBList);
 
         // 执行
-        // gen("service", Domain, map);
-        // gen("controller", Domain, map);
-        // gen("saveReq", Domain, map);
-        // gen("queryReq", Domain, map);
+        gen("service", Domain, map);
+        gen("controller", Domain, map);
+        gen("saveReq", Domain, map);
+        gen("queryReq", Domain, map);
         gen("queryResp", Domain, map);
 
 
@@ -132,8 +133,12 @@ public class ServerGenerator {
             pkg = RESP_PKG;
         }
         String filePath = FILE_PATH_TMP.
+                replace($_module_prefix, GROUP.split(".")[1]).
                 replace($_module, module).
                 replace($_pkg, pkg);
+        if (pkg.equals("adminController")) {
+            filePath = filePath + "admin/";
+        }
         new File(filePath).mkdirs();
         return filePath + fileName;
     }

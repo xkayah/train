@@ -1,15 +1,15 @@
-package ${group}.${module}.req;
+package com.mnus.business.req;
 
-import ${group}.common.req.PageReq;
+import com.mnus.common.req.PageReq;
 
 /**
  * @author: <a href="https://github.com/xkayah">xkayah</a>
  */
-public class ${Domain}QueryReq extends PageReq {
+public class StationQueryReq extends PageReq {
 
     @Override
     public String toString() {
-        return "${Domain}QueryReq{" +
+        return "StationQueryReq{" +
                 "} " + super.toString();
     }
 }

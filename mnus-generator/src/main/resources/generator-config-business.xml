@@ -41,6 +41,6 @@
                              targetPackage="com.mnus.business.mapper"
                              type="XMLMAPPER"/>
 
-        <table tableName="user" domainObjectName="User"/>
+        <table tableName="station" domainObjectName="Station"/>
     </context>
 </generatorConfiguration>
