@@ -1,5 +1,6 @@
 package com.mnus.generator;
 
+import com.mnus.generator.utils.DBUtil;
 import com.mnus.generator.utils.FreeMarkerUtil;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
@@ -30,13 +31,26 @@ public class ServerGenerator {
     public static void main(String[] args) throws Exception {
         String generatorCfgPath = getGeneratorCfgPath();
         Document document = new SAXReader().read(GENERATOR_BASE_PATH + generatorCfgPath);
-        Node tableNode = document.selectSingleNode("//table");
-        // 读 table 节点的表名和实体名
+        /* Node tableNode = document.selectSingleNode("//table");
         Node tableNameNode = tableNode.selectSingleNode("@tableName");
         Node domainObjectNameNode = tableNode.selectSingleNode("@domainObjectName");
         String tableName = tableNameNode.getText();
-        String domainObjectName = domainObjectNameNode.getText();
+        String domainObjectName = domainObjectNameNode.getText(); */
+        // 读 table 节点的表名和实体名
+        String tableName = document.selectSingleNode("//@tableName").getText();
+        String domainObjectName = document.selectSingleNode("//@domainObjectName").getText();
         System.out.println(String.format("[tableName]:%s,[domainObjectName]:%s", tableName, domainObjectName));
+
+        // 读 DB 配置信息
+        String connectionURL = document.selectSingleNode("//@connectionURL").getText();
+        String userId = document.selectSingleNode("//@userId").getText();
+        String password = document.selectSingleNode("//@password").getText();
+        DBUtil.url = connectionURL;
+        DBUtil.username = userId;
+        DBUtil.password = password;
+        System.out.println(String.format("url:%s,user:%s,pwd:%s",
+                connectionURL, userId, password));
+        System.out.println(DBUtil.getColumnByTableName("passenger"));
 
         // tableName="table_name" domainObjectName="TableName"
         // Domain = TableName
@@ -58,7 +72,7 @@ public class ServerGenerator {
 
         // 执行
         // gen("service", Domain, map);
-        gen("controller", Domain, map);
+        // gen("controller", Domain, map);
 
 
     }
