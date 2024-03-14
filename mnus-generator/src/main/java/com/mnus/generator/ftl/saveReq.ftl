@@ -44,8 +44,8 @@ public class ${Domain}SaveReq {
         </#if>
     </#if>
     private ${field.javaType} ${field.nameHump};
-
     </#list>
+
     <#list fieldList as field>
     public ${field.javaType} get${field.nameBigHump}() {
         return ${field.nameHump};
@@ -56,6 +56,7 @@ public class ${Domain}SaveReq {
     }
 
     </#list>
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
