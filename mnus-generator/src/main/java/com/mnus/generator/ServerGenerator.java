@@ -84,7 +84,8 @@ public class ServerGenerator {
         // 执行
         // gen("service", Domain, map);
         // gen("controller", Domain, map);
-        gen("saveReq", Domain, map);
+        // gen("saveReq", Domain, map);
+        gen("queryReq", Domain, map);
 
 
     }
@@ -93,7 +94,7 @@ public class ServerGenerator {
         String module = getModuleName(getGeneratorCfgPath());
         String path = genToPath(module, target, Domain);
         System.out.println(String.format("[module]:%s,[path]:%s\n[params]:%s",
-                module, path, JSONUtil.toJsonPrettyStr(map)));
+                module, path, map));
         FreeMarkerUtil.initConfig(FTL_TMP.replace($_target, target));
         FreeMarkerUtil.gen(path, map);
     }
