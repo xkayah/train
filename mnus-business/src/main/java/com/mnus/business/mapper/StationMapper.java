@@ -2,8 +2,9 @@ package com.mnus.business.mapper;
 
 import com.mnus.business.domain.Station;
 import com.mnus.business.domain.StationExample;
-import java.util.List;
 import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 public interface StationMapper {
     long countByExample(StationExample example);

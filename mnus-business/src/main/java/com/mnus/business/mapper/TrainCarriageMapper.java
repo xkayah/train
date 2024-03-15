@@ -2,8 +2,9 @@ package com.mnus.business.mapper;
 
 import com.mnus.business.domain.TrainCarriage;
 import com.mnus.business.domain.TrainCarriageExample;
-import java.util.List;
 import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 public interface TrainCarriageMapper {
     long countByExample(TrainCarriageExample example);

@@ -2,8 +2,9 @@ package com.mnus.business.mapper;
 
 import com.mnus.business.domain.Train;
 import com.mnus.business.domain.TrainExample;
-import java.util.List;
 import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 public interface TrainMapper {
     long countByExample(TrainExample example);

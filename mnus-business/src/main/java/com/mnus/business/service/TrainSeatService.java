@@ -4,18 +4,15 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.date.DateTime;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.mnus.common.context.ReqHolder;
-import com.mnus.common.enums.BaseErrorCodeEnum;
-import com.mnus.common.exception.BizException;
-import com.mnus.common.req.EntityDeleteReq;
-import com.mnus.common.resp.PageResp;
-import com.mnus.common.utils.IdGenUtil;
 import com.mnus.business.domain.TrainSeat;
 import com.mnus.business.domain.TrainSeatExample;
 import com.mnus.business.mapper.TrainSeatMapper;
 import com.mnus.business.req.TrainSeatQueryReq;
 import com.mnus.business.req.TrainSeatSaveReq;
 import com.mnus.business.resp.TrainSeatQueryResp;
+import com.mnus.common.req.EntityDeleteReq;
+import com.mnus.common.resp.PageResp;
+import com.mnus.common.utils.IdGenUtil;
 import jakarta.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,7 +21,6 @@ import org.springframework.util.StringUtils;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.function.ToDoubleBiFunction;
 
 /**
  * @author: <a href="https://github.com/xkayah">xkayah</a>
