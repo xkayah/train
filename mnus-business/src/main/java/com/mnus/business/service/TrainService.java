@@ -4,9 +4,6 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.date.DateTime;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.mnus.common.context.ReqHolder;
-import com.mnus.common.enums.BaseErrorCodeEnum;
-import com.mnus.common.exception.BizException;
 import com.mnus.common.req.EntityDeleteReq;
 import com.mnus.common.resp.PageResp;
 import com.mnus.common.utils.IdGenUtil;
@@ -20,6 +17,7 @@ import jakarta.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 import java.util.Objects;
@@ -55,11 +53,13 @@ public class TrainService {
     }
 
     public PageResp<TrainQueryResp> queryList(TrainQueryReq req) {
-        // Long uid = req.getUserId();
         TrainExample trainExample = new TrainExample();
-        // if (Objects.nonNull(uid)) {
-        //     trainExample.createCriteria().andUserIdEqualTo(uid);
-        // }
+        trainExample.setOrderByClause("code asc");
+        String code = req.getCode();
+        if (StringUtils.hasText(code)) {
+            trainExample.createCriteria().
+                    andCodeEqualTo(code);
+        }
         // 分页请求
         PageHelper.startPage(req.getPageNo(), req.getPageSize());
         List<Train> trainList = trainMapper.selectByExample(trainExample);
