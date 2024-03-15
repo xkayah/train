@@ -2,13 +2,18 @@ package com.mnus.business.service;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.date.DateTime;
+import cn.hutool.core.util.StrUtil;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.mnus.business.domain.*;
+import com.mnus.business.enums.SeatColEnum;
+import com.mnus.business.mapper.TrainSeatMapper;
+import com.mnus.business.req.GenTrainSeatReq;
+import com.mnus.common.enums.BaseErrorCodeEnum;
+import com.mnus.common.exception.BizException;
 import com.mnus.common.req.EntityDeleteReq;
 import com.mnus.common.resp.PageResp;
 import com.mnus.common.utils.IdGenUtil;
-import com.mnus.business.domain.Train;
-import com.mnus.business.domain.TrainExample;
 import com.mnus.business.mapper.TrainMapper;
 import com.mnus.business.req.TrainQueryReq;
 import com.mnus.business.req.TrainSaveReq;
@@ -30,6 +35,12 @@ public class TrainService {
     private static final Logger LOG = LoggerFactory.getLogger(TrainService.class);
     @Resource
     private TrainMapper trainMapper;
+
+    @Resource
+    private TrainSeatMapper trainSeatMapper;
+
+    @Resource
+    private TrainCarriageService trainCarriageService;
 
     public void save(TrainSaveReq req) {
         DateTime now = DateTime.now();
@@ -78,4 +89,47 @@ public class TrainService {
         return pageResp;
     }
 
+    public void genTrainSeat(GenTrainSeatReq req) {
+        DateTime now = DateTime.now();
+        // 先删除后生成
+        String trainCode = req.getTrainCode();
+        if (!StringUtils.hasText(trainCode)) {
+            throw new BizException(BaseErrorCodeEnum.REQ_PARAMS_NOT_VALID);
+        }
+        // 删除【车次】下的所有【座位】
+        TrainSeatExample trainSeatExample = new TrainSeatExample();
+        trainSeatExample.createCriteria().
+                andTrainCodeEqualTo(trainCode);
+        trainSeatMapper.deleteByExample(trainSeatExample);
+        // 查询【车次】下的所有【车厢】
+        List<TrainCarriage> trainCarriageList = trainCarriageService.selectByTrainCode(trainCode);
+        // 循环生成每个【车厢】的【座位】
+        for (TrainCarriage trainCarriage : trainCarriageList) {
+            Integer rowCount = trainCarriage.getRowCount();
+            String seatType = trainCarriage.getSeatType();
+            // 通过【座位类型】拿到【车厢列】
+            List<SeatColEnum> colEnumList = SeatColEnum.getColsByType(seatType);
+            // 记录某个【车厢】内的【座位】索引
+            int seatIdx = 1;
+            // 循环【车厢行】
+            for (int row = 1; row <= rowCount; row++) {
+                // 循环【车厢列】
+                for (SeatColEnum seatColEnum : colEnumList) {
+                    TrainSeat trainSeat = new TrainSeat();
+                    trainSeat.setId(IdGenUtil.nextId());
+                    trainSeat.setTrainCode(trainCode);
+                    trainSeat.setCarriageIndex(trainCarriage.getIndex());
+                    trainSeat.setRow(StrUtil.fillBefore(String.valueOf(row), '0', 2));
+                    trainSeat.setCol(seatColEnum.getCode());
+                    trainSeat.setSeatType(seatType);
+                    trainSeat.setCarriageSeatIndex(seatIdx++);
+                    trainSeat.setGmtCreate(now);
+                    trainSeat.setGmtModified(now);
+                    trainSeatMapper.insert(trainSeat);
+                }
+            }
+            LOG.info("Generate..[{}-{}], type:{}, count:{}",
+                    trainCode, trainCarriage.getIndex(), seatType, seatIdx - 1);
+        }
+    }
 }

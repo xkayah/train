@@ -45,6 +45,11 @@ GET http://localhost:10100/business/admin/train-seat/query-list?pageNo=1&pageSiz
 Accept: application/json
 Authorization: {{token}}
 
+### gen-seat
+GET http://localhost:10100/business/admin/train/gen-seat?trainCode=A0005
+Accept: application/json
+Authorization: {{token}}
+
 ### delete
 DELETE http://localhost:10100/ucenter/passenger/delete?id=1767811890160996352
 Accept: application/json

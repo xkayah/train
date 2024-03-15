@@ -1,5 +1,6 @@
 package com.mnus.business.controller.admin;
 
+import com.mnus.business.req.GenTrainSeatReq;
 import com.mnus.common.context.ReqHolder;
 import com.mnus.common.req.EntityDeleteReq;
 import com.mnus.common.resp.CommonResp;
@@ -37,5 +38,11 @@ public class TrainAdminController {
     public CommonResp<PageResp<TrainQueryResp>> queryList(@Valid TrainQueryReq req) {
         PageResp<TrainQueryResp> list = trainService.queryList(req);
         return CommonResp.success(list);
+    }
+
+    @GetMapping("/gen-seat")
+    public CommonResp<Object> genSeat(@Valid GenTrainSeatReq req) {
+        trainService.genTrainSeat(req);
+        return CommonResp.success();
     }
 }
