@@ -46,7 +46,7 @@ public class PassengerService {
         } else {
             // null,update
             if (!Objects.equals(ReqHolder.getUid(), req.getUserId())) {
-                throw new BizException(BaseErrorCodeEnum.SYSTEM_USER_CANNOT_UPDATE_OTHER_USER);
+                throw new BizException(BaseErrorCodeEnum.UCENTER_USER_CANNOT_UPDATE_OTHER_USER);
             }
             passenger.setGmtModified(now);
             passengerMapper.updateByPrimaryKeySelective(passenger);
@@ -57,7 +57,7 @@ public class PassengerService {
         // todo 只查询出uid
         Passenger passenger = passengerMapper.selectByPrimaryKey(req.getId());
         if (!Objects.equals(ReqHolder.getUid(), passenger.getUserId())) {
-            throw new BizException(BaseErrorCodeEnum.SYSTEM_USER_CANNOT_UPDATE_OTHER_USER);
+            throw new BizException(BaseErrorCodeEnum.UCENTER_USER_CANNOT_UPDATE_OTHER_USER);
         }
         passengerMapper.deleteByPrimaryKey(req.getId());
     }
