@@ -44,9 +44,9 @@ public class ${Domain}Service {
             ${domain}Mapper.insert(${domain});
         } else {
             // null,update
-            if (!Objects.equals(ReqHolder.getUid(), req.getUserId())) {
-                throw new BizException(BaseErrorCodeEnum.SYSTEM_USER_CANNOT_UPDATE_OTHER_USER);
-            }
+            //if (!Objects.equals(ReqHolder.getUid(), req.getUserId())) {
+            //    throw new BizException(BaseErrorCodeEnum.SYSTEM_USER_CANNOT_UPDATE_OTHER_USER);
+            //}
             ${domain}.setGmtModified(now);
             ${domain}Mapper.updateByPrimaryKeySelective(${domain});
         }
@@ -58,11 +58,11 @@ public class ${Domain}Service {
     }
 
     public PageResp<${Domain}QueryResp> queryList(${Domain}QueryReq req) {
-        Long uid = req.getUserId();
+        //Long uid = req.getUserId();
         ${Domain}Example ${domain}Example = new ${Domain}Example();
-        if (Objects.nonNull(uid)) {
-            ${domain}Example.createCriteria().andUserIdEqualTo(uid);
-        }
+        //if (Objects.nonNull(uid)) {
+        //    ${domain}Example.createCriteria().andUserIdEqualTo(uid);
+        //}
         // 分页请求
         PageHelper.startPage(req.getPageNo(), req.getPageSize());
         List<${Domain}> ${domain}List = ${domain}Mapper.selectByExample(${domain}Example);

@@ -23,8 +23,6 @@ public class StationAdminController {
 
     @PostMapping("/save")
     public CommonResp<Object> save(@Valid @RequestBody StationSaveReq req) {
-        // 为了使service通用，将这个uid设置放到controller
-        req.setUserId(ReqHolder.getUid());
         stationService.save(req);
         return CommonResp.success();
     }
@@ -37,8 +35,6 @@ public class StationAdminController {
 
     @GetMapping("/query-list")
     public CommonResp<PageResp<StationQueryResp>> queryList(@Valid StationQueryReq req) {
-        // 为了使service通用，将这个uid设置放到controller
-        req.setUserId(ReqHolder.getUid());
         PageResp<StationQueryResp> list = stationService.queryList(req);
         return CommonResp.success(list);
     }

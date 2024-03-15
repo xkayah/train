@@ -23,8 +23,6 @@ public class ${Domain}AdminController {
 
     @PostMapping("/save")
     public CommonResp<Object> save(@Valid @RequestBody ${Domain}SaveReq req) {
-        // 为了使service通用，将这个uid设置放到controller
-        req.setUserId(ReqHolder.getUid());
         ${domain}Service.save(req);
         return CommonResp.success();
     }
@@ -37,8 +35,6 @@ public class ${Domain}AdminController {
 
     @GetMapping("/query-list")
     public CommonResp<PageResp<${Domain}QueryResp>> queryList(@Valid ${Domain}QueryReq req) {
-        // 为了使service通用，将这个uid设置放到controller
-        req.setUserId(ReqHolder.getUid());
         PageResp<${Domain}QueryResp> list = ${domain}Service.queryList(req);
         return CommonResp.success(list);
     }

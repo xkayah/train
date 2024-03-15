@@ -44,9 +44,6 @@ public class StationService {
             stationMapper.insert(station);
         } else {
             // null,update
-            if (!Objects.equals(ReqHolder.getUid(), req.getUserId())) {
-                throw new BizException(BaseErrorCodeEnum.SYSTEM_USER_CANNOT_UPDATE_OTHER_USER);
-            }
             station.setGmtModified(now);
             stationMapper.updateByPrimaryKeySelective(station);
         }
@@ -58,11 +55,10 @@ public class StationService {
     }
 
     public PageResp<StationQueryResp> queryList(StationQueryReq req) {
-        Long uid = req.getUserId();
         StationExample stationExample = new StationExample();
-        if (Objects.nonNull(uid)) {
-            stationExample.createCriteria().andUserIdEqualTo(uid);
-        }
+        // if (Objects.nonNull(uid)) {
+        //     stationExample.createCriteria().andUserIdEqualTo(uid);
+        // }
         // 分页请求
         PageHelper.startPage(req.getPageNo(), req.getPageSize());
         List<Station> stationList = stationMapper.selectByExample(stationExample);

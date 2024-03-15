@@ -76,7 +76,7 @@ public class UserService {
             user.setId(uid);
             user.setMobile(mobile);
             user.setGmtCreate(now);
-            user.setGmtModifed(now);
+            user.setGmtModified(now);
             userMapper.insert(user);
         }
 
