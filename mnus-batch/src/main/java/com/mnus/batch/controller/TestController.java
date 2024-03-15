@@ -1,4 +1,4 @@
-package com.mnus.config.controller;
+package com.mnus.batch.controller;
 
 import jakarta.annotation.Resource;
 import org.springframework.core.env.Environment;

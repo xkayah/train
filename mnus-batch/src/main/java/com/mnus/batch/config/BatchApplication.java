@@ -1,4 +1,4 @@
-package com.mnus.config;
+package com.mnus.batch.config;
 
 import org.mybatis.spring.annotation.MapperScan;
 import org.slf4j.Logger;

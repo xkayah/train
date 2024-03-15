@@ -43,11 +43,7 @@ public class TrainCarriageService {
         // notnull,insert
         if (Objects.isNull(trainCarriage.getId())) {
             // 保存之前，先校验唯一键是否存在
-            TrainCarriageExample trainCarriageExample = new TrainCarriageExample();
-            trainCarriageExample.createCriteria().
-                    andTrainCodeEqualTo(req.getTrainCode()).
-                    andIndexEqualTo(req.getIndex());
-            long count = trainCarriageMapper.countByExample(trainCarriageExample);
+            long count = countUnique(req.getTrainCode(), req.getIndex());
             if (count > 0L) {
                 throw new BizException(BaseErrorCodeEnum.BUSINESS_TRAIN_CARRIAGE_ALREADY_EXISTS);
             }
@@ -60,6 +56,14 @@ public class TrainCarriageService {
             trainCarriage.setGmtModified(now);
             trainCarriageMapper.updateByPrimaryKeySelective(trainCarriage);
         }
+    }
+
+    private long countUnique(String trainCode, Integer idx) {
+        TrainCarriageExample trainCarriageExample = new TrainCarriageExample();
+        trainCarriageExample.createCriteria().
+                andTrainCodeEqualTo(trainCode).
+                andIndexEqualTo(idx);
+        return trainCarriageMapper.countByExample(trainCarriageExample);
     }
 
     public void delete(EntityDeleteReq req) {
