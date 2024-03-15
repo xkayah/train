@@ -18,7 +18,7 @@ public enum BaseErrorCodeEnum implements ErrorCode {
     REQUEST_TIME_OUT(408, "系统繁忙!请稍后再试!"),
     INTERNAL_SERVER_ERROR(500, "系统内部异常!"),
     SERVICE_UNAVAILABLE(503, "服务不可用!"),
-    REQ_PARAMS_NOT_VALID(10000,"请求参数错误！"),
+    REQ_PARAMS_NOT_VALID(10000, "请求参数错误！"),
     /**
      * system 模块异常码
      */
@@ -52,6 +52,10 @@ public enum BaseErrorCodeEnum implements ErrorCode {
     /**
      * business 模块异常码
      */
+    BUSINESS_STATION_ALREADY_EXISTS(40001, "车站已存在!"),
+    BUSINESS_TRAIN_ALREADY_EXISTS(40002, "车次已存在!"),
+    BUSINESS_TRAIN_CARRIAGE_ALREADY_EXISTS(40003, "车厢已存在!"),
+    BUSINESS_TRAIN_STATION_ALREADY_EXISTS(40003, "车次-车站已存在!"),
 
     ;
 

@@ -38,6 +38,7 @@ public class ${Domain}Service {
         ${Domain} ${domain} = BeanUtil.copyProperties(req, ${Domain}.class);
         // notnull,insert
         if (Objects.isNull(${domain}.getId())) {
+            // todo 保存之前，先校验唯一键是否存在
             ${domain}.setId(IdGenUtil.nextId());
             ${domain}.setGmtCreate(now);
             ${domain}.setGmtModified(now);

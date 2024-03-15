@@ -1,9 +1,12 @@
 package com.mnus.business.service;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.date.DateTime;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.mnus.business.domain.Station;
+import com.mnus.business.domain.StationExample;
 import com.mnus.common.context.ReqHolder;
 import com.mnus.common.enums.BaseErrorCodeEnum;
 import com.mnus.common.exception.BizException;
@@ -39,6 +42,15 @@ public class TrainCarriageService {
         TrainCarriage trainCarriage = BeanUtil.copyProperties(req, TrainCarriage.class);
         // notnull,insert
         if (Objects.isNull(trainCarriage.getId())) {
+            // 保存之前，先校验唯一键是否存在
+            TrainCarriageExample trainCarriageExample = new TrainCarriageExample();
+            trainCarriageExample.createCriteria().
+                    andTrainCodeEqualTo(req.getTrainCode()).
+                    andIndexEqualTo(req.getIndex());
+            long count = trainCarriageMapper.countByExample(trainCarriageExample);
+            if (count > 0L) {
+                throw new BizException(BaseErrorCodeEnum.BUSINESS_TRAIN_CARRIAGE_ALREADY_EXISTS);
+            }
             trainCarriage.setId(IdGenUtil.nextId());
             trainCarriage.setGmtCreate(now);
             trainCarriage.setGmtModified(now);

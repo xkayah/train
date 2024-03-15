@@ -1,6 +1,7 @@
 package com.mnus.business.service;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.date.DateTime;
 import cn.hutool.core.util.StrUtil;
 import com.github.pagehelper.PageHelper;
@@ -47,6 +48,14 @@ public class TrainService {
         Train train = BeanUtil.copyProperties(req, Train.class);
         // notnull,insert
         if (Objects.isNull(train.getId())) {
+            // 保存之前，先校验唯一键是否存在
+            TrainExample trainExample = new TrainExample();
+            trainExample.createCriteria().
+                    andCodeEqualTo(req.getCode());
+            long count = trainMapper.countByExample(trainExample);
+            if (count > 0L) {
+                throw new BizException(BaseErrorCodeEnum.BUSINESS_TRAIN_ALREADY_EXISTS);
+            }
             train.setId(IdGenUtil.nextId());
             train.setGmtCreate(now);
             train.setGmtModified(now);

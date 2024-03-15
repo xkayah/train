@@ -4,7 +4,6 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.date.DateTime;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.mnus.common.context.ReqHolder;
 import com.mnus.common.enums.BaseErrorCodeEnum;
 import com.mnus.common.exception.BizException;
 import com.mnus.common.req.EntityDeleteReq;
@@ -39,6 +38,24 @@ public class TrainStationService {
         TrainStation trainStation = BeanUtil.copyProperties(req, TrainStation.class);
         // notnull,insert
         if (Objects.isNull(trainStation.getId())) {
+            // 保存之前，先校验唯一键是否存在
+            TrainStationExample example = new TrainStationExample();
+            example.createCriteria()
+                    .andTrainCodeEqualTo(req.getTrainCode())
+                    .andIndexEqualTo(req.getIndex());
+            long count1 = trainStationMapper.countByExample(example);
+            if (count1 > 0L) {
+                throw new BizException(BaseErrorCodeEnum.BUSINESS_TRAIN_STATION_ALREADY_EXISTS);
+            } else {
+                example.clear();
+                example.createCriteria()
+                        .andTrainCodeEqualTo(req.getTrainCode())
+                        .andNameEqualTo(req.getName());
+                long count2 = trainStationMapper.countByExample(example);
+                if (count2 > 0L) {
+                    throw new BizException(BaseErrorCodeEnum.BUSINESS_TRAIN_STATION_ALREADY_EXISTS);
+                }
+            }
             trainStation.setId(IdGenUtil.nextId());
             trainStation.setGmtCreate(now);
             trainStation.setGmtModified(now);

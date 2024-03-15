@@ -35,11 +35,13 @@ public class TrainSeatService {
     @Resource
     private TrainSeatMapper trainSeatMapper;
 
+    // 座位一般由系统自动生成，所以这个save应该删除
     public void save(TrainSeatSaveReq req) {
         DateTime now = DateTime.now();
         TrainSeat trainSeat = BeanUtil.copyProperties(req, TrainSeat.class);
         // notnull,insert
         if (Objects.isNull(trainSeat.getId())) {
+            // 保存之前，先校验唯一键是否存在
             trainSeat.setId(IdGenUtil.nextId());
             trainSeat.setGmtCreate(now);
             trainSeat.setGmtModified(now);

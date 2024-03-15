@@ -4,7 +4,6 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.date.DateTime;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.mnus.common.context.ReqHolder;
 import com.mnus.common.enums.BaseErrorCodeEnum;
 import com.mnus.common.exception.BizException;
 import com.mnus.common.req.EntityDeleteReq;
@@ -38,6 +37,14 @@ public class StationService {
         Station station = BeanUtil.copyProperties(req, Station.class);
         // notnull,insert
         if (Objects.isNull(station.getId())) {
+            // 保存之前，先校验唯一键是否存在
+            StationExample stationExample = new StationExample();
+            stationExample.createCriteria().
+                    andNameEqualTo(req.getName());
+            long count = stationMapper.countByExample(stationExample);
+            if (count > 0L) {
+                throw new BizException(BaseErrorCodeEnum.BUSINESS_STATION_ALREADY_EXISTS);
+            }
             station.setId(IdGenUtil.nextId());
             station.setGmtCreate(now);
             station.setGmtModified(now);
