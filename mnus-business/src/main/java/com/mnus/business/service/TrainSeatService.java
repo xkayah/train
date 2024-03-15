@@ -20,9 +20,11 @@ import jakarta.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.function.ToDoubleBiFunction;
 
 /**
  * @author: <a href="https://github.com/xkayah">xkayah</a>
@@ -55,12 +57,13 @@ public class TrainSeatService {
     }
 
     public PageResp<TrainSeatQueryResp> queryList(TrainSeatQueryReq req) {
-        // Long uid = req.getUserId();
         TrainSeatExample trainSeatExample = new TrainSeatExample();
-        // if (Objects.nonNull(uid)) {
-        //     trainSeatExample.createCriteria().andUserIdEqualTo(uid);
-        // }
-        // 分页请求
+        String trainCode = req.getTrainCode();
+        if (StringUtils.hasText(trainCode)) {
+            trainSeatExample.createCriteria().
+                    andTrainCodeEqualTo(trainCode);
+        }
+        trainSeatExample.setOrderByClause("train_code asc, carriage_index asc, carriage_seat_index asc");
         PageHelper.startPage(req.getPageNo(), req.getPageSize());
         List<TrainSeat> trainSeatList = trainSeatMapper.selectByExample(trainSeatExample);
         // 获取分页
@@ -69,6 +72,7 @@ public class TrainSeatService {
         int pages = pageInfo.getPages();
         // 封装分页
         List<TrainSeatQueryResp> list = BeanUtil.copyToList(pageInfo.getList(), TrainSeatQueryResp.class);
+        // todo 校验分页页数
         PageResp<TrainSeatQueryResp> pageResp = new PageResp<>();
         pageResp.setTotal(total);
         pageResp.setList(list);
