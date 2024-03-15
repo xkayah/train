@@ -19,6 +19,7 @@ import jakarta.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 import java.util.Objects;
@@ -63,9 +64,12 @@ public class StationService {
 
     public PageResp<StationQueryResp> queryList(StationQueryReq req) {
         StationExample stationExample = new StationExample();
-        // if (Objects.nonNull(uid)) {
-        //     stationExample.createCriteria().andUserIdEqualTo(uid);
-        // }
+        stationExample.setOrderByClause("name asc");
+        String name = req.getName();
+        if (StringUtils.hasText(name)) {
+            stationExample.createCriteria()
+                    .andNameEqualTo(name);
+        }
         // 分页请求
         PageHelper.startPage(req.getPageNo(), req.getPageSize());
         List<Station> stationList = stationMapper.selectByExample(stationExample);

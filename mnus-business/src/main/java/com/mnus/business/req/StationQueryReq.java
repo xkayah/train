@@ -7,9 +7,20 @@ import com.mnus.common.req.PageReq;
  */
 public class StationQueryReq extends PageReq {
 
+    private String name;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     @Override
     public String toString() {
         return "StationQueryReq{" +
+                "name='" + name + '\'' +
                 "} " + super.toString();
     }
 }
