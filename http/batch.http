@@ -1,0 +1,63 @@
+### test
+GET http://localhost:10100/batch/hello
+Content-Type: application/json
+
+###
+POST http://localhost:10100/ucenter/user/sign-in
+Content-Type: application/json
+
+{
+  "mobile": "13979747386",
+  "code": "666666"
+}
+
+> {%
+    s = JSON.stringify(response.body.data.token);
+    // 去掉头尾引号
+    client.global.set("token", "Bearer " + s.substring(1, s.length-1))
+%}
+
+### passenger insert
+POST http://localhost:10100/ucenter/passenger/save
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "name": "施傲和",
+  "idCard": "420101197106184218",
+  "type": "1"
+}
+
+### passenger update
+POST http://localhost:10100/ucenter/passenger/save
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "id": "1767813641832370176",
+  "name": "施傲和",
+  "idCard": "420101197106184218",
+  "type": "2"
+}
+
+### query-list
+GET http://localhost:10100/business/admin/train-seat/query-list?pageNo=1&pageSize=20&trainCode=A0
+Accept: application/json
+Authorization: {{token}}
+
+### gen-seat
+GET http://localhost:10100/business/admin/train/gen-seat?trainCode=A0005
+Accept: application/json
+Authorization: {{token}}
+
+### save train-station
+POST http://localhost:10100/business/admin/train-station/save
+Content-Type: application/json
+
+{
+  "trainCode": "A0",
+  "index": "4",
+  "name": "Chen Xiaoming",
+  "namePinyin": "CX",
+  "km": "9.9"
+}
