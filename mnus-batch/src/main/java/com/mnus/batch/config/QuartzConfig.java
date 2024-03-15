@@ -33,7 +33,7 @@ public class QuartzConfig {
                 .startNow()
                 .withSchedule(
                         CronScheduleBuilder.
-                                cronSchedule("*/5 * * * * ?"))
+                                cronSchedule("*/2 * * * * ?"))
                 .build();
     }
 }
