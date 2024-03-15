@@ -39,22 +39,13 @@ public class TrainStationService {
         // notnull,insert
         if (Objects.isNull(trainStation.getId())) {
             // 保存之前，先校验唯一键是否存在
-            TrainStationExample example = new TrainStationExample();
-            example.createCriteria()
-                    .andTrainCodeEqualTo(req.getTrainCode())
-                    .andIndexEqualTo(req.getIndex());
-            long count1 = trainStationMapper.countByExample(example);
-            if (count1 > 0L) {
-                throw new BizException(BaseErrorCodeEnum.BUSINESS_TRAIN_STATION_ALREADY_EXISTS);
-            } else {
-                example.clear();
-                example.createCriteria()
-                        .andTrainCodeEqualTo(req.getTrainCode())
-                        .andNameEqualTo(req.getName());
-                long count2 = trainStationMapper.countByExample(example);
-                if (count2 > 0L) {
-                    throw new BizException(BaseErrorCodeEnum.BUSINESS_TRAIN_STATION_ALREADY_EXISTS);
-                }
+            long count = countUnique(req.getTrainCode(), req.getIndex());
+            if (count > 0L) {
+                throw new BizException(BaseErrorCodeEnum.BUSINESS_TRAIN_STATION_NAME_ALREADY_EXISTS);
+            }
+            count = countUnique(req.getTrainCode(), req.getName());
+            if (count > 0L) {
+                throw new BizException(BaseErrorCodeEnum.BUSINESS_TRAIN_STATION_INDEX_ALREADY_EXISTS);
             }
             trainStation.setId(IdGenUtil.nextId());
             trainStation.setGmtCreate(now);
@@ -65,6 +56,23 @@ public class TrainStationService {
             trainStation.setGmtModified(now);
             trainStationMapper.updateByPrimaryKeySelective(trainStation);
         }
+
+    }
+
+    private long countUnique(String trainCode, Integer idx) {
+        TrainStationExample example = new TrainStationExample();
+        example.createCriteria()
+                .andTrainCodeEqualTo(trainCode)
+                .andIndexEqualTo(idx);
+        return trainStationMapper.countByExample(example);
+    }
+
+    private long countUnique(String trainCode, String name) {
+        TrainStationExample example = new TrainStationExample();
+        example.createCriteria()
+                .andTrainCodeEqualTo(trainCode)
+                .andNameEqualTo(name);
+        return trainStationMapper.countByExample(example);
     }
 
     public void delete(EntityDeleteReq req) {

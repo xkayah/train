@@ -39,12 +39,9 @@ public class StationService {
         // notnull,insert
         if (Objects.isNull(station.getId())) {
             // 保存之前，先校验唯一键是否存在
-            StationExample stationExample = new StationExample();
-            stationExample.createCriteria().
-                    andNameEqualTo(req.getName());
-            long count = stationMapper.countByExample(stationExample);
-            if (count > 0L) {
-                throw new BizException(BaseErrorCodeEnum.BUSINESS_STATION_ALREADY_EXISTS);
+            long count = countUnique(req.getName());
+            if (count > 0) {
+                throw new BizException(BaseErrorCodeEnum.BUSINESS_STATION_NAME_ALREADY_EXISTS);
             }
             station.setId(IdGenUtil.nextId());
             station.setGmtCreate(now);
@@ -55,6 +52,13 @@ public class StationService {
             station.setGmtModified(now);
             stationMapper.updateByPrimaryKeySelective(station);
         }
+    }
+
+    private long countUnique(String name) {
+        StationExample stationExample = new StationExample();
+        stationExample.createCriteria().
+                andNameEqualTo(name);
+        return stationMapper.countByExample(stationExample);
     }
 
     public void delete(EntityDeleteReq req) {
