@@ -15,7 +15,15 @@ import java.util.List;
 public enum TrainTypeEnum {
     G("G", "高铁", new BigDecimal("1.2")),
     D("D", "动车", new BigDecimal("1")),
-    K("K", "快速", new BigDecimal("0.8"));
+    C("C", "城际动车", new BigDecimal("1")),
+    Z("Z", "直特", new BigDecimal("1")),
+    T("T", "特快", new BigDecimal("1")),
+    N("N", "管内", new BigDecimal("1")),
+    L("L", "临时", new BigDecimal("1")),
+    A("A", "按需", new BigDecimal("1")),
+    K("K", "快速", new BigDecimal("0.8")),
+
+    ;
 
     private String code;
 
