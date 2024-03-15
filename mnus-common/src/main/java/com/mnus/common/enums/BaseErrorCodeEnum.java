@@ -58,6 +58,18 @@ public enum BaseErrorCodeEnum implements ErrorCode {
     BUSINESS_TRAIN_STATION_INDEX_ALREADY_EXISTS(40003, "同车次站序已存在!"),
     BUSINESS_TRAIN_CARRIAGE_ALREADY_EXISTS(40003, "同车次厢序已存在!"),
 
+    /**
+     * business 模块异常码
+     */
+    BATCH_ADD_JOB_SCHEDULER_ERROR(50001, "创建定时任务失败,调度异常!"),
+    BATCH_ADD_JOB_CLASS_NOT_EXISTS(50002, "创建定时任务失败,任务类不存在!"),
+    BATCH_PAUSE_JOB_SCHEDULER_ERROR(50003, "暂停定时任务失败,调度异常!"),
+    BATCH_RESUME_JOB_SCHEDULER_ERROR(50004, "重启定时任务失败,调度异常!"),
+    BATCH_RESCHEDULE_JOB_SCHEDULER_ERROR(50005, "更新定时任务失败,调度异常!"),
+    BATCH_DELETE_JOB_SCHEDULER_ERROR(50006, "删除定时任务失败,调度异常!"),
+    BATCH_QUERY_JOB_SCHEDULER_ERROR(50007, "查询定时任务失败,调度异常!"),
+
+
     ;
 
     Integer code;

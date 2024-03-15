@@ -15,11 +15,6 @@ public class TestJob implements Job {
     @Override
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
         System.out.println("QuartzTestJob start..." + DateTime.now());
-        try {
-            Thread.sleep(3000);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
         System.out.println("QuartzTestJob end  ..." + DateTime.now());
     }
 }
