@@ -41,7 +41,7 @@ Authorization: {{token}}
 }
 
 ### query-list
-GET http://localhost:10100/ucenter/passenger/query-list?pageNo=2&pageSize=20
+GET http://localhost:10100/business/admin/train-station/query-list?pageNo=2&pageSize=20&trainCode=
 Accept: application/json
 Authorization: {{token}}
 

@@ -20,6 +20,7 @@ import jakarta.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 import java.util.Objects;
@@ -55,11 +56,13 @@ public class TrainStationService {
     }
 
     public PageResp<TrainStationQueryResp> queryList(TrainStationQueryReq req) {
-        // Long uid = req.getUserId();
         TrainStationExample trainStationExample = new TrainStationExample();
-        // if (Objects.nonNull(uid)) {
-        //     trainStationExample.createCriteria().andUserIdEqualTo(uid);
-        // }
+        trainStationExample.setOrderByClause("train_code asc, `index` asc");
+        String trainCode = req.getTrainCode();
+        if (StringUtils.hasText(trainCode)) {
+            trainStationExample.createCriteria().
+                    andTrainCodeEqualTo(trainCode);
+        }
         // 分页请求
         PageHelper.startPage(req.getPageNo(), req.getPageSize());
         List<TrainStation> trainStationList = trainStationMapper.selectByExample(trainStationExample);

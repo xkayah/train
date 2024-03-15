@@ -26,7 +26,8 @@ public class InterceptorConfig implements WebMvcConfigurer {
     private TokenInterceptor tokenInterceptor;
 
     private final List<String> PUBLIC_PATH = List.of(
-            "/hello");
+            "/hello",
+            "/admin/**");
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
