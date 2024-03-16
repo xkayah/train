@@ -70,6 +70,21 @@ Content-Type: application/json
 }
 
 ###
+POST http://localhost:8201/batch/admin/job/add
+Content-Type: application/json
 
-GET http://localhost:8201/batch/hello
+{
+  "name": "com.mnus.batch.job.DailyTrainJob",
+  "jobGroupName": "default",
+  "cronExpression": "0 0 12 * * ?",
+  "desc": "test job"
+}
 
+###
+POST http://localhost:8201/batch/admin/job/run
+Content-Type: application/json
+
+{
+  "name": "com.mnus.batch.job.DailyTrainJob",
+  "jobGroupName": "default"
+}

@@ -9,7 +9,10 @@ import com.mnus.common.resp.CommonResp;
 import com.mnus.common.resp.PageResp;
 import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Date;
 
 /**
  * @author: <a href="https://github.com/xkayah">xkayah</a>
@@ -36,5 +39,13 @@ public class DailyTrainAdminController {
     public CommonResp<PageResp<DailyTrainQueryResp>> queryList(@Valid DailyTrainQueryReq req) {
         PageResp<DailyTrainQueryResp> list = dailyTrainService.queryList(req);
         return CommonResp.success(list);
+    }
+
+    @GetMapping("/gen-daily/{date}")
+    public CommonResp<Object> genDaily(
+            @PathVariable
+            @DateTimeFormat(pattern = "yyyy-MM-dd") Date date) {
+        dailyTrainService.genDaily(date);
+        return CommonResp.success();
     }
 }

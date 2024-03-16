@@ -101,6 +101,11 @@ public class TrainService {
         return pageResp;
     }
 
+    /**
+     * 生成该【车次编号】下的所有【座位】信息
+     *
+     * @param req
+     */
     public void genTrainSeat(GenTrainSeatReq req) {
         DateTime now = DateTime.now();
         // 先删除后生成
@@ -143,5 +148,11 @@ public class TrainService {
             LOG.info("Generate..[{}-{}], type:{}, count:{}",
                     trainCode, trainCarriage.getIndex(), seatType, seatIdx - 1);
         }
+    }
+
+    public List<Train> selectAll() {
+        TrainExample trainExample = new TrainExample();
+        trainExample.setOrderByClause("code asc");
+        return trainMapper.selectByExample(trainExample);
     }
 }

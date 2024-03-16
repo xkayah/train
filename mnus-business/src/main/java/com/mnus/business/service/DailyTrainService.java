@@ -1,11 +1,13 @@
 package com.mnus.business.service;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateTime;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.mnus.business.domain.DailyTrain;
 import com.mnus.business.domain.DailyTrainExample;
+import com.mnus.business.domain.Train;
 import com.mnus.business.mapper.DailyTrainMapper;
 import com.mnus.business.req.DailyTrainQueryReq;
 import com.mnus.business.req.DailyTrainSaveReq;
@@ -18,6 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -29,6 +32,9 @@ public class DailyTrainService {
     private static final Logger LOG = LoggerFactory.getLogger(DailyTrainService.class);
     @Resource
     private DailyTrainMapper dailyTrainMapper;
+
+    @Resource
+    private TrainService trainService;
 
     public void save(DailyTrainSaveReq req) {
         DateTime now = DateTime.now();
@@ -42,7 +48,7 @@ public class DailyTrainService {
             dailyTrainMapper.insert(dailyTrain);
         } else {
             // null,update
-            //if (!Objects.equals(ReqHolder.getUid(), req.getUserId())) {
+            // if (!Objects.equals(ReqHolder.getUid(), req.getUserId())) {
             //    throw new BizException(BaseErrorCodeEnum.SYSTEM_USER_CANNOT_UPDATE_OTHER_USER);
             //}
             dailyTrain.setGmtModified(now);
@@ -56,11 +62,18 @@ public class DailyTrainService {
     }
 
     public PageResp<DailyTrainQueryResp> queryList(DailyTrainQueryReq req) {
-        //Long uid = req.getUserId();
         DailyTrainExample dailyTrainExample = new DailyTrainExample();
-        //if (Objects.nonNull(uid)) {
-        //    dailyTrainExample.createCriteria().andUserIdEqualTo(uid);
-        //}
+        DailyTrainExample.Criteria criteria = dailyTrainExample.createCriteria();
+        String trainCode = req.getTrainCode();
+        Date date = req.getDate();
+        if (Objects.nonNull(trainCode)) {
+            criteria
+                    .andCodeEqualTo(trainCode);
+        }
+        if (Objects.nonNull(date)) {
+            criteria
+                    .andDateEqualTo(date);
+        }
         // 分页请求
         PageHelper.startPage(req.getPageNo(), req.getPageSize());
         List<DailyTrain> dailyTrainList = dailyTrainMapper.selectByExample(dailyTrainExample);
@@ -77,6 +90,48 @@ public class DailyTrainService {
         LOG.info("[query] pageNo:{},pageSize:{},total:{},pages:{}",
                 req.getPageNo(), req.getPageSize(), total, pages);
         return pageResp;
+    }
+
+    /**
+     * 生成某日期下所有的【日常车次】信息
+     *
+     * @param date
+     */
+    public void genDaily(Date date) {
+        // 查询所有【车次】信息
+        List<Train> trainList = trainService.selectAll();
+        LOG.info("[GenDailyTrain]list size:{}", trainList.size());
+        if (CollUtil.isEmpty(trainList)) {
+            return;
+        }
+        for (Train train : trainList) {
+            genOneDaily(date, train);
+        }
+    }
+
+    /**
+     * 生成某日期某车次的【日常车次】信息
+     *
+     * @param date
+     * @param train
+     */
+    public void genOneDaily(Date date, Train train) {
+        // 删除该【日期】该【车次】下的所有【日常车次】信息
+        DailyTrainExample dailyTrainExample = new DailyTrainExample();
+        DailyTrainExample.Criteria criteria = dailyTrainExample.createCriteria();
+        criteria
+                .andCodeEqualTo(train.getCode())
+                .andDateEqualTo(date);
+        dailyTrainMapper.deleteByExample(dailyTrainExample);
+        // 生成该【日期】下的【日常车次】信息
+        DateTime now = DateTime.now();
+        DailyTrain record = BeanUtil.copyProperties(train, DailyTrain.class);
+        record.setId(IdGenUtil.nextId());
+        record.setDate(date);
+        record.setGmtCreate(now);
+        record.setGmtModified(now);
+        dailyTrainMapper.insert(record);
+        LOG.info("[gen]code:{}, date:{}", train.getCode(), DateTime.of(date));
     }
 
 }
