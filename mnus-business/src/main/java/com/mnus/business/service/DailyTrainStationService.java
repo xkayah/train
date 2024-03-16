@@ -18,6 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -58,9 +59,17 @@ public class DailyTrainStationService {
     public PageResp<DailyTrainStationQueryResp> queryList(DailyTrainStationQueryReq req) {
         //Long uid = req.getUserId();
         DailyTrainStationExample dailyTrainStationExample = new DailyTrainStationExample();
-        //if (Objects.nonNull(uid)) {
-        //    dailyTrainStationExample.createCriteria().andUserIdEqualTo(uid);
-        //}
+        DailyTrainStationExample.Criteria criteria = dailyTrainStationExample.createCriteria();
+        String trainCode = req.getTrainCode();
+        Date date = req.getDate();
+        if (Objects.nonNull(trainCode)) {
+            criteria
+                    .andTrainCodeEqualTo(trainCode);
+        }
+        if (Objects.nonNull(date)) {
+            criteria
+                    .andDateEqualTo(date);
+        }
         // 分页请求
         PageHelper.startPage(req.getPageNo(), req.getPageSize());
         List<DailyTrainStation> dailyTrainStationList = dailyTrainStationMapper.selectByExample(dailyTrainStationExample);

@@ -146,7 +146,6 @@ public class JobController {
 
     @RequestMapping(value = "/query")
     public CommonResp<List<CronJobDto>> query() {
-        LOG.info("查看所有定时任务开始");
         List<CronJobDto> cronJobDtoList = new ArrayList<>();
         try {
             Scheduler scheduler = schedulerFactoryBean.getScheduler();

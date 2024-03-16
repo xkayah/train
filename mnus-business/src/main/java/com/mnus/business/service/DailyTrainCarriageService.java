@@ -18,6 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -42,7 +43,7 @@ public class DailyTrainCarriageService {
             dailyTrainCarriageMapper.insert(dailyTrainCarriage);
         } else {
             // null,update
-            //if (!Objects.equals(ReqHolder.getUid(), req.getUserId())) {
+            // if (!Objects.equals(ReqHolder.getUid(), req.getUserId())) {
             //    throw new BizException(BaseErrorCodeEnum.SYSTEM_USER_CANNOT_UPDATE_OTHER_USER);
             //}
             dailyTrainCarriage.setGmtModified(now);
@@ -56,11 +57,18 @@ public class DailyTrainCarriageService {
     }
 
     public PageResp<DailyTrainCarriageQueryResp> queryList(DailyTrainCarriageQueryReq req) {
-        //Long uid = req.getUserId();
         DailyTrainCarriageExample dailyTrainCarriageExample = new DailyTrainCarriageExample();
-        //if (Objects.nonNull(uid)) {
-        //    dailyTrainCarriageExample.createCriteria().andUserIdEqualTo(uid);
-        //}
+        DailyTrainCarriageExample.Criteria criteria = dailyTrainCarriageExample.createCriteria();
+        String trainCode = req.getTrainCode();
+        Date date = req.getDate();
+        if (Objects.nonNull(trainCode)) {
+            criteria
+                    .andTrainCodeEqualTo(trainCode);
+        }
+        if (Objects.nonNull(date)) {
+            criteria
+                    .andDateEqualTo(date);
+        }
         // 分页请求
         PageHelper.startPage(req.getPageNo(), req.getPageSize());
         List<DailyTrainCarriage> dailyTrainCarriageList = dailyTrainCarriageMapper.selectByExample(dailyTrainCarriageExample);

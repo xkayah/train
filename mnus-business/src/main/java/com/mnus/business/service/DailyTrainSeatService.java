@@ -42,7 +42,7 @@ public class DailyTrainSeatService {
             dailyTrainSeatMapper.insert(dailyTrainSeat);
         } else {
             // null,update
-            //if (!Objects.equals(ReqHolder.getUid(), req.getUserId())) {
+            // if (!Objects.equals(ReqHolder.getUid(), req.getUserId())) {
             //    throw new BizException(BaseErrorCodeEnum.SYSTEM_USER_CANNOT_UPDATE_OTHER_USER);
             //}
             dailyTrainSeat.setGmtModified(now);
@@ -56,11 +56,12 @@ public class DailyTrainSeatService {
     }
 
     public PageResp<DailyTrainSeatQueryResp> queryList(DailyTrainSeatQueryReq req) {
-        //Long uid = req.getUserId();
         DailyTrainSeatExample dailyTrainSeatExample = new DailyTrainSeatExample();
-        //if (Objects.nonNull(uid)) {
-        //    dailyTrainSeatExample.createCriteria().andUserIdEqualTo(uid);
-        //}
+        String trainCode = req.getTrainCode();
+        if (Objects.nonNull(trainCode)) {
+            dailyTrainSeatExample.createCriteria()
+                    .andTrainCodeEqualTo(trainCode);
+        }
         // 分页请求
         PageHelper.startPage(req.getPageNo(), req.getPageSize());
         List<DailyTrainSeat> dailyTrainSeatList = dailyTrainSeatMapper.selectByExample(dailyTrainSeatExample);

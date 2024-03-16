@@ -38,4 +38,12 @@ public class PageReq {
     public void setPageSize(Integer pageSize) {
         this.pageSize = pageSize;
     }
+
+    @Override
+    public String toString() {
+        return "PageReq{" +
+                "pageNo=" + pageNo +
+                ", pageSize=" + pageSize +
+                '}';
+    }
 }
