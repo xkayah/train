@@ -112,4 +112,10 @@ public class TrainStationService {
         example.createCriteria().andTrainCodeEqualTo(trainCode);
         return trainStationMapper.selectByExample(example);
     }
+
+    public long countByTrainCode(String trainCode) {
+        TrainStationExample example = new TrainStationExample();
+        example.createCriteria().andTrainCodeEqualTo(trainCode);
+        return trainStationMapper.countByExample(example);
+    }
 }
