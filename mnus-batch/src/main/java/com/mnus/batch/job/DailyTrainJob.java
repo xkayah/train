@@ -30,7 +30,7 @@ public class DailyTrainJob implements Job {
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
         MDC.put(MDCKey.TID, UUID.randomUUID().toString());
         Date date = DateUtil.offsetDay(DateTime.now(), OFFSET_DAY).toJdkDate();
-        CommonResp<Object> resp = businessFeign.genDailyTrain(date);
-        LOG.info("[daily train job]gen date after 15 days.");
+        businessFeign.genDailyTrain(date);
+        LOG.info("[daily train job]gen data after 15 days.");
     }
 }
