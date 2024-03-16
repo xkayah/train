@@ -3,6 +3,7 @@ package com.mnus.business.service;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateTime;
+import cn.hutool.core.date.DateUtil;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.mnus.business.domain.DailyTrain;
@@ -41,6 +42,9 @@ public class DailyTrainService {
 
     @Resource
     private DailyTrainCarriageService dailyTrainCarriageService;
+
+    @Resource
+    private DailyTrainSeatService dailyTrainSeatService;
 
     public void save(DailyTrainSaveReq req) {
         DateTime now = DateTime.now();
@@ -106,7 +110,8 @@ public class DailyTrainService {
     public void genDaily(Date date) {
         // 查询所有【车次】信息
         List<Train> trainList = trainService.selectAll();
-        LOG.info("[GenDailyTrain]date:{}, list size:{}", DateTime.of(date), trainList.size());
+        LOG.info("[Train]date:{}, list size:{}",
+                DateUtil.format(date, "yyyy-MM-dd"), trainList.size());
         if (CollUtil.isEmpty(trainList)) {
             return;
         }
@@ -117,6 +122,8 @@ public class DailyTrainService {
             dailyTrainStationService.genDaily(date, train.getCode());
             // 生成该车次的车站数据
             dailyTrainCarriageService.genDaily(date, train.getCode());
+            // 生成该车次的座位数据
+            dailyTrainSeatService.genDaily(date, train.getCode());
         }
     }
 

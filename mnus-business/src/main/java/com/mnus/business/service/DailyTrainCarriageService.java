@@ -107,7 +107,7 @@ public class DailyTrainCarriageService {
         dailyTrainCarriageMapper.deleteByExample(example);
         // 查某【车次】的所有【车厢】信息
         List<TrainCarriage> trainCarriageList = trainCarriageService.selectByTrainCode(trainCode);
-        LOG.info("[GenDailyTrainCarriage]list size:{}", trainCarriageList.size());
+        LOG.info("[Carriage]list size:{}", trainCarriageList.size());
         if (CollUtil.isEmpty(trainCarriageList)) {
             return;
         }
@@ -120,7 +120,7 @@ public class DailyTrainCarriageService {
             record.setGmtCreate(now);
             record.setGmtModified(now);
             dailyTrainCarriageMapper.insert(record);
-            LOG.info("[train carriage]seat type:{}, idx:{}", trainCarriage.getSeatType(), trainCarriage.getIndex());
+            LOG.info("[carriage]seat type:{}, idx:{}", trainCarriage.getSeatType(), trainCarriage.getIndex());
         }
     }
 }

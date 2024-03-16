@@ -105,7 +105,7 @@ public class DailyTrainStationService {
         dailyTrainStationMapper.deleteByExample(example);
         // 查某【车次】的所有【车站】信息
         List<TrainStation> trainStationList = trainStationService.selectByTrainCode(trainCode);
-        LOG.info("[GenDailyTrainStation]list size:{}", trainStationList.size());
+        LOG.info("[Station]list size:{}", trainStationList.size());
         if (CollUtil.isEmpty(trainStationList)) {
             return;
         }
@@ -118,7 +118,7 @@ public class DailyTrainStationService {
             record.setGmtCreate(now);
             record.setGmtModified(now);
             dailyTrainStationMapper.insert(record);
-            LOG.info("[train station]name:{}, idx:{}", trainStation.getName(), trainStation.getIndex());
+            LOG.info("[station]name:{}, idx:{}", trainStation.getName(), trainStation.getIndex());
         }
     }
 }

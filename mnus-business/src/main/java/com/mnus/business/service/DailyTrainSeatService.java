@@ -64,6 +64,7 @@ public class DailyTrainSeatService {
 
     public PageResp<DailyTrainSeatQueryResp> queryList(DailyTrainSeatQueryReq req) {
         DailyTrainSeatExample dailyTrainSeatExample = new DailyTrainSeatExample();
+        dailyTrainSeatExample.setOrderByClause("date desc, train_code asc, carriage_seat_index asc");
         String trainCode = req.getTrainCode();
         if (Objects.nonNull(trainCode)) {
             dailyTrainSeatExample.createCriteria()
