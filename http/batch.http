@@ -68,3 +68,8 @@ Content-Type: application/json
   "name": "com.mnus.batch.job.TestJob",
   "jobGroupName": "default"
 }
+
+###
+
+GET http://localhost:8201/batch/hello
+

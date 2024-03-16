@@ -1,5 +1,6 @@
 package com.mnus.batch.controller;
 
+import com.mnus.batch.feign.TestFeign;
 import jakarta.annotation.Resource;
 import org.springframework.core.env.Environment;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,8 +15,12 @@ public class TestController {
     @Resource
     private Environment env;
 
+    @Resource
+    private TestFeign testFeign;
+
     @GetMapping("/hello")
     public String hello() {
+        System.out.printf("[feign]:%s\n", testFeign.hello());
         return String.format("Hello %s Service!", env.getProperty("spring.application.name"));
     }
 }
