@@ -1,11 +1,11 @@
 package com.mnus.business.service;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateTime;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.mnus.business.domain.DailyTrainStation;
-import com.mnus.business.domain.DailyTrainStationExample;
+import com.mnus.business.domain.*;
 import com.mnus.business.mapper.DailyTrainStationMapper;
 import com.mnus.business.req.DailyTrainStationQueryReq;
 import com.mnus.business.req.DailyTrainStationSaveReq;
@@ -31,6 +31,9 @@ public class DailyTrainStationService {
     @Resource
     private DailyTrainStationMapper dailyTrainStationMapper;
 
+    @Resource
+    private TrainStationService trainStationService;
+
     public void save(DailyTrainStationSaveReq req) {
         DateTime now = DateTime.now();
         DailyTrainStation dailyTrainStation = BeanUtil.copyProperties(req, DailyTrainStation.class);
@@ -43,7 +46,7 @@ public class DailyTrainStationService {
             dailyTrainStationMapper.insert(dailyTrainStation);
         } else {
             // null,update
-            //if (!Objects.equals(ReqHolder.getUid(), req.getUserId())) {
+            // if (!Objects.equals(ReqHolder.getUid(), req.getUserId())) {
             //    throw new BizException(BaseErrorCodeEnum.SYSTEM_USER_CANNOT_UPDATE_OTHER_USER);
             //}
             dailyTrainStation.setGmtModified(now);
@@ -57,7 +60,7 @@ public class DailyTrainStationService {
     }
 
     public PageResp<DailyTrainStationQueryResp> queryList(DailyTrainStationQueryReq req) {
-        //Long uid = req.getUserId();
+        // Long uid = req.getUserId();
         DailyTrainStationExample dailyTrainStationExample = new DailyTrainStationExample();
         DailyTrainStationExample.Criteria criteria = dailyTrainStationExample.createCriteria();
         String trainCode = req.getTrainCode();
@@ -88,4 +91,34 @@ public class DailyTrainStationService {
         return pageResp;
     }
 
+    /**
+     * 生成某日期下所有的【日常车站】信息
+     *
+     * @param date
+     */
+    public void genDaily(Date date, String trainCode) {
+        // 删除该【日期】该【车次】下的所有【日常车站】信息
+        DailyTrainStationExample example = new DailyTrainStationExample();
+        example.createCriteria()
+                .andTrainCodeEqualTo(trainCode)
+                .andDateEqualTo(date);
+        dailyTrainStationMapper.deleteByExample(example);
+        // 查某【车次】的所有【车站】信息
+        List<TrainStation> trainStationList = trainStationService.selectByTrainCode(trainCode);
+        LOG.info("[GenDailyTrainStation]list size:{}", trainStationList.size());
+        if (CollUtil.isEmpty(trainStationList)) {
+            return;
+        }
+        for (TrainStation trainStation : trainStationList) {
+            // 生成该【车次】该【日期】下的【日常车站】信息
+            DateTime now = DateTime.now();
+            DailyTrainStation record = BeanUtil.copyProperties(trainStation, DailyTrainStation.class);
+            record.setId(IdGenUtil.nextId());
+            record.setDate(date);
+            record.setGmtCreate(now);
+            record.setGmtModified(now);
+            dailyTrainStationMapper.insert(record);
+            LOG.info("[train station]name:{}, idx:{}", trainStation.getName(), trainStation.getIndex());
+        }
+    }
 }

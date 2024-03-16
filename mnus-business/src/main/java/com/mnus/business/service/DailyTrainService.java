@@ -36,6 +36,9 @@ public class DailyTrainService {
     @Resource
     private TrainService trainService;
 
+    @Resource
+    private DailyTrainStationService dailyTrainStationService;
+
     public void save(DailyTrainSaveReq req) {
         DateTime now = DateTime.now();
         DailyTrain dailyTrain = BeanUtil.copyProperties(req, DailyTrain.class);
@@ -100,12 +103,15 @@ public class DailyTrainService {
     public void genDaily(Date date) {
         // 查询所有【车次】信息
         List<Train> trainList = trainService.selectAll();
-        LOG.info("[GenDailyTrain]list size:{}", trainList.size());
+        LOG.info("[GenDailyTrain]date:{}, list size:{}", DateTime.of(date), trainList.size());
         if (CollUtil.isEmpty(trainList)) {
             return;
         }
         for (Train train : trainList) {
+            // 生成改车次数据
             genOneDaily(date, train);
+            // 生成该车次的车站数据
+            dailyTrainStationService.genDaily(date, train.getCode());
         }
     }
 
@@ -131,7 +137,8 @@ public class DailyTrainService {
         record.setGmtCreate(now);
         record.setGmtModified(now);
         dailyTrainMapper.insert(record);
-        LOG.info("[gen]code:{}, date:{}", train.getCode(), DateTime.of(date));
+        LOG.info("[train]code:{}, start:{}, end:{}",
+                train.getCode(), train.getStart(), train.getEnd());
     }
 
 }
