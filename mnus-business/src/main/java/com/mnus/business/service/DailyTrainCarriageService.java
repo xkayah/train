@@ -1,12 +1,16 @@
 package com.mnus.business.service;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateTime;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.mnus.business.domain.DailyTrainCarriage;
 import com.mnus.business.domain.DailyTrainCarriageExample;
+import com.mnus.business.domain.TrainCarriage;
+import com.mnus.business.domain.TrainStation;
 import com.mnus.business.mapper.DailyTrainCarriageMapper;
+import com.mnus.business.mapper.TrainCarriageMapper;
 import com.mnus.business.req.DailyTrainCarriageQueryReq;
 import com.mnus.business.req.DailyTrainCarriageSaveReq;
 import com.mnus.business.resp.DailyTrainCarriageQueryResp;
@@ -30,6 +34,8 @@ public class DailyTrainCarriageService {
     private static final Logger LOG = LoggerFactory.getLogger(DailyTrainCarriageService.class);
     @Resource
     private DailyTrainCarriageMapper dailyTrainCarriageMapper;
+    @Resource
+    private TrainCarriageService trainCarriageService;
 
     public void save(DailyTrainCarriageSaveReq req) {
         DateTime now = DateTime.now();
@@ -87,4 +93,34 @@ public class DailyTrainCarriageService {
         return pageResp;
     }
 
+    /**
+     * 生成某日期下所有的【日常车厢】信息
+     *
+     * @param date
+     */
+    public void genDaily(Date date, String trainCode) {
+        // 删除该【日期】该【车次】下的所有【日常车厢】信息
+        DailyTrainCarriageExample example = new DailyTrainCarriageExample();
+        example.createCriteria()
+                .andTrainCodeEqualTo(trainCode)
+                .andDateEqualTo(date);
+        dailyTrainCarriageMapper.deleteByExample(example);
+        // 查某【车次】的所有【车厢】信息
+        List<TrainCarriage> trainCarriageList = trainCarriageService.selectByTrainCode(trainCode);
+        LOG.info("[GenDailyTrainCarriage]list size:{}", trainCarriageList.size());
+        if (CollUtil.isEmpty(trainCarriageList)) {
+            return;
+        }
+        for (TrainCarriage trainCarriage : trainCarriageList) {
+            // 生成该【车次】该【日期】下的【日常车厢】信息
+            DateTime now = DateTime.now();
+            DailyTrainCarriage record = BeanUtil.copyProperties(trainCarriage, DailyTrainCarriage.class);
+            record.setId(IdGenUtil.nextId());
+            record.setDate(date);
+            record.setGmtCreate(now);
+            record.setGmtModified(now);
+            dailyTrainCarriageMapper.insert(record);
+            LOG.info("[train carriage]seat type:{}, idx:{}", trainCarriage.getSeatType(), trainCarriage.getIndex());
+        }
+    }
 }
