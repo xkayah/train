@@ -114,9 +114,9 @@ public class TrainStationService {
         return trainStationMapper.selectByExample(example);
     }
 
-    public long countByTrainCode(String trainCode) {
+    public int countTrainStation(String trainCode) {
         TrainStationExample example = new TrainStationExample();
         example.createCriteria().andTrainCodeEqualTo(trainCode);
-        return trainStationMapper.countByExample(example);
+        return (int) trainStationMapper.countByExample(example);
     }
 }

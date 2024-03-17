@@ -121,16 +121,8 @@ public class DailyTrainService {
             return;
         }
         for (Train train : trainList) {
-            // 生成改车次数据
+            // 生成该车次数据
             genOneDaily(date, train);
-            // 生成该车次的车站数据
-            dailyTrainStationService.genDaily(date, train.getCode());
-            // 生成该车次的车站数据
-            dailyTrainCarriageService.genDaily(date, train.getCode());
-            // 生成该车次的座位数据
-            dailyTrainSeatService.genDaily(date, train.getCode());
-            // 生成该车次的座位数据
-            dailyTrainTicketService.genDaily(date, train.getCode());
         }
     }
 
@@ -158,6 +150,15 @@ public class DailyTrainService {
         dailyTrainMapper.insert(record);
         LOG.info("[train]code:{}, start:{}, end:{}",
                 train.getCode(), train.getStart(), train.getEnd());
+
+        // 生成该车次的车站数据
+        dailyTrainStationService.genDaily(date, train.getCode());
+        // 生成该车次的车站数据
+        dailyTrainCarriageService.genDaily(date, train.getCode());
+        // 生成该车次的座位数据
+        dailyTrainSeatService.genDaily(date, train.getCode());
+        // 生成该车次的余票数据
+        dailyTrainTicketService.genDaily(record.getType(), date, train.getCode());
     }
 
 }

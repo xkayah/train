@@ -95,12 +95,12 @@ public class DailyTrainTicketQueryResp {
      * 新增时间
      */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
-    private Date createTime;
+    private Date gmtCreate;
     /**
      * 修改时间
      */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
-    private Date updateTime;
+    private Date gmtModified;
 
     public Long getId() {
         return id;
@@ -254,20 +254,20 @@ public class DailyTrainTicketQueryResp {
         this.ywPrice = ywPrice;
     }
 
-    public Date getCreateTime() {
-        return createTime;
+    public Date getGmtCreate() {
+        return gmtCreate;
     }
 
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
+    public void setGmtCreate(Date gmtCreate) {
+        this.gmtCreate = gmtCreate;
     }
 
-    public Date getUpdateTime() {
-        return updateTime;
+    public Date getGmtModified() {
+        return gmtModified;
     }
 
-    public void setUpdateTime(Date updateTime) {
-        this.updateTime = updateTime;
+    public void setGmtModified(Date gmtModified) {
+        this.gmtModified = gmtModified;
     }
 
 
@@ -296,8 +296,8 @@ public class DailyTrainTicketQueryResp {
         sb.append(", rwPrice=").append(rwPrice);
         sb.append(", yw=").append(yw);
         sb.append(", ywPrice=").append(ywPrice);
-        sb.append(", createTime=").append(createTime);
-        sb.append(", updateTime=").append(updateTime);
+        sb.append(", gmtCreate=").append(gmtCreate);
+        sb.append(", gmtModified=").append(gmtModified);
         sb.append("]");
         return sb.toString();
     }

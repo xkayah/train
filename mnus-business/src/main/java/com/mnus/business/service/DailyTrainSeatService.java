@@ -107,8 +107,8 @@ public class DailyTrainSeatService {
             return;
         }
         // 查询出该车次的车站数.例如,有五个站:A B C D E,则 sell = "0000"
-        long stationCount = trainStationService.countByTrainCode(trainCode);
-        String sell = StrUtil.fillBefore("", '0', Math.toIntExact(stationCount - 1));
+        int stationCount = trainStationService.countTrainStation(trainCode);
+        String sell = StrUtil.fillBefore("", '0', stationCount - 1);
         for (TrainSeat trainSeat : trainCarriageList) {
             // 生成该【车次】该【日期】下的【日常车厢】信息
             DateTime now = DateTime.now();
@@ -123,5 +123,18 @@ public class DailyTrainSeatService {
             LOG.info("[seat]row:{}, col:{}, offsetIdx:{}",
                     trainSeat.getRow(), trainSeat.getCol(), trainSeat.getCarriageSeatIndex());
         }
+    }
+
+    /**
+     * 计算座位数量，座位数为 0 返回 -1
+     */
+    public int countSeat(Date date, String trainCode, String seatType) {
+        DailyTrainSeatExample example = new DailyTrainSeatExample();
+        example.createCriteria()
+                .andTrainCodeEqualTo(trainCode)
+                .andDateEqualTo(date)
+                .andSeatTypeEqualTo(seatType);
+        int count = (int) dailyTrainSeatMapper.countByExample(example);
+        return count == 0 ? -1 : count;
     }
 }
