@@ -1,17 +1,17 @@
 package com.mnus.business.service;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateTime;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.mnus.business.domain.*;
 import com.mnus.common.context.ReqHolder;
 import com.mnus.common.enums.BaseErrorCodeEnum;
 import com.mnus.common.exception.BizException;
 import com.mnus.common.req.EntityDeleteReq;
 import com.mnus.common.resp.PageResp;
 import com.mnus.common.utils.IdGenUtil;
-import com.mnus.business.domain.DailyTrainTicket;
-import com.mnus.business.domain.DailyTrainTicketExample;
 import com.mnus.business.mapper.DailyTrainTicketMapper;
 import com.mnus.business.req.DailyTrainTicketQueryReq;
 import com.mnus.business.req.DailyTrainTicketSaveReq;
@@ -21,6 +21,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -32,6 +34,9 @@ public class DailyTrainTicketService {
     private static final Logger LOG = LoggerFactory.getLogger(DailyTrainTicketService.class);
     @Resource
     private DailyTrainTicketMapper dailyTrainTicketMapper;
+
+    @Resource
+    private TrainStationService trainStationService;
 
     public void save(DailyTrainTicketSaveReq req) {
         DateTime now = DateTime.now();
@@ -45,7 +50,7 @@ public class DailyTrainTicketService {
             dailyTrainTicketMapper.insert(dailyTrainTicket);
         } else {
             // null,update
-            //if (!Objects.equals(ReqHolder.getUid(), req.getUserId())) {
+            // if (!Objects.equals(ReqHolder.getUid(), req.getUserId())) {
             //    throw new BizException(BaseErrorCodeEnum.SYSTEM_USER_CANNOT_UPDATE_OTHER_USER);
             //}
             dailyTrainTicket.setGmtModified(now);
@@ -59,9 +64,9 @@ public class DailyTrainTicketService {
     }
 
     public PageResp<DailyTrainTicketQueryResp> queryList(DailyTrainTicketQueryReq req) {
-        //Long uid = req.getUserId();
+        // Long uid = req.getUserId();
         DailyTrainTicketExample dailyTrainTicketExample = new DailyTrainTicketExample();
-        //if (Objects.nonNull(uid)) {
+        // if (Objects.nonNull(uid)) {
         //    dailyTrainTicketExample.createCriteria().andUserIdEqualTo(uid);
         //}
         // 分页请求
@@ -82,4 +87,58 @@ public class DailyTrainTicketService {
         return pageResp;
     }
 
+    /**
+     * 生成某日期下所有的【余票】信息
+     *
+     * @param date
+     */
+    public void genDaily(Date date, String trainCode) {
+        // 删除该【日期】该【车次】下的所有【日常车厢】信息
+        DailyTrainTicketExample example = new DailyTrainTicketExample();
+        example.createCriteria()
+                .andTrainCodeEqualTo(trainCode)
+                .andDateEqualTo(date);
+        dailyTrainTicketMapper.deleteByExample(example);
+        // 查某【车次】的所有【车站】信息
+        List<TrainStation> trainStationList = trainStationService.selectByTrainCode(trainCode);
+        LOG.info("[Ticket]list size:{}", trainStationList.size());
+        if (CollUtil.isEmpty(trainStationList)) {
+            return;
+        }
+        DateTime now = DateTime.now();
+        for (int i = 0; i < trainStationList.size(); i++) {
+            // 获取起始站
+            TrainStation startStation = trainStationList.get(i);
+            for (int j = i + 1; j < trainStationList.size(); j++) {
+                // 获取下一站
+                TrainStation nextStation = trainStationList.get(j);
+                // 设置初始值
+                DailyTrainTicket record = new DailyTrainTicket();
+                record.setId(IdGenUtil.nextId());
+                record.setDate(date);
+                record.setTrainCode(trainCode);
+                record.setStart(startStation.getName());
+                record.setStartPinyin(startStation.getNamePinyin());
+                record.setStartIndex(startStation.getIndex());
+                record.setEnd(nextStation.getName());
+                record.setEndPinyin(nextStation.getNamePinyin());
+                record.setEndIndex(nextStation.getIndex());
+                record.setGmtCreate(now);
+                record.setGmtModified(now);
+                // 计算座位
+                record.setYdz(0);
+                record.setYdzPrice(BigDecimal.ZERO);
+                record.setEdz(0);
+                record.setEdzPrice(BigDecimal.ZERO);
+                record.setRw(0);
+                record.setRwPrice(BigDecimal.ZERO);
+                record.setYw(0);
+                record.setYwPrice(BigDecimal.ZERO);
+
+                dailyTrainTicketMapper.insert(record);
+
+                LOG.info("[ticket]start:{}, end:{}", startStation.getName(), nextStation.getName());
+            }
+        }
+    }
 }

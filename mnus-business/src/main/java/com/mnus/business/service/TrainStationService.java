@@ -108,6 +108,7 @@ public class TrainStationService {
 
     public List<TrainStation> selectByTrainCode(String trainCode) {
         TrainStationExample example = new TrainStationExample();
+        // 按站序升序返回，第一个是起始站，最后一个是重点站
         example.setOrderByClause("`index` asc");
         example.createCriteria().andTrainCodeEqualTo(trainCode);
         return trainStationMapper.selectByExample(example);
