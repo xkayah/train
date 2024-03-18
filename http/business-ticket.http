@@ -48,7 +48,7 @@ Authorization: {{token}}
       "passengerType": "1",
       "passengerName": "Han xin",
       "passengerIdCard": "123123123111",
-      "seatTypeCode": "1",
+      "seatTypeCode": "2",
       "seat": "A1"
     },
     {
@@ -56,7 +56,7 @@ Authorization: {{token}}
       "passengerType": "1",
       "passengerName": "Lin lie",
       "passengerIdCard": "123123123222",
-      "seatTypeCode": "1",
+      "seatTypeCode": "2",
       "seat": "A2"
     }
   ]
