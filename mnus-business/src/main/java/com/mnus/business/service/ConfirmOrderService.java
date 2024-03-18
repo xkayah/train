@@ -2,8 +2,10 @@ package com.mnus.business.service;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.date.DateTime;
+import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.mnus.business.enums.ConfirmOrderStatusEnum;
 import com.mnus.business.req.ConfirmOrderSubmitReq;
 import com.mnus.common.context.ReqHolder;
 import com.mnus.common.enums.BaseErrorCodeEnum;
@@ -90,6 +92,22 @@ public class ConfirmOrderService {
         return pageResp;
     }
 
+    public void doSubmit(ConfirmOrderSubmitReq req) {
+        // 1.数据校验:车次、出发站、到达站
+        String trainCode = req.getTrainCode();
+        Date date = req.getDate();
+        String startStation = req.getStart();
+        String endStation = req.getEnd();
+        // 车次
+        int trainCount = dailyTrainService.countUnique(date, trainCode);
+        // 出发站
+        int startCount = dailyTrainStationService.countUnique(date, trainCode, startStation);
+        // 到达站
+        int endCount = dailyTrainStationService.countUnique(date, trainCode, endStation);
+        if (trainCount == 0 || startCount == 0 || endCount == 0) {
+            throw new BizException(BaseErrorCodeEnum.BUSINESS_ORDER_INFO_NOT_VALID);
+        }
 
+    }
 
 }

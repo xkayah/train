@@ -21,6 +21,10 @@ public class ConfirmOrderController {
     @Resource
     private ConfirmOrderService confirmOrderService;
 
-
+    @PostMapping("/submit")
+    public CommonResp<Object> submit(@Valid @RequestBody ConfirmOrderSubmitReq req) {
+        confirmOrderService.doSubmit(req);
+        return CommonResp.success();
+    }
 
 }
