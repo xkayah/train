@@ -9,9 +9,6 @@ import com.github.pagehelper.PageInfo;
 import com.mnus.business.domain.*;
 import com.mnus.business.enums.SeatTypeEnum;
 import com.mnus.business.enums.TrainTypeEnum;
-import com.mnus.common.context.ReqHolder;
-import com.mnus.common.enums.BaseErrorCodeEnum;
-import com.mnus.common.exception.BizException;
 import com.mnus.common.req.EntityDeleteReq;
 import com.mnus.common.resp.PageResp;
 import com.mnus.common.utils.IdGenUtil;
@@ -159,6 +156,21 @@ public class DailyTrainTicketService {
                 LOG.info("[ticket]ydz{}-{}, edz{}-{}, rw{}-{}, yw{}-{}",
                         ydz, ydzPrice, edz, edzPrice, rw, rwPrice, yw, ywPrice);
             }
+        }
+    }
+
+    public DailyTrainTicket selectUnique(Date date, String trainCode,
+                                         String startStation, String endStation,
+                                         String stationIdx){
+        DailyTrainTicketExample example = new DailyTrainTicketExample();
+        example.createCriteria()
+                .andDateEqualTo(date)
+                .andTrainCodeEqualTo(trainCode);
+        List<DailyTrainTicket> list = dailyTrainTicketMapper.selectByExample(example);
+        if (CollUtil.isEmpty(list)){
+            return null;
+        }else {
+            return list.get(0);
         }
     }
 }

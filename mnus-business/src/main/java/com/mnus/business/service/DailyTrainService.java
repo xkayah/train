@@ -161,4 +161,11 @@ public class DailyTrainService {
         dailyTrainTicketService.genDaily(record.getType(), date, train.getCode());
     }
 
+    public int countUnique(Date date, String trainCode) {
+        DailyTrainExample example = new DailyTrainExample();
+        example.createCriteria()
+                .andDateEqualTo(date)
+                .andCodeEqualTo(trainCode);
+        return (int) dailyTrainMapper.countByExample(example);
+    }
 }

@@ -121,4 +121,12 @@ public class DailyTrainStationService {
             LOG.info("[station]name:{}, idx:{}", trainStation.getName(), trainStation.getIndex());
         }
     }
+
+    public int countUnique(Date date,String trainCode, String stationName){
+        DailyTrainStationExample example = new DailyTrainStationExample();
+        example.createCriteria()
+                .andDateEqualTo(date)
+                .andTrainCodeEqualTo(trainCode);
+        return (int) dailyTrainStationMapper.countByExample(example);
+    }
 }
