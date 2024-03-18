@@ -107,6 +107,28 @@ public class ConfirmOrderService {
         if (trainCount == 0 || startCount == 0 || endCount == 0) {
             throw new BizException(BaseErrorCodeEnum.BUSINESS_ORDER_INFO_NOT_VALID);
         }
+        // 2.保存订单信息
+        DateTime now = DateTime.now();
+        ConfirmOrder record = new ConfirmOrder();
+        record.setId(IdGenUtil.nextId());
+        record.setUserId(ReqHolder.getUid());
+        record.setDate(date);
+        record.setTrainCode(trainCode);
+        record.setStart(startStation);
+        record.setEnd(endStation);
+        record.setDailyTrainTicketId(record.getDailyTrainTicketId());
+        record.setStatus(ConfirmOrderStatusEnum.INIT.getCode());// 初始状态
+        record.setGmtCreate(now);
+        record.setGmtModified(now);
+        record.setTickets(JSON.toJSONString(req.getTickets()));
+        // 3.查询余票记录
+        // 4.扣除余票,判断票数是否足够
+        // 5.选座
+            // 从 idx=1 的车厢开始选座,保证座位都是在同一个车厢内
+        // 6.选中座位后进入事务
+            // 修改售卖情况sell
+            // 为会员增加购票记录
+            // 更改订单状态为成功
 
     }
 
