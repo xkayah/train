@@ -58,6 +58,11 @@ public enum BaseErrorCodeEnum implements ErrorCode {
     BUSINESS_TRAIN_STATION_INDEX_ALREADY_EXISTS(40003, "同车次站序已存在!"),
     BUSINESS_TRAIN_CARRIAGE_ALREADY_EXISTS(40003, "同车次厢序已存在!"),
     BUSINESS_ORDER_INFO_NOT_VALID(40003, "订单信息错误!"),
+    BUSINESS_ORDER_INFO_TRAIN_CODE_NOT_EXISTS(40003, "订单信息错误!车次不存在!"),
+    BUSINESS_ORDER_INFO_START_NOT_EXISTS(40003, "订单信息错误!出发站不存在!"),
+    BUSINESS_ORDER_INFO_END_NOT_EXISTS(40003, "订单信息错误!终点站不存在!"),
+    BUSINESS_ORDER_INFO_TICKETS_NOT_EXISTS(40003, "订单信息错误!该票不存在!"),
+    BUSINESS_ORDER_INFO_DATE_NOT_VALID(40003, "订单信息错误!时间不在范围内!"),
 
     /**
      * business 模块异常码

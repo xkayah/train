@@ -1,0 +1,63 @@
+### passenger update
+POST http://localhost:10100/ucenter/passenger/save
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "id": "1767813641832370176",
+  "name": "施傲和",
+  "idCard": "420101197106184218",
+  "type": "2"
+}
+
+### query-list
+GET http://localhost:10100/business/admin/train-seat/query-list?pageNo=1&pageSize=20&trainCode=A0
+Accept: application/json
+Authorization: {{token}}
+
+
+###
+POST http://localhost:10100/ucenter/user/sign-in
+Content-Type: application/json
+
+{
+  "mobile": "13979747386",
+  "code": "666666"
+}
+
+> {%
+    s = JSON.stringify(response.body.data.token);
+    // 去掉头尾引号
+    client.global.set("token", "Bearer " + s.substring(1, s.length-1))
+%}
+
+### passenger update
+POST http://localhost:10100/business/confirm-order/submit
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "date": "2024-4-01",
+  "trainCode": "A0005",
+  "start": "Cai Yuning",
+  "end": "Ray Reed",
+  "dailyTrainTicketId": "1769308990396829696",
+  "tickets": [
+    {
+      "passengerId": "1231",
+      "passengerType": "1",
+      "passengerName": "Han xin",
+      "passengerIdCard": "123123123111",
+      "seatTypeCode": "1",
+      "seat": "A1"
+    },
+    {
+      "passengerId": "1232",
+      "passengerType": "1",
+      "passengerName": "Lin lie",
+      "passengerIdCard": "123123123222",
+      "seatTypeCode": "1",
+      "seat": "A2"
+    }
+  ]
+}

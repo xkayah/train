@@ -5,8 +5,10 @@ import cn.hutool.core.date.DateTime;
 import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.mnus.business.domain.DailyTrainTicket;
 import com.mnus.business.enums.ConfirmOrderStatusEnum;
 import com.mnus.business.req.ConfirmOrderSubmitReq;
+import com.mnus.business.req.ConfirmOrderTicketReq;
 import com.mnus.common.context.ReqHolder;
 import com.mnus.common.enums.BaseErrorCodeEnum;
 import com.mnus.common.exception.BizException;
@@ -94,41 +96,50 @@ public class ConfirmOrderService {
 
     public void doSubmit(ConfirmOrderSubmitReq req) {
         // 1.数据校验:车次、出发站、到达站
+        // todo 车次是否在有效期内、tickets条数大于0、同乘客车次是否已买过
         String trainCode = req.getTrainCode();
         Date date = req.getDate();
-        String startStation = req.getStart();
-        String endStation = req.getEnd();
+        String start = req.getStart();
+        String end = req.getEnd();
         // 车次
         int trainCount = dailyTrainService.countUnique(date, trainCode);
+        if (trainCount == 0) {
+            throw new BizException(BaseErrorCodeEnum.BUSINESS_ORDER_INFO_NOT_VALID);
+        }
         // 出发站
-        int startCount = dailyTrainStationService.countUnique(date, trainCode, startStation);
+        int startCount = dailyTrainStationService.countUnique(date, trainCode, start);
+        if (startCount == 0) {
+            throw new BizException(BaseErrorCodeEnum.BUSINESS_ORDER_INFO_NOT_VALID);
+        }
         // 到达站
-        int endCount = dailyTrainStationService.countUnique(date, trainCode, endStation);
-        if (trainCount == 0 || startCount == 0 || endCount == 0) {
+        int endCount = dailyTrainStationService.countUnique(date, trainCode, end);
+        if (endCount == 0) {
             throw new BizException(BaseErrorCodeEnum.BUSINESS_ORDER_INFO_NOT_VALID);
         }
         // 2.保存订单信息
+        List<ConfirmOrderTicketReq> tickets = req.getTickets();
         DateTime now = DateTime.now();
         ConfirmOrder record = new ConfirmOrder();
         record.setId(IdGenUtil.nextId());
         record.setUserId(ReqHolder.getUid());
         record.setDate(date);
         record.setTrainCode(trainCode);
-        record.setStart(startStation);
-        record.setEnd(endStation);
+        record.setStart(start);
+        record.setEnd(end);
         record.setDailyTrainTicketId(record.getDailyTrainTicketId());
         record.setStatus(ConfirmOrderStatusEnum.INIT.getCode());// 初始状态
         record.setGmtCreate(now);
         record.setGmtModified(now);
-        record.setTickets(JSON.toJSONString(req.getTickets()));
+        record.setTickets(JSON.toJSONString(tickets));
+        confirmOrderMapper.insert(record);
         // 3.查询余票记录
         // 4.扣除余票,判断票数是否足够
         // 5.选座
-            // 从 idx=1 的车厢开始选座,保证座位都是在同一个车厢内
+        // 从 idx=1 的车厢开始选座,保证座位都是在同一个车厢内
         // 6.选中座位后进入事务
-            // 修改售卖情况sell
-            // 为会员增加购票记录
-            // 更改订单状态为成功
+        // 修改售卖情况sell
+        // 为会员增加购票记录
+        // 更改订单状态为成功
 
     }
 

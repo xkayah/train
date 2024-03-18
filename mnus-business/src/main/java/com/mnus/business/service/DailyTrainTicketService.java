@@ -160,16 +160,17 @@ public class DailyTrainTicketService {
     }
 
     public DailyTrainTicket selectUnique(Date date, String trainCode,
-                                         String startStation, String endStation,
-                                         String stationIdx){
+                                         String start, String end) {
         DailyTrainTicketExample example = new DailyTrainTicketExample();
         example.createCriteria()
                 .andDateEqualTo(date)
-                .andTrainCodeEqualTo(trainCode);
+                .andTrainCodeEqualTo(trainCode)
+                .andStartEqualTo(start)
+                .andEndEqualTo(end);
         List<DailyTrainTicket> list = dailyTrainTicketMapper.selectByExample(example);
-        if (CollUtil.isEmpty(list)){
+        if (CollUtil.isEmpty(list)) {
             return null;
-        }else {
+        } else {
             return list.get(0);
         }
     }
