@@ -25,6 +25,7 @@ import jakarta.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
@@ -50,6 +51,9 @@ public class ConfirmOrderService {
     private DailyTrainCarriageService dailyTrainCarriageService;
     @Resource
     private DailyTrainTicketService dailyTrainTicketService;
+    @Resource
+    private AfterConfirmOrderService afterConfirmOrderService;
+
 
     public void save(ConfirmOrderSaveReq req) {
         DateTime now = DateTime.now();
@@ -166,7 +170,11 @@ public class ConfirmOrderService {
         }
         LOG.info("[exceptSeat]:{}", exceptSeatList);
         LOG.info("[chosen]:{}", chosenSeatList);
-        // 6.选中座位后进入事务
+        // 6.根据选中的座位列表更新座位售卖情况
+        if (Objects.isNull(chosenSeatList)) {
+            throw new BizException(BaseErrorCodeEnum.BUSINESS_CHOOSE_SEAT_FAILED);
+        }
+        afterConfirmOrderService.afterSubmit(chosenSeatList);
         // 修改售卖情况sell
         // 为会员增加购票记录
         // 更改订单状态为成功
@@ -213,6 +221,8 @@ public class ConfirmOrderService {
                         }
                         // 可以售卖且未选择过
                         if (!isChosen) {
+                            // 加入列表之前更新售卖情况
+                            seat.setSell(sell(seat.getSell(), start, end));
                             chosenSeatList.add(seat);
                             isOk = true;
                         }
@@ -274,6 +284,8 @@ public class ConfirmOrderService {
                     // 尝试获取后面的座位
                     if (trySell(seatList.get(nextIdx).getSell(), start, end)) {
                         DailyTrainSeat nextSeat = seatList.get(nextIdx);
+                        // 加入列表之前更新售卖情况
+                        nextSeat.setSell(sell(nextSeat.getSell(), start, end));
                         chosenSeatList.add(nextSeat);
                         LOG.info("[seat]#{}.row:{}, col:{}, idx:{} IN CARRIAGE{}",
                                 i, nextSeat.getRow(), nextSeat.getCol(), nextIdx + 1, carriage.getIndex());
