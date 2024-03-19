@@ -143,12 +143,14 @@ public class ConfirmOrderService {
         // 4.预扣减余票,判断票数是否足够
         reduceTicketCount(tickets, ticketDB);
         // 5.开始选座
-        // 有选座,都是相同的座位类型.构建期望座位的偏移量:[1,3,5]
-        //   A1   ·C1    D1   ·F1
-        //   A2   ·C2    D2    F2
+        //   00   ·01    02   ·03
+        //   04   ·05    06    07
         List<Integer> exceptSeatList = new ArrayList<>();
         for (ConfirmOrderTicketReq ticket : tickets) {
-            exceptSeatList.add(ticket.getSeat());
+            Integer seat = ticket.getSeat();
+            if (Objects.nonNull(seat)) {
+                exceptSeatList.add(seat);
+            }
         }
         List<DailyTrainSeat> chosenSeatList = new ArrayList<>();
         if (CollectionUtils.isEmpty(exceptSeatList)) {
@@ -164,9 +166,6 @@ public class ConfirmOrderService {
         }
         LOG.info("[exceptSeat]:{}", exceptSeatList);
         LOG.info("[chosen]:{}", chosenSeatList);
-        // 无选座,可能是不相同的座位类型.
-        // List<DailyTrainSeat> seatList = chooseSeat(date, trainCode, seatType);
-        // 从 idx=1 的车厢开始选座,保证座位都是在同一个车厢内
         // 6.选中座位后进入事务
         // 修改售卖情况sell
         // 为会员增加购票记录
@@ -183,38 +182,55 @@ public class ConfirmOrderService {
      * @param start     起始站
      * @param end       终点站
      * @param tickets   购票信息
+     * @return 未找到则返回 null
      */
     private List<DailyTrainSeat> chooseSeat(Date date, String trainCode, List<ConfirmOrderTicketReq> tickets,
                                             Integer start, Integer end) {
         // chosenSeatList  保存已选择的座位
         List<DailyTrainSeat> chosenSeatList = new ArrayList<>();
-        for (ConfirmOrderTicketReq ticket : tickets) {
+        for (int i = 0; i < tickets.size(); i++) {
+            LOG.info("[choose]seat#{}", i);
+            ConfirmOrderTicketReq ticket = tickets.get(i);
+            boolean isOk = false;// 记录当前票随机选座是否已完成 若true则可跳出循环直接开始下一张票的随机选座
             List<DailyTrainCarriage> carriageList = dailyTrainCarriageService.select(date, trainCode, ticket.getSeatTypeCode());
             for (DailyTrainCarriage carriage : carriageList) {
                 List<DailyTrainSeat> seatList = dailyTrainSeatService.select(date, trainCode, ticket.getSeatTypeCode(), carriage.getIndex());
-                for (DailyTrainSeat seat : seatList) {
+                // 一个一个座位找 找到则直接找下一张票的座位
+                for (int idx = 0; idx < seatList.size(); idx++) {
+                    DailyTrainSeat seat = seatList.get(idx);
                     boolean isChosen = false; // 记录当前座位是否已选择
                     if (trySell(seat.getSell(), start, end)) {
+                        // 遍历已选择的列表 判断是否
+                        LOG.info("[seat]#{}.row:{}, col:{}, idx:{} IN CARRIAGE{}",
+                                i, seat.getRow(), seat.getCol(), idx + 1, carriage.getIndex());
                         for (DailyTrainSeat chosenSeat : chosenSeatList) {
                             if (chosenSeat.getId().equals(seat.getId())) {
+                                LOG.info("[seat]#{}.idx:{} IN CARRIAGE{},but already exist.",
+                                        i, idx + 1, carriage.getIndex());
                                 isChosen = true;
-                                LOG.info("[choose]already been chosen:{}", seat);
                                 break;
                             }
                         }
                         // 可以售卖且未选择过
                         if (!isChosen) {
                             chosenSeatList.add(seat);
+                            isOk = true;
                         }
                     }
+                    if (isOk) {
+                        break;
+                    }
+                }
+                if (isOk) {
+                    break;
                 }
             }
+            if (chosenSeatList.size() == tickets.size()) {
+                return chosenSeatList;
+            }
         }
-        if (chosenSeatList.size() != tickets.size()) {
-            LOG.info("[choose]failure,unexpected seat.");
-            return null;
-        }
-        return chosenSeatList;
+        LOG.info("[choose]no seat found.");
+        return null;
     }
 
     /**
@@ -227,12 +243,13 @@ public class ConfirmOrderService {
      * @param end            终点站
      * @param seatType       座位类型
      * @param exceptSeatList 期望选择的座位
+     * @return 未找到则返回 null
      */
     private List<DailyTrainSeat> chooseSeats(String trainCode, Date date,
                                              Integer start, Integer end, String seatType,
                                              List<Integer> exceptSeatList) {
         // 预计选择失败
-        boolean excepted = false;
+        boolean isOk = false;
         // chosenSeatList  保存已选择的座位
         List<DailyTrainSeat> chosenSeatList = new ArrayList<>();
         // 车厢列表
@@ -247,50 +264,37 @@ public class ConfirmOrderService {
             // 一行一行寻找
             for (int row = 0; row < rowCount; row++) {
                 chosenSeatList.clear();
-                // int idx = row * colCount + exceptSeatList.get(0);
-                // if (idx > seatCount) continue;
-                // // 尝试获取第一个座位
-                // DailyTrainSeat firstSeat = seatList.get(idx);
-                // if (trySell(firstSeat.getSell(), start, end)) {
-                //     excepted = true;// 获取第一个座位成功,设为true.如果后面的座位有获取失败则设为false
-                //     chosenSeatList.add(firstSeat);
-                //     LOG.info("[except first]{}", firstSeat);
-                //     // 循环后面的期望座位的偏移量 [.,3,5]
                 for (int i = 0; i < exceptSeatList.size(); i++) {
+                    LOG.info("[choose]seat#{}", i);
                     int nextIdx = row * colCount + exceptSeatList.get(i);
                     if (nextIdx > seatCount) {
-                        excepted = false;
+                        isOk = false;
                         break;
                     }
                     // 尝试获取后面的座位
                     if (trySell(seatList.get(nextIdx).getSell(), start, end)) {
                         DailyTrainSeat nextSeat = seatList.get(nextIdx);
                         chosenSeatList.add(nextSeat);
-                        LOG.info("[{} seat]row:{}, col:{}, idx:{} IN CARRIAGE{}",
+                        LOG.info("[seat]#{}.row:{}, col:{}, idx:{} IN CARRIAGE{}",
                                 i, nextSeat.getRow(), nextSeat.getCol(), nextIdx + 1, carriage.getIndex());
                     } else {
                         // 获取失败,直接找下一行
-                        excepted = false;
+                        isOk = false;
                         break;
                     }
                     // 以最后一个期望座位为准 如果最后一个成功获取了就可返回
                     if (i == exceptSeatList.size() - 1) {
-                        excepted = true;
+                        isOk = true;
                     }
                 }
                 // 所有座位都选完
-                if (excepted) {
+                if (isOk) {
                     return chosenSeatList;
                 }
-                //     }
-                //     if (!excepted) {
-                //         LOG.info("[except seat]failure:{},next row.", row);
-                //     }
             }
-            // if (!excepted) {
-            LOG.info("[seat]failure:{},next carriage.", carriage.getIndex());
-            // }
+            LOG.info("[choose]no seat found in {},next carriage.", carriage.getIndex());
         }
+        LOG.info("[choose]no seat found.");
         return null;
     }
 
