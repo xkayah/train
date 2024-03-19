@@ -247,47 +247,49 @@ public class ConfirmOrderService {
             // 一行一行寻找
             for (int row = 0; row < rowCount; row++) {
                 chosenSeatList.clear();
-                int idx = row * colCount + exceptSeatList.get(0);
-                if (idx > seatCount) continue;
-                // 尝试获取第一个座位
-                DailyTrainSeat firstSeat = seatList.get(idx);
-                if (trySell(firstSeat.getSell(), start, end)) {
-                    excepted = true;// 获取第一个座位成功,设为true.如果后面的座位有获取失败则设为false
-                    chosenSeatList.add(firstSeat);
-                    LOG.info("[except first]{}", firstSeat);
-                    // 循环后面的期望座位的偏移量 [.,3,5]
-                    for (int i = 1; i < exceptSeatList.size(); i++) {
-                        int nextIdx = row * colCount + exceptSeatList.get(i);
-                        if (nextIdx > seatCount) {
-                            excepted = false;
-                            break;
-                        }
-                        // 尝试获取后面的座位
-                        if (trySell(seatList.get(nextIdx).getSell(), start, end)) {
-                            DailyTrainSeat nextSeat = seatList.get(nextIdx);
-                            chosenSeatList.add(nextSeat);
-                            LOG.info("[except next]{}", nextSeat);
-                        } else {
-                            excepted = false;
-                            break;
-                        }
-                        // 以最后一个期望座位为准 如果最后一个成功获取了就可返回
-                        if (i == exceptSeatList.size() - 1 &&trySell(seatList.get(nextIdx).getSell(), start, end)){
-                            excepted = true;
-                        }
+                // int idx = row * colCount + exceptSeatList.get(0);
+                // if (idx > seatCount) continue;
+                // // 尝试获取第一个座位
+                // DailyTrainSeat firstSeat = seatList.get(idx);
+                // if (trySell(firstSeat.getSell(), start, end)) {
+                //     excepted = true;// 获取第一个座位成功,设为true.如果后面的座位有获取失败则设为false
+                //     chosenSeatList.add(firstSeat);
+                //     LOG.info("[except first]{}", firstSeat);
+                //     // 循环后面的期望座位的偏移量 [.,3,5]
+                for (int i = 0; i < exceptSeatList.size(); i++) {
+                    int nextIdx = row * colCount + exceptSeatList.get(i);
+                    if (nextIdx > seatCount) {
+                        excepted = false;
+                        break;
                     }
-                    // 所有座位都选完
-                    if (excepted) {
-                        return chosenSeatList;
+                    // 尝试获取后面的座位
+                    if (trySell(seatList.get(nextIdx).getSell(), start, end)) {
+                        DailyTrainSeat nextSeat = seatList.get(nextIdx);
+                        chosenSeatList.add(nextSeat);
+                        LOG.info("[{} seat]row:{}, col:{}, idx:{} IN CARRIAGE{}",
+                                i, nextSeat.getRow(), nextSeat.getCol(), nextIdx + 1, carriage.getIndex());
+                    } else {
+                        // 获取失败,直接找下一行
+                        excepted = false;
+                        break;
+                    }
+                    // 以最后一个期望座位为准 如果最后一个成功获取了就可返回
+                    if (i == exceptSeatList.size() - 1) {
+                        excepted = true;
                     }
                 }
-                if (!excepted) {
-                    LOG.info("[except seat]failure:{},next row.", row);
+                // 所有座位都选完
+                if (excepted) {
+                    return chosenSeatList;
                 }
+                //     }
+                //     if (!excepted) {
+                //         LOG.info("[except seat]failure:{},next row.", row);
+                //     }
             }
-            if (!excepted) {
-                LOG.info("[except seat]failure:{},next carriage.", carriage.getIndex());
-            }
+            // if (!excepted) {
+            LOG.info("[seat]failure:{},next carriage.", carriage.getIndex());
+            // }
         }
         return null;
     }
@@ -302,7 +304,6 @@ public class ConfirmOrderService {
     private boolean trySell(String sold, Integer startIdx, Integer endIdx) {
         // 10001 1,3 -> 000
         String toSell = sold.substring(startIdx, endIdx);
-        LOG.info("sold:{}[{}->{}]toSell:{}", sold, startIdx, endIdx, toSell);
         return Integer.valueOf(toSell, 2) == 0;
     }
 
