@@ -334,10 +334,10 @@ public class ConfirmOrderService {
      */
     private String sell(String sold, Integer startIdx, Integer endIdx) {
         int x = Integer.valueOf(sold, 2);
-        // endIdx - startIdx + 1 -> 生成1的数量
-        // ~(-0b1 << endIdx - startIdx + 1) -> 利用负数反码的特性生成1
-        // sold.length() - endIdx - 1) -> 偏移的位数,后缀补零
-        int y = ~(-0b1 << endIdx - startIdx + 1) << (sold.length() - endIdx - 1);
+        // endIdx - startIdx -> 生成1的数量
+        // ~(-0b1 << endIdx - startIdx) -> 利用负数反码的特性生成111...
+        // sold.length() - endIdx) -> 偏移的位数,后缀补零
+        int y = ~(-0b1 << endIdx - startIdx) << (sold.length() - endIdx);
         // x|y -> result
         StringBuilder sell = new StringBuilder(Integer.toBinaryString(x | y));
         // 前缀补零
