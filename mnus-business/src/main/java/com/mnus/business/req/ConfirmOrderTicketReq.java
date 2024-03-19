@@ -36,9 +36,9 @@ public class ConfirmOrderTicketReq {
     private String seatTypeCode;
 
     /**
-     * 选座，可空，值示例：A1
+     * 选座，可空，值示例：1
      */
-    private String seat;
+    private Integer seat;
 
     public Long getPassengerId() {
         return passengerId;
@@ -80,11 +80,11 @@ public class ConfirmOrderTicketReq {
         this.seatTypeCode = seatTypeCode;
     }
 
-    public String getSeat() {
+    public Integer getSeat() {
         return seat;
     }
 
-    public void setSeat(String seat) {
+    public void setSeat(Integer seat) {
         this.seat = seat;
     }
 

@@ -31,7 +31,7 @@ Content-Type: application/json
     client.global.set("token", "Bearer " + s.substring(1, s.length-1))
 %}
 
-### passenger update
+###
 POST http://localhost:10100/business/confirm-order/submit
 Content-Type: application/json
 Authorization: {{token}}
@@ -49,7 +49,7 @@ Authorization: {{token}}
       "passengerName": "Han xin",
       "passengerIdCard": "123123123111",
       "seatTypeCode": "2",
-      "seat": "A1"
+      "seat": "0"
     },
     {
       "passengerId": "1232",
@@ -57,7 +57,7 @@ Authorization: {{token}}
       "passengerName": "Lin lie",
       "passengerIdCard": "123123123222",
       "seatTypeCode": "2",
-      "seat": "A2"
+      "seat": "6"
     }
   ]
 }
