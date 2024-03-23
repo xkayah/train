@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mnus.business.mapper.my.MyDailyTrainTicketMapper">
+    <update id="updateCountBySell">
+        update daily_train_ticket
+        set
+        <if test="seatType == '1'.toString() ">
+            `ydz` = ydz - 1
+        </if>
+        <if test="seatType == '2'.toString() ">
+            `edz` = edz - 1
+        </if>
+        <if test="seatType == '3'.toString() ">
+            `rw` = rw - 1
+        </if>
+        <if test="seatType == '4'.toString() ">
+            `yw` = yw - 1
+        </if>
+        where `date` = #{date}
+        and train_code = #{trainCode}
+        and start_index &gt;= #{minStart}
+        and start_index &lt;= #{maxStart}
+        and end_index &gt;= #{minEnd}
+        and end_index &lt;= #{maxEnd}
+    </update>
+
+</mapper>

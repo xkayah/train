@@ -174,10 +174,7 @@ public class ConfirmOrderService {
         if (Objects.isNull(chosenSeatList)) {
             throw new BizException(BaseErrorCodeEnum.BUSINESS_CHOOSE_SEAT_FAILED);
         }
-        afterConfirmOrderService.afterSubmit(chosenSeatList);
-        // 修改售卖情况sell
-        // 为会员增加购票记录
-        // 更改订单状态为成功
+        afterConfirmOrderService.afterSubmit(ticketDB,chosenSeatList);
 
     }
 
