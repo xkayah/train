@@ -8,6 +8,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+import java.util.Objects;
+
 /**
  * @author: <a href="https://github.com/xkayah">xkayah</a>
  * @date: 2024/3/24 10:18:47
@@ -31,10 +33,13 @@ public class FeignConfig {
                     HttpServletRequest request = attributes.getRequest();
                     // 2、同步请求头数据
                     String authorization = request.getHeader("Authorization");
-                    String uid = request.getAttribute("uid").toString();
+                    Object uidAttr = request.getAttribute("uid");
+                    if (Objects.nonNull(uidAttr)) {
+                        String uid = uidAttr.toString();
+                        request.setAttribute("uid", uid);
+                    }
                     // 给新请求同步了旧请求的数据
                     requestTemplate.header("Authorization", authorization);
-                    request.setAttribute("uid", uid);
                 }
             }
         };
