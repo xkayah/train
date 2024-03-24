@@ -27,6 +27,7 @@ public class InterceptorConfig implements WebMvcConfigurer {
 
     private final List<String> PUBLIC_PATH = List.of(
             "/hello",
+            "/test",
             "/admin/**");
 
     @Override
