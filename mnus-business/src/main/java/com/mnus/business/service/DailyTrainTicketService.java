@@ -20,6 +20,8 @@ import com.mnus.business.resp.DailyTrainTicketQueryResp;
 import jakarta.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
@@ -65,6 +67,15 @@ public class DailyTrainTicketService {
     public void delete(EntityDeleteReq req) {
         // todo 是否是该用户的数据
         dailyTrainTicketMapper.deleteByPrimaryKey(req.getId());
+    }
+    @CacheEvict(value = "DailyTrainTicketService.queryList")
+    public PageResp<DailyTrainTicketQueryResp> deleteQueryList(DailyTrainTicketQueryReq req) {
+        return null;
+    }
+
+    @CachePut(value = "DailyTrainTicketService.queryList")
+    public PageResp<DailyTrainTicketQueryResp> updateQueryList(DailyTrainTicketQueryReq req) {
+        return queryList(req);
     }
 
     @Cacheable(value = "DailyTrainTicketService.queryList")
