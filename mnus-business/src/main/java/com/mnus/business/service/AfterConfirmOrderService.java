@@ -1,9 +1,15 @@
 package com.mnus.business.service;
 
+import cn.hutool.core.date.DateTime;
 import com.mnus.business.domain.DailyTrainSeat;
 import com.mnus.business.domain.DailyTrainTicket;
+import com.mnus.business.feign.UcenterFeign;
 import com.mnus.business.mapper.DailyTrainSeatMapper;
 import com.mnus.business.mapper.my.MyDailyTrainTicketMapper;
+import com.mnus.business.req.ConfirmOrderTicketReq;
+import com.mnus.common.context.ReqHolder;
+import com.mnus.common.req.TicketInsertReq;
+import com.mnus.common.utils.IdGenUtil;
 import jakarta.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,16 +29,24 @@ public class AfterConfirmOrderService {
     private DailyTrainSeatMapper dailyTrainSeatMapper;
     @Resource
     private MyDailyTrainTicketMapper myDailyTrainTicketMapper;
+    @Resource
+    private UcenterFeign ucenterFeign;
 
     /**
      * 提交之后的动作
      *
-     * @param ticket         [start, end)
+     * @param ticket         售卖的每日车票,注意 [start, end)
      * @param chosenSeatList 选中的座位列表
+     * @param tickets        用户提交的车票信息
      */
     @Transactional
-    public void afterSubmit(DailyTrainTicket ticket, List<DailyTrainSeat> chosenSeatList) {
-        for (DailyTrainSeat seat : chosenSeatList) {
+    public void afterSubmit(DailyTrainTicket ticket, List<DailyTrainSeat> chosenSeatList, List<ConfirmOrderTicketReq> tickets) {
+        String trainCode = ticket.getTrainCode();
+        Date date = ticket.getDate();
+        String start = ticket.getStart();
+        String end = ticket.getEnd();
+        for (int i = 0; i < chosenSeatList.size(); i++) {
+            DailyTrainSeat seat = chosenSeatList.get(i);
             // 1.根据选中的座位列表更新座位售卖情况
             DailyTrainSeat record = new DailyTrainSeat();
             record.setId(seat.getId());
@@ -46,36 +60,55 @@ public class AfterConfirmOrderService {
             // after : 01100111101
             // effect: 011EEEEEEE1
             char[] chs = record.getSell().toCharArray();
-            int start = ticket.getStartIndex();
-            int end = ticket.getEndIndex();
-            int minStart = 0;
-            int maxStart = start + 1;
+            int startIdx = ticket.getStartIndex();
+            int endIdx = ticket.getEndIndex();
+            int minStartIdx = 0;
+            int maxStartIdx = startIdx + 1;
             int maxEnd = chs.length;
-            int minEnd = end - 1;
-            // minStart = 从 start 往前找第一个1.直接从 start 开始,不要-1,否则可能会越界
-            for (int i = start; i > 0; i--) {
-                if (chs[i] == '1') {
-                    minStart = i;
+            int minEndIdx = endIdx - 1;
+            // minStartIdx = 从 startIdx 往前找第一个1.直接从 startIdx 开始,不要-1,否则可能会越界
+            for (int idx = startIdx; idx > 0; idx--) {
+                if (chs[idx] == '1') {
+                    minStartIdx = idx;
                     break;
                 }
             }
-            // maxEnd   = 从 end   往后找第一个1.直接从 end 开始,不要+1,否则可能会越界
-            for (int i = end; i < chs.length; i++) {
-                if (chs[i] == '1') {
-                    maxEnd = i;
+            // maxEnd   = 从 endIdx   往后找第一个1.直接从 endIdx 开始,不要+1,否则可能会越界
+            for (int idx = endIdx; idx < chs.length; idx++) {
+                if (chs[idx] == '1') {
+                    maxEnd = idx;
                     break;
                 }
             }
+            String seatType = seat.getSeatType();
             long count = myDailyTrainTicketMapper.updateCountBySell(
-                    ticket.getDate(), ticket.getTrainCode(), seat.getSeatType(),
-                    minStart, maxStart, minEnd, maxEnd
+                    date, trainCode, seatType,
+                    minStartIdx, maxStartIdx, minEndIdx, maxEnd
             );
-            LOG.info("[effect]{} {}-{}${}-{}", count, minStart, maxStart, minEnd, maxEnd);
+            LOG.info("[effect]{} {}-{}${}-{}", count, minStartIdx, maxStartIdx, minEndIdx, maxEnd);
+
+            // 3.为会员增加购票记录
+            DateTime now = DateTime.now();
+            TicketInsertReq ticketInsertReq = new TicketInsertReq();
+            ticketInsertReq.setUserId(ReqHolder.getUid());
+            ticketInsertReq.setPassengerId(ReqHolder.getUid());
+            ticketInsertReq.setPassengerName(tickets.get(i).getPassengerName());
+            ticketInsertReq.setTrainDate(date);
+            ticketInsertReq.setTrainCode(trainCode);
+            ticketInsertReq.setStartStation(start);
+            ticketInsertReq.setStartTime(ticket.getStartTime());
+            ticketInsertReq.setEndStation(end);
+            ticketInsertReq.setEndTime(ticket.getEndTime());
+            ticketInsertReq.setSeatType(seatType);
+            ticketInsertReq.setCarriageIndex(seat.getCarriageIndex());
+            ticketInsertReq.setSeatRow(seat.getRow());
+            ticketInsertReq.setSeatCol(seat.getCol());
+            ticketInsertReq.setGmtCreate(now);
+            ticketInsertReq.setGmtModified(now);
+
+            ucenterFeign.insert(ticketInsertReq);
+            // 4.更改订单状态为成功
         }
-
-        // 3.为会员增加购票记录
-
-        // 4.更改订单状态为成功
 
     }
 
