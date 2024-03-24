@@ -174,7 +174,7 @@ public class ConfirmOrderService {
         if (Objects.isNull(chosenSeatList)) {
             throw new BizException(BaseErrorCodeEnum.BUSINESS_CHOOSE_SEAT_FAILED);
         }
-        afterConfirmOrderService.afterSubmit(ticketDB,chosenSeatList,tickets);
+        afterConfirmOrderService.afterSubmit(ticketDB,chosenSeatList,tickets,record);
 
     }
 

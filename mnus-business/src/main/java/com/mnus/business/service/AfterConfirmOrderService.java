@@ -1,15 +1,17 @@
 package com.mnus.business.service;
 
 import cn.hutool.core.date.DateTime;
+import com.mnus.business.domain.ConfirmOrder;
 import com.mnus.business.domain.DailyTrainSeat;
 import com.mnus.business.domain.DailyTrainTicket;
+import com.mnus.business.enums.ConfirmOrderStatusEnum;
 import com.mnus.business.feign.UcenterFeign;
+import com.mnus.business.mapper.ConfirmOrderMapper;
 import com.mnus.business.mapper.DailyTrainSeatMapper;
 import com.mnus.business.mapper.my.MyDailyTrainTicketMapper;
 import com.mnus.business.req.ConfirmOrderTicketReq;
 import com.mnus.common.context.ReqHolder;
 import com.mnus.common.req.TicketInsertReq;
-import com.mnus.common.utils.IdGenUtil;
 import jakarta.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,6 +33,8 @@ public class AfterConfirmOrderService {
     private MyDailyTrainTicketMapper myDailyTrainTicketMapper;
     @Resource
     private UcenterFeign ucenterFeign;
+    @Resource
+    private ConfirmOrderMapper confirmOrderMapper;
 
     /**
      * 提交之后的动作
@@ -38,9 +42,10 @@ public class AfterConfirmOrderService {
      * @param ticket         售卖的每日车票,注意 [start, end)
      * @param chosenSeatList 选中的座位列表
      * @param tickets        用户提交的车票信息
+     * @param confirmOrder
      */
     @Transactional
-    public void afterSubmit(DailyTrainTicket ticket, List<DailyTrainSeat> chosenSeatList, List<ConfirmOrderTicketReq> tickets) {
+    public void afterSubmit(DailyTrainTicket ticket, List<DailyTrainSeat> chosenSeatList, List<ConfirmOrderTicketReq> tickets, ConfirmOrder confirmOrder) {
         String trainCode = ticket.getTrainCode();
         Date date = ticket.getDate();
         String start = ticket.getStart();
@@ -108,6 +113,12 @@ public class AfterConfirmOrderService {
 
             ucenterFeign.insert(ticketInsertReq);
             // 4.更改订单状态为成功
+            ConfirmOrder confirmOrderForUpdate = new ConfirmOrder();
+            confirmOrderForUpdate.setId(confirmOrder.getId());
+            confirmOrderForUpdate.setGmtModified(new Date());
+            confirmOrderForUpdate.setStatus(ConfirmOrderStatusEnum.SUCCESS.getCode());
+            confirmOrderMapper.updateByPrimaryKeySelective(confirmOrderForUpdate);
+
         }
 
     }
