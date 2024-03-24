@@ -4,6 +4,7 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateTime;
 import cn.hutool.core.util.EnumUtil;
+import cn.hutool.core.util.ObjUtil;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.mnus.business.domain.*;
@@ -19,6 +20,7 @@ import com.mnus.business.resp.DailyTrainTicketQueryResp;
 import jakarta.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -65,12 +67,23 @@ public class DailyTrainTicketService {
         dailyTrainTicketMapper.deleteByPrimaryKey(req.getId());
     }
 
+    @Cacheable(value = "DailyTrainTicketService.queryList")
     public PageResp<DailyTrainTicketQueryResp> queryList(DailyTrainTicketQueryReq req) {
-        // Long uid = req.getUserId();
         DailyTrainTicketExample dailyTrainTicketExample = new DailyTrainTicketExample();
-        // if (Objects.nonNull(uid)) {
-        //    dailyTrainTicketExample.createCriteria().andUserIdEqualTo(uid);
-        //}
+        dailyTrainTicketExample.setOrderByClause("`date` DESC, start_time ASC, train_code ASC, `start_index` ASC, `end_index` ASC");
+        DailyTrainTicketExample.Criteria criteria = dailyTrainTicketExample.createCriteria();
+        if (ObjUtil.isNotNull(req.getDate())) {
+            criteria.andDateEqualTo(req.getDate());
+        }
+        if (ObjUtil.isNotEmpty(req.getTrainCode())) {
+            criteria.andTrainCodeEqualTo(req.getTrainCode());
+        }
+        if (ObjUtil.isNotEmpty(req.getStart())) {
+            criteria.andStartEqualTo(req.getStart());
+        }
+        if (ObjUtil.isNotEmpty(req.getEnd())) {
+            criteria.andEndEqualTo(req.getEnd());
+        }
         // 分页请求
         PageHelper.startPage(req.getPageNo(), req.getPageSize());
         List<DailyTrainTicket> dailyTrainTicketList = dailyTrainTicketMapper.selectByExample(dailyTrainTicketExample);
