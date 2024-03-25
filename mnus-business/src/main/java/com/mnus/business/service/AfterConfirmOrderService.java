@@ -123,9 +123,6 @@ public class AfterConfirmOrderService {
             confirmOrderForUpdate.setStatus(ConfirmOrderStatusEnum.SUCCESS.getCode());
             confirmOrderMapper.updateByPrimaryKeySelective(confirmOrderForUpdate);
 
-            if (1 == 1) {
-                throw new RuntimeException("test seata...");
-            }
         }
 
     }
