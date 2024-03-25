@@ -2,6 +2,7 @@ package com.mnus.business.service;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.date.DateTime;
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.EnumUtil;
 import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.PageHelper;
@@ -15,15 +16,18 @@ import com.mnus.business.req.ConfirmOrderSaveReq;
 import com.mnus.business.req.ConfirmOrderSubmitReq;
 import com.mnus.business.req.ConfirmOrderTicketReq;
 import com.mnus.business.resp.ConfirmOrderQueryResp;
+import com.mnus.common.constance.RedisConstance;
 import com.mnus.common.context.ReqHolder;
 import com.mnus.common.enums.BaseErrorCodeEnum;
 import com.mnus.common.exception.BizException;
 import com.mnus.common.req.EntityDeleteReq;
 import com.mnus.common.resp.PageResp;
 import com.mnus.common.utils.IdGenUtil;
+import com.mnus.common.utils.StringUtil;
 import jakarta.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -32,6 +36,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author: <a href="https://github.com/xkayah">xkayah</a>
@@ -53,6 +58,8 @@ public class ConfirmOrderService {
     private DailyTrainTicketService dailyTrainTicketService;
     @Resource
     private AfterConfirmOrderService afterConfirmOrderService;
+    @Resource
+    private StringRedisTemplate stringRedisTemplate;
 
 
     public void save(ConfirmOrderSaveReq req) {
@@ -105,12 +112,22 @@ public class ConfirmOrderService {
     }
 
     public void doSubmit(ConfirmOrderSubmitReq req) {
-        // 1.数据校验:车次、出发站、到达站
-        // todo 车次是否在有效期内、tickets条数大于0、同乘客车次是否已买过
         String trainCode = req.getTrainCode();
         Date date = req.getDate();
         String start = req.getStart();
         String end = req.getEnd();
+        // 在每个线程进来时锁住
+        String key = StringUtil.contactWithUnderline(RedisConstance.SK_TOKEN,
+                DateUtil.formatDate(date), trainCode, start, end);
+        Boolean absent = stringRedisTemplate.opsForValue().setIfAbsent(key, "1", 1024, TimeUnit.MILLISECONDS);
+        if (Boolean.TRUE.equals(absent)) {
+            LOG.info("[sk]获取锁成功!");
+        } else {
+            LOG.info("[sk]获取锁失败!");
+            throw new BizException(BaseErrorCodeEnum.BUSINESS_GET_SK_LOCK_FAILED);
+        }
+        // 1.数据校验:车次、出发站、到达站
+        // todo 车次是否在有效期内、tickets条数大于0、同乘客车次是否已买过
         // 车次
         int trainCount = dailyTrainService.countUnique(date, trainCode);
         if (trainCount == 0) {

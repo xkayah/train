@@ -69,6 +69,7 @@ public enum BaseErrorCodeEnum implements ErrorCode {
     BUSINESS_ORDER_INFO_DATE_NOT_VALID(40003, "订单信息错误!时间不在范围内!"),
     BUSINESS_TICKET_LEFT_ZERO(40003, "余票不足!"),
     BUSINESS_CHOOSE_SEAT_FAILED(40003, "选座失败!没有符合要求的座位!"),
+    BUSINESS_GET_SK_LOCK_FAILED(40003, "当前请求人数过多!请稍后再试!"),
 
     /**
      * business 模块异常码
