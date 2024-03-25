@@ -161,6 +161,12 @@ public class ConfirmOrderService {
         confirmOrderMapper.insert(record);
         // 3.查询余票记录
         DailyTrainTicket ticketDB = dailyTrainTicketService.selectUnique(date, trainCode, start, end);
+        // 模拟业务延迟
+        try {
+            Thread.sleep(300);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         // 4.预扣减余票,判断票数是否足够
         reduceTicketCount(tickets, ticketDB);
         // 5.开始选座
