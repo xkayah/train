@@ -12,6 +12,8 @@ import com.mnus.business.mapper.my.MyDailyTrainTicketMapper;
 import com.mnus.business.req.ConfirmOrderTicketReq;
 import com.mnus.common.context.ReqHolder;
 import com.mnus.common.req.TicketInsertReq;
+import io.seata.core.context.RootContext;
+import io.seata.spring.annotation.GlobalTransactional;
 import jakarta.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,8 +46,10 @@ public class AfterConfirmOrderService {
      * @param tickets        用户提交的车票信息
      * @param confirmOrder
      */
-    @Transactional
+    // @Transactional
+    @GlobalTransactional
     public void afterSubmit(DailyTrainTicket ticket, List<DailyTrainSeat> chosenSeatList, List<ConfirmOrderTicketReq> tickets, ConfirmOrder confirmOrder) {
+        LOG.info("[XID]{}", RootContext.getXID());
         String trainCode = ticket.getTrainCode();
         Date date = ticket.getDate();
         String start = ticket.getStart();
@@ -78,7 +82,7 @@ public class AfterConfirmOrderService {
                     break;
                 }
             }
-            // maxEnd   = 从 endIdx   往后找第一个1.直接从 endIdx 开始,不要+1,否则可能会越界
+            // maxEnd = 从 endIdx 往后找第一个1.直接从 endIdx 开始,不要+1,否则可能会越界
             for (int idx = endIdx; idx < chs.length; idx++) {
                 if (chs[idx] == '1') {
                     maxEnd = idx;
@@ -119,6 +123,9 @@ public class AfterConfirmOrderService {
             confirmOrderForUpdate.setStatus(ConfirmOrderStatusEnum.SUCCESS.getCode());
             confirmOrderMapper.updateByPrimaryKeySelective(confirmOrderForUpdate);
 
+            if (1 == 1) {
+                throw new RuntimeException("test seata...");
+            }
         }
 
     }
