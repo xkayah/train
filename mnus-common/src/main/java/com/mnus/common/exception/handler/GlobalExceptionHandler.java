@@ -4,15 +4,11 @@ import com.mnus.common.enums.BaseErrorCodeEnum;
 import com.mnus.common.exception.BizException;
 import com.mnus.common.exception.ResponseCode;
 import com.mnus.common.resp.CommonResp;
-import io.seata.core.context.RootContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.util.StringUtils;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-
-import java.util.Objects;
 
 /**
  * 全局异常处理器
@@ -56,11 +52,11 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public CommonResp<?> exceptionHandler(Exception e) throws Exception {
-        LOG.info("[XID]{}", RootContext.getXID());
-        // 如果在一次全局事务中出现了异常,就不要包装返回值.将异常抛给调用方,让调用方可以回滚事务
-        if (!StringUtils.hasText(RootContext.getXID())) {
-            throw e;
-        }
+        // LOG.info("[XID]{}", RootContext.getXID());
+        // // 如果在一次全局事务中出现了异常,就不要包装返回值.将异常抛给调用方,让调用方可以回滚事务
+        // if (!StringUtils.hasText(RootContext.getXID())) {
+        //     throw e;
+        // }
         LOG.error("校验异常:{}", e.getMessage());
         return CommonResp.failed(ResponseCode.BAD_REQUEST, e.getMessage());
     }

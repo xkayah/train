@@ -12,13 +12,10 @@ import com.mnus.business.mapper.my.MyDailyTrainTicketMapper;
 import com.mnus.business.req.ConfirmOrderTicketReq;
 import com.mnus.common.context.ReqHolder;
 import com.mnus.common.req.TicketInsertReq;
-import io.seata.core.context.RootContext;
-import io.seata.spring.annotation.GlobalTransactional;
 import jakarta.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
@@ -47,9 +44,9 @@ public class AfterConfirmOrderService {
      * @param confirmOrder
      */
     // @Transactional
-    @GlobalTransactional
+    // @GlobalTransactional
     public void afterSubmit(DailyTrainTicket ticket, List<DailyTrainSeat> chosenSeatList, List<ConfirmOrderTicketReq> tickets, ConfirmOrder confirmOrder) {
-        LOG.info("[XID]{}", RootContext.getXID());
+        // LOG.info("[XID]{}", RootContext.getXID());
         String trainCode = ticket.getTrainCode();
         Date date = ticket.getDate();
         String start = ticket.getStart();
