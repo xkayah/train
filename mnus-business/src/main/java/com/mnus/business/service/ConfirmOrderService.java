@@ -119,7 +119,8 @@ public class ConfirmOrderService {
         // 在每个线程进来时锁住
         String key = StringUtil.contactWithUnderline(RedisConstance.SK_TOKEN,
                 DateUtil.formatDate(date), trainCode, start, end);
-        Boolean absent = stringRedisTemplate.opsForValue().setIfAbsent(key, "1", 1024, TimeUnit.MILLISECONDS);
+        // 这种加锁方式只能在 timeout 内卖出一张票,如何能在短时间内卖出多张票?
+        Boolean absent = stringRedisTemplate.opsForValue().setIfAbsent(key, "1", 10240, TimeUnit.MILLISECONDS);
         if (Boolean.TRUE.equals(absent)) {
             LOG.info("[sk]获取锁成功!");
         } else {
@@ -129,6 +130,10 @@ public class ConfirmOrderService {
         // 1.数据校验:车次、出发站、到达站
         // todo 车次是否在有效期内、tickets条数大于0、同乘客车次是否已买过
         // 车次
+        List<ConfirmOrderTicketReq> tickets;
+        ConfirmOrder record;
+        DailyTrainTicket ticketDB;
+        List<DailyTrainSeat> chosenSeatList;
         int trainCount = dailyTrainService.countUnique(date, trainCode);
         if (trainCount == 0) {
             throw new BizException(BaseErrorCodeEnum.BUSINESS_ORDER_INFO_TRAIN_CODE_NOT_EXISTS);
@@ -144,9 +149,9 @@ public class ConfirmOrderService {
             throw new BizException(BaseErrorCodeEnum.BUSINESS_ORDER_INFO_END_NOT_EXISTS);
         }
         // 2.保存订单信息
-        List<ConfirmOrderTicketReq> tickets = req.getTickets();
+        tickets = req.getTickets();
         DateTime now = DateTime.now();
-        ConfirmOrder record = new ConfirmOrder();
+        record = new ConfirmOrder();
         record.setId(IdGenUtil.nextId());
         record.setUserId(ReqHolder.getUid());
         record.setDate(date);
@@ -160,10 +165,10 @@ public class ConfirmOrderService {
         record.setTickets(JSON.toJSONString(tickets));
         confirmOrderMapper.insert(record);
         // 3.查询余票记录
-        DailyTrainTicket ticketDB = dailyTrainTicketService.selectUnique(date, trainCode, start, end);
+        ticketDB = dailyTrainTicketService.selectUnique(date, trainCode, start, end);
         // 模拟业务延迟
         try {
-            Thread.sleep(300);
+            Thread.sleep(200);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -179,7 +184,7 @@ public class ConfirmOrderService {
                 exceptSeatList.add(seat);
             }
         }
-        List<DailyTrainSeat> chosenSeatList = new ArrayList<>();
+        chosenSeatList = new ArrayList<>();
         if (CollectionUtils.isEmpty(exceptSeatList)) {
             // 无选座
             chosenSeatList = chooseSeat(date, trainCode, tickets,
@@ -197,7 +202,9 @@ public class ConfirmOrderService {
         if (Objects.isNull(chosenSeatList)) {
             throw new BizException(BaseErrorCodeEnum.BUSINESS_CHOOSE_SEAT_FAILED);
         }
-        afterConfirmOrderService.afterSubmit(ticketDB,chosenSeatList,tickets,record);
+        LOG.info("[sk]成功抢到一张票!");
+        stringRedisTemplate.delete(key);
+        afterConfirmOrderService.afterSubmit(ticketDB, chosenSeatList, tickets, record);
 
     }
 
