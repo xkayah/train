@@ -25,6 +25,9 @@ import com.mnus.common.resp.PageResp;
 import com.mnus.common.utils.IdGenUtil;
 import com.mnus.common.utils.StringUtil;
 import jakarta.annotation.Resource;
+import org.redisson.RedissonLock;
+import org.redisson.api.RLock;
+import org.redisson.api.RedissonClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -60,6 +63,8 @@ public class ConfirmOrderService {
     private AfterConfirmOrderService afterConfirmOrderService;
     @Resource
     private StringRedisTemplate stringRedisTemplate;
+    @Resource
+    private RedissonClient redissonClient;
 
 
     public void save(ConfirmOrderSaveReq req) {
@@ -119,18 +124,20 @@ public class ConfirmOrderService {
         // 在每个线程进来时锁住
         String key = StringUtil.contactWithUnderline(RedisConstance.SK_TOKEN,
                 DateUtil.formatDate(date), trainCode, start, end);
-        Boolean absent = stringRedisTemplate.opsForValue().setIfAbsent(key, "1", 10240, TimeUnit.MILLISECONDS);
-        if (Boolean.TRUE.equals(absent)) {
-            LOG.info("[sk]获取锁成功!");
-        } else {
-            LOG.info("[sk]获取锁失败!");
-            throw new BizException(BaseErrorCodeEnum.BUSINESS_GET_SK_LOCK_FAILED);
-        }
+        RLock lock = redissonClient.getLock(key);
+        // Boolean tryLock = stringRedisTemplate.opsForValue().setIfAbsent(key, "1", 10240, TimeUnit.MILLISECONDS);
         List<ConfirmOrderTicketReq> tickets;
         ConfirmOrder record;
         DailyTrainTicket ticketDB;
         List<DailyTrainSeat> chosenSeatList;
         try {
+            boolean tryLock = lock.tryLock(0, TimeUnit.SECONDS);
+            if (tryLock) {
+                LOG.info("[sk]获取锁成功!");
+            } else {
+                LOG.info("[sk]获取锁失败!");
+                throw new BizException(BaseErrorCodeEnum.BUSINESS_GET_LOCK_LIMIT);
+            }
             // 1.数据校验:车次、出发站、到达站
             // todo 车次是否在有效期内、tickets条数大于0、同乘客车次是否已买过
             // 车次
@@ -202,9 +209,14 @@ public class ConfirmOrderService {
                 throw new BizException(BaseErrorCodeEnum.BUSINESS_CHOOSE_SEAT_FAILED);
             }
             afterConfirmOrderService.afterSubmit(ticketDB, chosenSeatList, tickets, record);
+        } catch (InterruptedException e) {
+            LOG.info("[redisson]tryLock failed.", e);
         } finally {
             LOG.info("[sk]成功抢到一张票!");
-            stringRedisTemplate.delete(key);
+            // stringRedisTemplate.delete(key);
+            if (null != lock && lock.isHeldByCurrentThread()) {
+                lock.unlock();
+            }
         }
 
     }
