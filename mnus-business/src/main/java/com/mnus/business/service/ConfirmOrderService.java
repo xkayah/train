@@ -4,6 +4,8 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.date.DateTime;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.EnumUtil;
+import com.alibaba.csp.sentinel.annotation.SentinelResource;
+import com.alibaba.csp.sentinel.slots.block.BlockException;
 import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -21,18 +23,17 @@ import com.mnus.common.context.ReqHolder;
 import com.mnus.common.enums.BaseErrorCodeEnum;
 import com.mnus.common.exception.BizException;
 import com.mnus.common.req.EntityDeleteReq;
+import com.mnus.common.resp.CommonResp;
 import com.mnus.common.resp.PageResp;
 import com.mnus.common.utils.IdGenUtil;
 import com.mnus.common.utils.StringUtil;
 import jakarta.annotation.Resource;
-import org.redisson.RedissonLock;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
@@ -92,6 +93,7 @@ public class ConfirmOrderService {
         confirmOrderMapper.deleteByPrimaryKey(req.getId());
     }
 
+    @SentinelResource
     public PageResp<ConfirmOrderQueryResp> queryList(ConfirmOrderQueryReq req) {
         // Long uid = req.getUserId();
         ConfirmOrderExample confirmOrderExample = new ConfirmOrderExample();
@@ -116,6 +118,7 @@ public class ConfirmOrderService {
         return pageResp;
     }
 
+    @SentinelResource(blockHandler = "doSubmitBlockHandler")
     public void doSubmit(ConfirmOrderSubmitReq req) {
         String trainCode = req.getTrainCode();
         Date date = req.getDate();
@@ -219,6 +222,11 @@ public class ConfirmOrderService {
             }
         }
 
+    }
+
+    public CommonResp<Object> doSubmitBlockHandler(ConfirmOrderSubmitReq req, BlockException e) {
+        LOG.info("[frequency]limit...");
+        return CommonResp.failed(BaseErrorCodeEnum.BUSINESS_FREQUENCY_LIMIT);
     }
 
     /**
