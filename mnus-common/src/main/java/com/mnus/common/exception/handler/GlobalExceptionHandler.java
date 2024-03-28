@@ -23,12 +23,12 @@ public class GlobalExceptionHandler {
     /**
      * 处理所有不可知的异常
      */
-    @ExceptionHandler(Throwable.class)
-    public CommonResp<?> runtimeExceptionHandler(Throwable e) {
-        LOG.error("引发的异常的堆栈信息:", e);
-        return CommonResp.failed(
-                BaseErrorCodeEnum.INTERNAL_SERVER_ERROR.getCode(), BaseErrorCodeEnum.INTERNAL_SERVER_ERROR.getMsg());
-    }
+    // @ExceptionHandler(Throwable.class)
+    // public CommonResp<?> runtimeExceptionHandler(Throwable e) {
+    //     LOG.error("引发的异常的堆栈信息:", e);
+    //     return CommonResp.failed(
+    //             BaseErrorCodeEnum.INTERNAL_SERVER_ERROR.getCode(), BaseErrorCodeEnum.INTERNAL_SERVER_ERROR.getMsg());
+    // }
 
     /**
      * 处理自定义异常
@@ -50,15 +50,15 @@ public class GlobalExceptionHandler {
         return CommonResp.failed(ResponseCode.BAD_REQUEST, message);
     }
 
-    @ExceptionHandler(Exception.class)
-    public CommonResp<?> exceptionHandler(Exception e) throws Exception {
-        // LOG.info("[XID]{}", RootContext.getXID());
-        // // 如果在一次全局事务中出现了异常,就不要包装返回值.将异常抛给调用方,让调用方可以回滚事务
-        // if (!StringUtils.hasText(RootContext.getXID())) {
-        //     throw e;
-        // }
-        LOG.error("校验异常:{}", e.getMessage());
-        return CommonResp.failed(ResponseCode.BAD_REQUEST, e.getMessage());
-    }
+    // @ExceptionHandler(Exception.class)
+    // public CommonResp<?> exceptionHandler(Exception e) throws Exception {
+    //     // LOG.info("[XID]{}", RootContext.getXID());
+    //     // // 如果在一次全局事务中出现了异常,就不要包装返回值.将异常抛给调用方,让调用方可以回滚事务
+    //     // if (!StringUtils.hasText(RootContext.getXID())) {
+    //     //     throw e;
+    //     // }
+    //     LOG.error("异常:{}", e.getMessage());
+    //     return CommonResp.failed(ResponseCode.BAD_REQUEST, e.getMessage());
+    // }
 
 }

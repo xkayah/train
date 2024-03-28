@@ -93,7 +93,7 @@ public class ConfirmOrderService {
         confirmOrderMapper.deleteByPrimaryKey(req.getId());
     }
 
-    @SentinelResource
+    @SentinelResource(blockHandler = "queryListBlockHandler")
     public PageResp<ConfirmOrderQueryResp> queryList(ConfirmOrderQueryReq req) {
         // Long uid = req.getUserId();
         ConfirmOrderExample confirmOrderExample = new ConfirmOrderExample();
@@ -116,6 +116,10 @@ public class ConfirmOrderService {
         LOG.info("[query] pageNo:{},pageSize:{},total:{},pages:{}",
                 req.getPageNo(), req.getPageSize(), total, pages);
         return pageResp;
+    }
+
+    public PageResp<ConfirmOrderQueryResp> queryListBlockHandler(ConfirmOrderQueryReq req, BlockException e) {
+        return null;
     }
 
     @SentinelResource(blockHandler = "doSubmitBlockHandler")
