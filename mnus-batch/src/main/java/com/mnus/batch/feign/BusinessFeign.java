@@ -12,7 +12,7 @@ import java.util.Date;
  * @author: <a href="https://github.com/xkayah">xkayah</a>
  * @date: 2024/3/16 11:38:52
  */
-@FeignClient("business")
+@FeignClient(value = "business", fallback = BusinessFeignFallback.class)
 // @FeignClient(name = "business", url = "http://127.0.0.1:8101/business")
 public interface BusinessFeign {
 

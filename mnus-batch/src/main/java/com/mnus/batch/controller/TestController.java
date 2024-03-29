@@ -20,7 +20,7 @@ public class TestController {
 
     @GetMapping("/hello")
     public String hello() {
-        System.out.printf("[feign]:%s\n", businessFeign.hello());
-        return String.format("Hello %s Service!", env.getProperty("spring.application.name"));
+        return String.format("Hello %s Service![feign]:%s\n",
+                env.getProperty("spring.application.name"), businessFeign.hello());
     }
 }
